@@ -53,7 +53,7 @@ public class CityConnect {
 	private static final String MESSAGE_NO_ROUTE = "No route exists from %1$s to %2$s!";
 	private static final String MESSAGE_ADDED = "Route from %1$s to %2$s with distance %3$skm added";
 	private static final String MESSAGE_INVALID_FORMAT = "invalid command format :%1$s";
-	private static final String MESSAGE_WELCOME = "Welcome to SimpleRouteStore!";
+	private static final String WELCOME_MESSAGE = "Welcome to SimpleRouteStore!";
 
 	// These are the possible command types
 	enum COMMAND_TYPE {
@@ -95,7 +95,7 @@ public class CityConnect {
 	 * ====================================================================
 	 */
 	public static void main(String[] args) {
-		System.out.println(MESSAGE_WELCOME);
+		System.out.println(WELCOME_MESSAGE);
         
 		while (true) {
 			System.out.print("Enter command: ");
@@ -159,9 +159,10 @@ public class CityConnect {
 	 *            is the first word of the user command
 	 */
 	private static COMMAND_TYPE determineCommandType(String commandTypeString) {
-		if (commandTypeString == null) {
+		if (commandTypeString == null)
 			throw new Error("command type string cannot be null!");
-	    } else if (commandTypeString.equalsIgnoreCase("addroute")) {
+
+		if (commandTypeString.equalsIgnoreCase("addroute")) {
 			return COMMAND_TYPE.ADD_ROUTE;
 		} else if (commandTypeString.equalsIgnoreCase("getdistance")) {
 			return COMMAND_TYPE.GET_DISTANCE;
@@ -196,7 +197,9 @@ public class CityConnect {
 		if (position == NOT_FOUND) {
 			return String.format(MESSAGE_NO_ROUTE, newStartLocation,
 					newEndLocation);
-		} else {
+		} 
+		else 
+		{
 			return String.format(MESSAGE_DISTANCE, newStartLocation, newEndLocation,
 					routes.get(newStartLocation.toLowerCase() + " " + newEndLocation.toLowerCase()));
 		}
@@ -231,7 +234,7 @@ public class CityConnect {
 		
 		String[] parameters = splitParameters(removeFirstWord(userCommand));
 		
-		if (parameters.length < PARAM_SIZE_FOR_ADD_ROUTE) {
+		if (parameters.length < PARAM_SIZE_FOR_ADD_ROUTE){
 			return String.format(MESSAGE_INVALID_FORMAT, userCommand);
 		}
 
@@ -239,7 +242,7 @@ public class CityConnect {
 		String newEndLocation = parameters[PARAM_POSITION_END_LOCATION];
 		String distance = parameters[PARAM_POSITION_DISTANCE];
 
-		if (!isPositiveNonZeroInt(distance)) {
+		if (!isPositiveNonZeroInt(distance)){
 			return String.format(MESSAGE_INVALID_FORMAT, userCommand);
 		}
 
