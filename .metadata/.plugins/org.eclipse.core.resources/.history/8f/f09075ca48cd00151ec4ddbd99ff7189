@@ -1,0 +1,112 @@
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JList;
+import javax.swing.JTextPane;
+import javax.swing.AbstractListModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class TaskWindow {
+
+	private JFrame frame;
+	private JTextField taskEntryField;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					TaskWindow window = new TaskWindow();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public TaskWindow() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 450, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		taskEntryField = new JTextField();
+		taskEntryField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				processCommand();
+			}
+		});
+		taskEntryField.setBounds(6, 244, 361, 28);
+		frame.getContentPane().add(taskEntryField);
+		taskEntryField.setColumns(10);
+		
+		JButton goButton = new JButton("Go");
+		goButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				processCommand();
+			}
+		});
+		goButton.setBounds(379, 245, 61, 29);
+		frame.getContentPane().add(goButton);
+		JList<String> taskList = new JList<String>();
+		taskList.setModel(new AbstractListModel<String>() {
+			String[] values = new String[] {"Task 1", "Task 2", "Task 3", "Task 4"};
+			public int getSize() {
+				return values.length;
+			}
+			public String getElementAt(int index) {
+				return values[index];
+			}
+		});
+		taskList.setBounds(12, 12, 156, 222);
+		frame.getContentPane().add(taskList);
+		
+		JTextPane taskDetailView = new JTextPane();
+		taskDetailView.setBounds(183, 12, 249, 222);
+		frame.getContentPane().add(taskDetailView);
+	}
+	
+	private void processTokens() {
+		String token = taskEntryField.getText();
+		if (divideTokens(token).length <= 4 && divideTokens(token).length >= 0) {
+			
+		} else {
+			//Error
+		}
+	}
+	
+	private String[] divideTokens(String commandString) {
+		return commandString.split(" ");
+	}
+	
+	
+	
+	private Command categorizeCommand(String command) {
+		if (command.toLowerCase().equals("add")) {
+			return Command.ADD;
+		} else if (command.toLowerCase().equals("delete")) {
+			return Command.DELETE;
+		} else if (command.toLowerCase().equals("edit")){
+			return Command.EDIT;
+		} else {
+			return Command.INVALID;
+		}
+	}
+}
