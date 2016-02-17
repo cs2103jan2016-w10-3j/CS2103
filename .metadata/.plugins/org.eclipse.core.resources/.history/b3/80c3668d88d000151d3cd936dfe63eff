@@ -1,0 +1,23 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class TaskManager {
+	private static List<Task> tasks;
+	private static TaskManager instance = null;
+
+	public static TaskManager getInstance() {
+		if (instance == null) {
+			instance = new TaskManager();
+			tasks = new ArrayList<Task>();
+		}
+		return instance;
+	}
+	
+	public static void addTask(Task task) {
+		tasks.add(task);
+	}
+	
+	public static void deleteTaskAtIndex(int index) {
+		tasks.remove(index);
+	}
+}

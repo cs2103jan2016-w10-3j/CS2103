@@ -4,13 +4,19 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
 import org.joda.time.DateTime;
 
 import javax.swing.AbstractListModel;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,6 +29,7 @@ public class TaskWindow {
 	private JFrame frame;
 	private JTextField taskEntryField;
 	private int counterIndex;
+	private static TaskManager taskManager;
 
 	/**
 	 * Launch the application.
@@ -33,6 +40,8 @@ public class TaskWindow {
 				try {
 					TaskWindow window = new TaskWindow();
 					window.frame.setVisible(true);
+					taskManager = TaskManager.getInstance();
+					saveTasks();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -76,12 +85,12 @@ public class TaskWindow {
 		goButton.setBounds(379, 245, 61, 29);
 		frame.getContentPane().add(goButton);
 		JList<String> taskList = new JList<String>();
-		taskList.setModel(new AbstractListModel<String>() {
-			String[] values = new String[] {"Task 1", "Task 2", "Task 3", "Task 4"};
+		taskList.setModel(new AbstractListModel() {
+			String[] values = new String[] {"Eileen's Bday!", "Office Meeting", "Book Club", "Internship Interview"};
 			public int getSize() {
 				return values.length;
 			}
-			public String getElementAt(int index) {
+			public Object getElementAt(int index) {
 				return values[index];
 			}
 		});
@@ -89,6 +98,7 @@ public class TaskWindow {
 		frame.getContentPane().add(taskList);
 		
 		JTextPane taskDetailView = new JTextPane();
+		taskDetailView.setText("Eileen's BDay!\nMarch 9th, 2016\n13:30 - 15:30\n\nEileen is having a birthday party! Reminder to get her a present and to actually show up on time!");
 		taskDetailView.setBounds(183, 12, 249, 222);
 		frame.getContentPane().add(taskDetailView);
 	}
@@ -145,6 +155,25 @@ public class TaskWindow {
 	
 	private void editTask(String[] tokens) {
 		
+	}
+	
+	//Function to save tasks that are currently in task manager
+	private static void saveTasks() {
+		Path currentRelativePath = Paths.get("");
+		String stringifiedPath = currentRelativePath.toAbsolutePath().toString();
+		String tasksSavePath = stringifiedPath + "/tasks.con";
+		File tasksSaveFile = new File(tasksSavePath);
+		try {
+			FileOutputStream fout = new FileOutputStream(tasksSaveFile.getAbsolutePath());
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(taskManager);
+			oos.close();
+
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(null,
+					"Unable to save the current configuration: " + ex.getMessage());
+			ex.printStackTrace();
+		}
 	}
 	
 	private String getNameFromTokens(String[] tokens) {
