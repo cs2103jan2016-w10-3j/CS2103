@@ -24,4 +24,5 @@
 <fullyQualifiedTypeName name="java.io.FileOutputStream"/>
 <fullyQualifiedTypeName name="java.io.ObjectOutputStream"/>
 <fullyQualifiedTypeName name="javax.swing.JOptionPane"/>
+<fullyQualifiedTypeName name="tb2.tb2.COMMAND_TYPE"/>
 </qualifiedTypeNameHistroy>
