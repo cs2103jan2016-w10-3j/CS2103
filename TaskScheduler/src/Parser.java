@@ -1,3 +1,4 @@
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -16,8 +17,10 @@ public class Parser {
 	private static final String MESSAGE_ERROR_TASK_TIME_OR_BY_NOT_ENTERED = "Task time or by not entered";
 	private static final String MESSAGE_ERROR_TASK_DATE_INVALID = "Task date entered is invalid";
 	private static final String MESSAGE_ERROR_TASK_DATE_ALREADY_PASSED = "Date entered already passed";
-	private static final String MESSAGE_ERROR_TASK_TIME_INVALID = "Task time entered is invalid";
+	private static final String MESSAGE_ERROR_TASK_TIME_INVALID = "Time entered is invalid (hh:mm)";
 	private static final String MESSAGE_ERROR_TASK_DURATION_INVALID = "Task duration entered is invalid";
+	private static final String MESSAGE_ERROR_TASK_TIME_OUT_OF_BOUND = "Task time entered is out of bound";
+	private static final String MESSAGE_ERROR_NO_ARGUMENT = "No argument entered";
 	
 	private static final int DAY_TOMORROW = 0;
 	private static final int DAY_INVALID = -1;
@@ -39,9 +42,12 @@ public class Parser {
 			return processInputForAdding(input);
 		}
 	}
-	
-	private static Task processInputForAdding(String input) {
+	// The method assume the input starts with add - in order to return a task object
+	protected static Task processInputForAdding(String input) {
 		String[] tokens = divideTokens(input);
+		if (tokens.length == 1) {
+			throw new Error(MESSAGE_ERROR_NO_ARGUMENT);
+		}
 		int i = 1; // Skip the first word
 		String name = "";
 		Date date;
@@ -52,12 +58,11 @@ public class Parser {
 		}
 		
 		while (i < tokens.length && !tokens[i].equalsIgnoreCase("by")) {
-			if (!tokens[i+1].equalsIgnoreCase("by")) {
+			if (i < tokens.length - 1 && !tokens[i+1].equalsIgnoreCase("by")) {
 				name = name.concat(tokens[i] + " ");
 			} else {
 				name = name.concat(tokens[i]);
 			}
-			
 			i++;
 		}
 		
@@ -67,8 +72,8 @@ public class Parser {
 		
 		i++;
 		date = getExactDate(tokens[i++]);
-		
-		if (i + 1 == tokens.length) {
+
+		if (i == tokens.length) {
 			exactTime = false;
 			return new Task(name, date, exactTime, duration);
 		}
@@ -83,15 +88,21 @@ public class Parser {
 			throw new Error(MESSAGE_ERROR_TASK_TIME_INVALID);
 		}
 		
+		if (hrOutOfBound(hr) || minOutOfBound(min)) {
+			throw new Error(MESSAGE_ERROR_TASK_TIME_OUT_OF_BOUND);
+		}
+		
 		// Try to add time to the old date 
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
+		calendar.set(Calendar.HOUR, 12);
+		calendar.set(Calendar.MINUTE, 0);
 		calendar.add(Calendar.HOUR_OF_DAY, hr);
 		calendar.add(Calendar.MINUTE, min);
 		date = calendar.getTime();
 		
 		exactTime = true;
-		if (i + 1 == tokens.length) {
+		if (i == tokens.length) {
 			return new Task(name, date, exactTime, duration);
 		}
 		
@@ -104,21 +115,29 @@ public class Parser {
 		
 		return new Task(name, date, exactTime, duration);
 		
-		
-		
-			
+	}
+	
+	private static boolean hrOutOfBound(int hr) {
+		return hr < 0 || hr > 24;
+	}
+	
+	private static boolean minOutOfBound(int min) {
+		return min < 0 || min > 60;
 	}
 	
 	private static int getTotalMin(String[] timeTokens) throws InvalidTimeException {
 		int hr, min;
 		hr = getTimeElement(timeTokens[0]);
 		min = getTimeElement(timeTokens[1]);
+		if (hr < 0 || min < 0) {
+			throw new Error(MESSAGE_ERROR_TASK_TIME_INVALID);
+		}
 		return ONE_HOUR_IN_MINUTE * hr + min;
 	}
 	
 	private static String[] getTimeStringToken(String time) {
 		String tokens[] = time.split(":");
-		if (tokens.length != 2) {
+		if (tokens.length != 2 || tokens.length == 2 && tokens[0].equals("")) {
 			throw new Error(MESSAGE_ERROR_TASK_TIME_INVALID);
 		}
 		return tokens;
@@ -141,13 +160,16 @@ public class Parser {
 		Date date;
 		try {
 			date = dateParse(dateString);
+			if (date.before(new Date())) {
+				throw new Error(MESSAGE_ERROR_TASK_DATE_ALREADY_PASSED);
+			}
 		} catch (ParseException e) {
 			if (categorizeDay(dateString) == DAY_INVALID) {
 				throw new Error(MESSAGE_ERROR_TASK_DATE_INVALID);
 			} else {
 				// Exact day not entered by day entered e.g. Monday
 				int day = categorizeDay(dateString);
-				if (dateAlreadyPassed(day)) {
+				if (dayAlreadyPassed(day)) {
 					throw new Error(MESSAGE_ERROR_TASK_DATE_ALREADY_PASSED);
 				} else {
 					date = getDateInThisWeek(day);
@@ -158,16 +180,18 @@ public class Parser {
 	}
 	
 	private static Date dateParse(String date) throws ParseException {
-		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		return df.parse(date);
 	}
 	
 	
-	private static boolean dateAlreadyPassed(int day) {
+	private static boolean dayAlreadyPassed(int day) {
     	int dayOfWeek = getDayOfTheWeek();
-    	if (day == dayOfWeek || day == Calendar.SUNDAY) {
+    	if (day == dayOfWeek || dayOfWeek == Calendar.MONDAY) {
     		return true;
-    	} else if (day > dayOfWeek && dayOfWeek != Calendar.SUNDAY) {
+    	} else if (dayOfWeek == Calendar.SUNDAY) {
+    		return true;
+    	} else if (dayOfWeek > day && day != Calendar.SUNDAY) {
     		return true;
     	}
     	return false;
@@ -183,7 +207,7 @@ public class Parser {
     	if (day == dayOfWeek) {
     		daysInterval = 0;
     	} else if (day == Calendar.SUNDAY) {
-    		daysInterval = 7 - dayOfWeek;
+    		daysInterval = 8 - dayOfWeek;
     	} else {
     		daysInterval = day - dayOfWeek;
     	}
@@ -227,12 +251,16 @@ public class Parser {
 			return Calendar.THURSDAY;
 		} else if (day.equalsIgnoreCase("friday")) {
 			return Calendar.FRIDAY;
+		} else if (day.equalsIgnoreCase("saturday")) {
+			return Calendar.SATURDAY;
+		} else if (day.equalsIgnoreCase("sunday")) {
+			return Calendar.SUNDAY;
 		} else {
 			return DAY_INVALID;
 		}
 	}
 	
-	private static class InvalidTimeException extends Exception {
+	public static class InvalidTimeException extends Exception {
 		public InvalidTimeException() {
 			super(MESSAGE_ERROR_TASK_TIME_INVALID);
 		}
