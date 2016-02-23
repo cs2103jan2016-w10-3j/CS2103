@@ -79,7 +79,8 @@ public class TaskWindow {
 		JButton goButton = new JButton("Go");
 		goButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				processTokens();
+				// Need to write this method later, return different data type based on command type
+				parseTokens(taskEntryField.getText());
 			}
 		});
 		goButton.setBounds(379, 245, 61, 29);
@@ -103,36 +104,7 @@ public class TaskWindow {
 		frame.getContentPane().add(taskDetailView);
 	}
 	
-	private void processTokens() {
-		String token = taskEntryField.getText();
-		String[] tokens = divideTokens(token);
-		if (tokens.length <= 4 && tokens.length >= 0) {
-			Command command = categorizeCommand(tokens[0]);
-			if (command != Command.INVALID) {
-				
-			} else {
-				
-			}
-		} else {
-			//Error
-		}
-	}
 	
-	private String[] divideTokens(String commandString) {
-		return commandString.split(" ");
-	}
-	
-	private Command categorizeCommand(String command) {
-		if (command.toLowerCase().equals("add")) {
-			return Command.ADD;
-		} else if (command.toLowerCase().equals("delete")) {
-			return Command.DELETE;
-		} else if (command.toLowerCase().equals("edit")){
-			return Command.EDIT;
-		} else {
-			return Command.INVALID;
-		}
-	}
 	
 	private void performCommand(String[] tokens, Command command) {
 		if (command == Command.ADD) {
