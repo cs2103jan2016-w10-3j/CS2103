@@ -15,9 +15,9 @@ public class ParserTest {
 
 	@Test
 	public void test() throws Parser.InvalidTimeException {
-		String s = "add a d s e sdf by thursday 19:30 1:1";
+		String s = "d sd sd ds | 100000/12/2041 3:20";
 		Task t;
-		t = Parser.processInputForAdding(s);
+		t = Parser.getTaskForAdding(s);
 		System.out.println(t.getName());
 		System.out.println(df.format(t.getTimeStart()));
 		System.out.println(t.getDuration());

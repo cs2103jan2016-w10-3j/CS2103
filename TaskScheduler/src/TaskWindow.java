@@ -80,7 +80,7 @@ public class TaskWindow {
 		goButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Need to write this method later, return different data type based on command type
-				parseTokens(taskEntryField.getText());
+				//parseTokens(taskEntryField.getText());
 			}
 		});
 		goButton.setBounds(379, 245, 61, 29);

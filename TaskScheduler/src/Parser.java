@@ -11,10 +11,13 @@ import java.util.Date;
 
 public class Parser {
 	
+	private static final String SEPARATOR = "|";
+	private static final String TIME_SEPARATOR = ":";
+	
 	private static final String MESSAGE_ERROR_NO_INPUT = "No input is entered.";
 	private static final String MESSAGE_ERROR_INVALID_INPUT = "Input entered is invalid.";
 	private static final String MESSAGE_ERROR_TASK_NAME_NOT_ENTERED = "Task name not entered";
-	private static final String MESSAGE_ERROR_TASK_TIME_OR_BY_NOT_ENTERED = "Task time or by not entered";
+	private static final String MESSAGE_ERROR_TASK_TIME_OR_SEPARATOR_NOT_ENTERED = "Task time or | not entered";
 	private static final String MESSAGE_ERROR_TASK_DATE_INVALID = "Task date entered is invalid";
 	private static final String MESSAGE_ERROR_TASK_DATE_ALREADY_PASSED = "Date entered already passed";
 	private static final String MESSAGE_ERROR_TASK_TIME_INVALID = "Time entered is invalid (hh:mm)";
@@ -26,6 +29,12 @@ public class Parser {
 	private static final int DAY_INVALID = -1;
 	private static final int ONE_HOUR_IN_MINUTE = 60;
 	
+	
+	/**
+	 * Get the command of input , which is the command corresponding to the first word.
+	 * @param input User input.
+	 * @return Command type or invalid command.
+	 */
 	public static Command getCommand(String input) {
 		if (input == null) {
 			throw new Error(MESSAGE_ERROR_NO_INPUT);
@@ -34,16 +43,26 @@ public class Parser {
 		return categorizeCommand(tokens[0]);
 	}
 	
-	public static Task generateTask(String input) {
+	/**
+	 * Get the task for adding from the input (THE METHOD ASSUME FIRST WORD IS Add).
+	 * @param input User input.
+	 * @return Task to be added.
+	 */
+	public static Task getTaskForAdding(String input) {
 		
-		if (processInputForAdding(input) == null) {
+		if (tryGettingTask(input) == null) {
 			throw new Error(MESSAGE_ERROR_INVALID_INPUT);
 		} else {
-			return processInputForAdding(input);
+			return tryGettingTask(input);
 		}
 	}
-	// The method assume the input starts with add - in order to return a task object
-	protected static Task processInputForAdding(String input) {
+	
+	/**
+	 * Try to get a task generated from user input.
+	 * @param input User input.
+	 * @return Task object.
+	 */
+	protected static Task tryGettingTask(String input) {
 		String[] tokens = divideTokens(input);
 		if (tokens.length == 1) {
 			throw new Error(MESSAGE_ERROR_NO_ARGUMENT);
@@ -57,27 +76,31 @@ public class Parser {
 			throw new Error(MESSAGE_ERROR_TASK_NAME_NOT_ENTERED);
 		}
 		
-		while (i < tokens.length && !tokens[i].equalsIgnoreCase("by")) {
-			if (i < tokens.length - 1 && !tokens[i+1].equalsIgnoreCase("by")) {
+		// Extract the name from input
+		while (i < tokens.length && !tokens[i].equalsIgnoreCase(SEPARATOR)) {
+			if (i < tokens.length - 1 && !tokens[i+1].equalsIgnoreCase(SEPARATOR)) {
 				name = name.concat(tokens[i] + " ");
 			} else {
 				name = name.concat(tokens[i]);
 			}
 			i++;
 		}
-		
-		if (i + 1 == tokens.length) {
-			throw new Error(MESSAGE_ERROR_TASK_TIME_OR_BY_NOT_ENTERED);
+				
+		if (i == tokens.length) {
+			throw new Error(MESSAGE_ERROR_TASK_TIME_OR_SEPARATOR_NOT_ENTERED);
 		}
 		
+		// Try to get date if format is correct till this stage
 		i++;
 		date = getExactDate(tokens[i++]);
-
+		
+		// Return a new task if duration and exact time is not specified
 		if (i == tokens.length) {
 			exactTime = false;
 			return new Task(name, date, exactTime, duration);
 		}
 		
+		// Try to get the exact time if specified
 		String timeTokens[] = getTimeStringToken(tokens[i++]);
 		int hr, min;
 		
@@ -101,11 +124,13 @@ public class Parser {
 		calendar.add(Calendar.MINUTE, min);
 		date = calendar.getTime();
 		
+		// Return the task if the exact time is valid
 		exactTime = true;
 		if (i == tokens.length) {
 			return new Task(name, date, exactTime, duration);
 		}
 		
+		// Try to get the duration if specified
 		timeTokens = getTimeStringToken(tokens[i]);
 		try {
 			duration = getTotalMin(timeTokens);
@@ -113,18 +138,34 @@ public class Parser {
 			throw new Error(MESSAGE_ERROR_TASK_DURATION_INVALID);
 		}
 		
+		// All input valid, return a fully defined task
 		return new Task(name, date, exactTime, duration);
 		
 	}
-	
+	/**
+	 * Return whether hour is out of bound.
+	 * @param hr Hour.
+	 * @return Whether hour is out of bound.
+	 */
 	private static boolean hrOutOfBound(int hr) {
 		return hr < 0 || hr > 24;
 	}
 	
+	/**
+	 * Return whether minute is out of bound.
+	 * @param min Minute.
+	 * @return Whether minute is out of bound.
+	 */
 	private static boolean minOutOfBound(int min) {
 		return min < 0 || min > 60;
 	}
 	
+	/**
+	 * Get the total minutes from hh:mm format.
+	 * @param timeTokens String tokens that contain time.
+	 * @return Total minutes.
+	 * @throws InvalidTimeException Time input is invalid.
+	 */
 	private static int getTotalMin(String[] timeTokens) throws InvalidTimeException {
 		int hr, min;
 		hr = getTimeElement(timeTokens[0]);
@@ -135,14 +176,25 @@ public class Parser {
 		return ONE_HOUR_IN_MINUTE * hr + min;
 	}
 	
+	/**
+	 * Get the time token for processing.
+	 * @param time Time string in hh:mm format.
+	 * @return A time token.
+	 */
 	private static String[] getTimeStringToken(String time) {
-		String tokens[] = time.split(":");
+		String tokens[] = time.split(TIME_SEPARATOR);
 		if (tokens.length != 2 || tokens.length == 2 && tokens[0].equals("")) {
 			throw new Error(MESSAGE_ERROR_TASK_TIME_INVALID);
 		}
 		return tokens;
 	}
 	
+	/**
+	 * Parse a string to integer for processing as time element (hour or minute).
+	 * @param time Time string.
+	 * @return Integer representing hour or minute.
+	 * @throws InvalidTimeException Time input is invalid.
+	 */
 	private static int getTimeElement(String time) throws InvalidTimeException {
 		try {
 			return Integer.parseInt(time);
@@ -150,12 +202,20 @@ public class Parser {
 			throw new InvalidTimeException();
 		}
 	}
-	
+	/**
+	 * Return if task name is entered.
+	 * @param taskName Task name, which is part of the user input (the second word till the separator)
+	 * @return Whether task name is entered.
+	 */
 	private static boolean taskNameIsEntered(String taskName) {
-		return !taskName.equalsIgnoreCase("by");
+		return !taskName.equalsIgnoreCase(SEPARATOR);
 	}
 	
-	
+	/**
+	 * Get the exact date from a date string in format dd/mm/yyyy.
+	 * @param dateString Date string.
+	 * @return A date object.
+	 */
 	private static Date getExactDate(String dateString) {
 		Date date;
 		try {
@@ -179,12 +239,24 @@ public class Parser {
 		return date;
 	}
 	
+	
+	/**
+	 * Parse a date string into a date object.
+	 * @param date Date string.
+	 * @return A date object.
+	 * @throws ParseException Date cannot be parsed.
+	 */
 	private static Date dateParse(String date) throws ParseException {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		df.setLenient(false);
 		return df.parse(date);
 	}
 	
-	
+	/**
+	 * Return if a day is already passed.
+	 * @param day Day object indicated in the Calendar class.
+	 * @return Whether the day has already passed.
+	 */
 	private static boolean dayAlreadyPassed(int day) {
     	int dayOfWeek = getDayOfTheWeek();
     	if (day == dayOfWeek || dayOfWeek == Calendar.MONDAY) {
@@ -197,6 +269,11 @@ public class Parser {
     	return false;
 	}
 	
+	/**
+	 * Get the date object specified by an input day.
+	 * @param day Day object indicated in the Calendar class.
+	 * @return A date object.
+	 */
 	private static Date getDateInThisWeek(int day) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(calendar.getTime());
@@ -216,16 +293,29 @@ public class Parser {
     	return result;
 	}
 	
+	/**
+	 * Get the day of today.
+	 * @return An integer representing a day specified in Calendar class.
+	 */
 	private static int getDayOfTheWeek() {
 		Calendar calendar = Calendar.getInstance();
 		return calendar.get(Calendar.DAY_OF_WEEK);
 	}
 	
-	
+	/**
+	 * Return a string token split by space.
+	 * @param commandString Command string.
+	 * @return A string token split by space.
+	 */
 	private static String[] divideTokens(String commandString) {
 		return commandString.split(" ");
 	}
 	
+	/**
+	 * Get the command type from user input.
+	 * @param command User input.
+	 * @return Command type.
+	 */
 	private static Command categorizeCommand(String command) {
 		if (command.toLowerCase().equals("add")) {
 			return Command.ADD;
@@ -238,6 +328,11 @@ public class Parser {
 		}
 	}
 	
+	/**
+	 * Get the day from user input.
+	 * @param day Day string.
+	 * @return Day integer specified in Calendar class.
+	 */
 	private static int categorizeDay(String day) {
 		if (day.equalsIgnoreCase("tomorrow")) {
 			return DAY_TOMORROW;
