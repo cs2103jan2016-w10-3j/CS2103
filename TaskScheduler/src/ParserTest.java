@@ -15,7 +15,7 @@ public class ParserTest {
 
 	@Test
 	public void test() throws Parser.InvalidTimeException {
-		String s = "d sd sd ds | 100000/12/2041 3:20";
+		String s = "add sd sd ds || 05/05/2016 1:1 2.2";
 		Task t;
 		t = Parser.getTaskForAdding(s);
 		System.out.println(t.getName());

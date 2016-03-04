@@ -11,19 +11,23 @@ import java.util.Date;
 
 public class Parser {
 	
-	private static final String SEPARATOR = "|";
+	private static final String SEPARATOR = "||";
 	private static final String TIME_SEPARATOR = ":";
+	private static final String DURATION_SEPARATOR = "\\.";
 	
 	private static final String MESSAGE_ERROR_NO_INPUT = "No input is entered.";
 	private static final String MESSAGE_ERROR_INVALID_INPUT = "Input entered is invalid.";
 	private static final String MESSAGE_ERROR_TASK_NAME_NOT_ENTERED = "Task name not entered";
-	private static final String MESSAGE_ERROR_TASK_TIME_OR_SEPARATOR_NOT_ENTERED = "Task time or | not entered";
+	private static final String MESSAGE_ERROR_TASK_TIME_OR_SEPARATOR_NOT_ENTERED = "Task time or separtor not entered";
 	private static final String MESSAGE_ERROR_TASK_DATE_INVALID = "Task date entered is invalid";
 	private static final String MESSAGE_ERROR_TASK_DATE_ALREADY_PASSED = "Date entered already passed";
 	private static final String MESSAGE_ERROR_TASK_TIME_INVALID = "Time entered is invalid (hh:mm)";
 	private static final String MESSAGE_ERROR_TASK_DURATION_INVALID = "Task duration entered is invalid";
 	private static final String MESSAGE_ERROR_TASK_TIME_OUT_OF_BOUND = "Task time entered is out of bound";
+	private static final String MESSAGE_ERROR_TASK_DATE_NOT_ENTERED = "Task date is not entered.";
+	private static final String MESSAGE_ERROR_TASK_INDEX_INVALID = "Task index entered is invalid.";
 	private static final String MESSAGE_ERROR_NO_ARGUMENT = "No argument entered";
+	private static final String MESSAGE_ERROR_TOO_MANY_ARGUMENT = "Too many arguments are entered.";
 	
 	private static final int DAY_TOMORROW = 0;
 	private static final int DAY_INVALID = -1;
@@ -56,6 +60,34 @@ public class Parser {
 			return tryGettingTask(input);
 		}
 	}
+	
+	public static TaskToEdit getTaskForEditing(String input) {
+		
+	}
+	
+	/**
+	 * Get task index for deleting.
+	 * @param input the user input (Assume the first word is delete)
+	 * @return The index to be deleted.
+	 */
+	public static int getTaskIndexForDeleting(String input) {
+		String[] tokens = divideTokens(input);
+		int index;
+		if (tokens.length == 1) {
+			throw new Error(MESSAGE_ERROR_NO_ARGUMENT);
+		}
+		if (tokens.length > 2) {
+			throw new Error(MESSAGE_ERROR_TOO_MANY_ARGUMENT);
+		}
+		try {
+			index = Integer.parseInt(tokens[1]);
+		} catch (NumberFormatException e) {
+			throw new Error(MESSAGE_ERROR_TASK_INDEX_INVALID);
+		}
+		return index;
+	}
+	
+	
 	
 	/**
 	 * Try to get a task generated from user input.
@@ -92,6 +124,9 @@ public class Parser {
 		
 		// Try to get date if format is correct till this stage
 		i++;
+		if (i == tokens.length) {
+			throw new Error(MESSAGE_ERROR_TASK_DATE_NOT_ENTERED);
+		}
 		date = getExactDate(tokens[i++]);
 		
 		// Return a new task if duration and exact time is not specified
@@ -118,7 +153,7 @@ public class Parser {
 		// Try to add time to the old date 
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		calendar.set(Calendar.HOUR, 12);
+		calendar.set(Calendar.HOUR, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.add(Calendar.HOUR_OF_DAY, hr);
 		calendar.add(Calendar.MINUTE, min);
@@ -131,10 +166,12 @@ public class Parser {
 		}
 		
 		// Try to get the duration if specified
-		timeTokens = getTimeStringToken(tokens[i]);
 		try {
+			timeTokens = getDurationStringToken(tokens[i]);
 			duration = getTotalMin(timeTokens);
 		} catch (InvalidTimeException e) {
+			throw new Error(MESSAGE_ERROR_TASK_DURATION_INVALID);
+		} catch (Error e) {
 			throw new Error(MESSAGE_ERROR_TASK_DURATION_INVALID);
 		}
 		
@@ -190,6 +227,20 @@ public class Parser {
 	}
 	
 	/**
+	 * Get the duration token for processing.
+	 * @param duration Duration string in hh.mm format.
+	 * @return A duration token.
+	 */
+	private static String[] getDurationStringToken(String duration) {
+		String tokens[] = duration.split(DURATION_SEPARATOR);
+		if (tokens.length != 2 || tokens.length == 2 && tokens[0].equals("")) {
+			throw new Error(MESSAGE_ERROR_TASK_DURATION_INVALID);
+		}
+		return tokens;
+	}
+	
+	
+	/**
 	 * Parse a string to integer for processing as time element (hour or minute).
 	 * @param time Time string.
 	 * @return Integer representing hour or minute.
@@ -229,7 +280,7 @@ public class Parser {
 			} else {
 				// Exact day not entered by day entered e.g. Monday
 				int day = categorizeDay(dateString);
-				if (dayAlreadyPassed(day)) {
+				if (dayAlreadyPassed(day) && day != DAY_TOMORROW) {
 					throw new Error(MESSAGE_ERROR_TASK_DATE_ALREADY_PASSED);
 				} else {
 					date = getDateInThisWeek(day);
@@ -280,6 +331,11 @@ public class Parser {
     	int dayOfWeek = getDayOfTheWeek();
     	int daysInterval;
     	Date result;
+    	
+    	if (day == DAY_TOMORROW) {
+    		calendar.add(Calendar.DAY_OF_YEAR, 1);
+    		return calendar.getTime();
+    	}
     	// It's checked days entered must be the same or ahead of the day of today
     	if (day == dayOfWeek) {
     		daysInterval = 0;
