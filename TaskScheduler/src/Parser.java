@@ -61,7 +61,81 @@ public class Parser {
 		}
 	}
 	
+	/**
+	 * Get the task to send for editing from the input (THIS METHOD ASSUMES THE FIRST WORD IS Edit).
+	 * @param input User input.
+	 * @return TaskToEdit to be edited.
+	 */
 	public static TaskToEdit getTaskForEditing(String input) {
+		
+		String[] tokens = divideTokens(input);
+		
+		
+		// Get Index
+		int index = Integer.valueOf(tokens[1]);
+		TaskToEdit toReturn = new TaskToEdit(index);
+		
+		// Get Arguments
+		switch (tokens[2]) {
+
+			// For Duration Edit Case, simply get the duration from the input and add it.
+			case "duration":
+				int duration = Integer.valueOf(tokens[3]);
+				toReturn.setDuration(duration);
+				break;
+			// For Name Edit Case, simply get the name from the input and add it.
+			case "name":
+				String name = getArgumentForEditing(input);
+				toReturn.setName(name);
+				break;
+			// For DateTime Edit Case, get date, then time, then compile date and add.
+			case "datetime":
+				String datetime = getArgumentForEditing(input);
+				Date date = getExactDate(datetime.split(" ")[0]);
+				
+				String timeTokens[] = getTimeStringToken(datetime.split(" ")[1]);
+				int hr, min;
+				
+				try {
+					hr = getTimeElement(timeTokens[0]);
+					min = getTimeElement(timeTokens[1]);
+				} catch (InvalidTimeException e) {
+					throw new Error(MESSAGE_ERROR_TASK_TIME_INVALID);
+				}
+				
+				if (hrOutOfBound(hr) || minOutOfBound(min)) {
+					throw new Error(MESSAGE_ERROR_TASK_TIME_OUT_OF_BOUND);
+				}
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(date);
+				calendar.set(Calendar.HOUR, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.add(Calendar.HOUR_OF_DAY, hr);
+				calendar.add(Calendar.MINUTE, min);
+				date = calendar.getTime();
+				
+				toReturn.setTimeStart(date);
+				
+				break;
+			default:
+				throw new Error(MESSAGE_ERROR_INVALID_INPUT);
+		}
+		
+		// Return Task to Edit
+		return toReturn;
+		
+	}
+	
+	/**
+	 * This method helps to find the argument of the task when creating a task for editing from the user input.
+	 * @param input User Input
+	 * @return String with the Argument of the task.
+	 */
+	public static String getArgumentForEditing(String input) {
+		
+		String[] tokens = input.split(" ", 4);
+		return tokens[3];
 		
 	}
 	
