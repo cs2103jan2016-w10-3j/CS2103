@@ -48,8 +48,7 @@ public class Parser {
 			}
 			break;
 		case EDIT:
-			editTask(input, storage);
-			break;
+			
 		default:
 			throw new Error(MESSAGE_ERROR_INVALID_INPUT); 
 		}
@@ -82,62 +81,6 @@ public class Parser {
 			return tryGettingTask(input);
 		}
 	}
-	
-	public static void editTask(String input, Storage storage) {
-		/*String first = "edit 1 duration 5";
-		String second = "edit 3 name Doing Work";
-		String third = "edit 5 datetime 05/05/2016 5:5 5";*/
-		String[] tokens = divideTokens(input);
-
-		// Get Index
-		int index = Integer.valueOf(tokens[1]);
-		Task task = storage.getTask(index);
-		switch (tokens[2]) {
-		case "duration":
-			int duration = Integer.valueOf(tokens[3]);
-			task.setDuration(duration);
-			break;
-		// For Name Edit Case, simply get the name from the input and add it.
-		case "name":
-			String name = getArgumentForEditing(input);
-			task.setName(name);
-			break;
-		// For DateTime Edit Case, get date, then time, then compile date and add.
-		case "datetime":
-			String datetime = getArgumentForEditing(input);
-			Date date = getExactDate(datetime.split(" ")[0]);
-			
-			String timeTokens[] = getTimeStringToken(datetime.split(" ")[1]);
-			int hr, min;
-			
-			try {
-				hr = getTimeElement(timeTokens[0]);
-				min = getTimeElement(timeTokens[1]);
-			} catch (InvalidTimeException e) {
-				throw new Error(MESSAGE_ERROR_TASK_TIME_INVALID);
-			}
-			
-			if (hrOutOfBound(hr) || minOutOfBound(min)) {
-				throw new Error(MESSAGE_ERROR_TASK_TIME_OUT_OF_BOUND);
-			}
-			
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(date);
-			calendar.set(Calendar.HOUR, 0);
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.add(Calendar.HOUR_OF_DAY, hr);
-			calendar.add(Calendar.MINUTE, min);
-			date = calendar.getTime();
-			
-			task.setTimeStart(date);
-			
-			break;
-		default:
-			throw new Error(MESSAGE_ERROR_INVALID_INPUT);
-		}
-		storage.replaceTask(index, task);
-		}
-	
 	
 	/**
 	 * Get the task to send for editing from the input (THIS METHOD ASSUMES THE FIRST WORD IS Edit).

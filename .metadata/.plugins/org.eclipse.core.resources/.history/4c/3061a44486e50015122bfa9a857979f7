@@ -27,11 +27,6 @@ public class Storage {
 	public void addTaskatIndex(Task newTask, int index) {
 		tasks.add(index, newTask);
 	}
-	
-	public void replaceTask(int index, Task newTask) {
-		tasks.remove(index);
-		tasks.add(index, newTask);
-	}
 
 	public void removeTask(int index) {
 		tasks.remove(index);

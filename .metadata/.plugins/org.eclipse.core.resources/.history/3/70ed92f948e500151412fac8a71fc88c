@@ -94,7 +94,7 @@ public class TaskWindow {
 		taskList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				selectedIndex = taskList.getSelectedIndex();
-				setTaskDetailView();
+				refreshWindow();
 			}
 		});
 		taskList.setModel(new AbstractListModel() {
