@@ -49,14 +49,13 @@ public class Task implements Serializable {
 		this.duration = duration;
 	}
 
-
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("Name : " + this.name);
-		sb.append(" TimeStart : " + this.timeStart.toString());
-		sb.append(" Interval : " + this.duration);
-		sb.append(" ExactTime : " + this.exactTime);
+		sb.append("Name : " + this.name + "\n");
+		sb.append(" TimeStart : " + this.timeStart.toString() + "\n");
+		sb.append(" Interval : " + this.duration + "\n");
+		sb.append(" ExactTime : " + this.exactTime + "\n");
 		return sb.toString();
 	}
 }

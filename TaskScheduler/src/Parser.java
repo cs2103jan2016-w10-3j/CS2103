@@ -34,6 +34,27 @@ public class Parser {
 	private static final int ONE_HOUR_IN_MINUTE = 60;
 	
 	
+	public static void parseCommand(String input, Storage storage) {
+		Command commandType = getCommand(input);
+		switch (commandType) {
+		case ADD:
+			Task task = getTaskForAdding(input);
+			storage.addTask(task);
+			break;
+		case DELETE:
+			int deleteIndex = getTaskIndexForDeleting(input);
+			if (deleteIndex >= 0 && deleteIndex < storage.getNumberOfTasks()) {
+				storage.removeTask(deleteIndex);
+			}
+			break;
+		case EDIT:
+			
+		default:
+			throw new Error(MESSAGE_ERROR_INVALID_INPUT); 
+		}
+		storage.saveCurrentTasks();
+	}
+	
 	/**
 	 * Get the command of input , which is the command corresponding to the first word.
 	 * @param input User input.

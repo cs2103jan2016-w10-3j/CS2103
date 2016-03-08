@@ -23,13 +23,18 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.awt.event.ActionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class TaskWindow {
 
 	private JFrame frame;
 	private JTextField taskEntryField;
-	private int counterIndex;
 	private static TaskManager taskManager;
+	private static Storage storage = new Storage();
+	private int selectedIndex = 0;
+	private final JList<String> taskList = new JList<String>();
+	private JTextPane taskDetailView;
 
 	/**
 	 * Launch the application.
@@ -38,10 +43,10 @@ public class TaskWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					storage.readTasks();
 					TaskWindow window = new TaskWindow();
 					window.frame.setVisible(true);
 					taskManager = TaskManager.getInstance();
-					saveTasks();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -65,17 +70,18 @@ public class TaskWindow {
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
+
 		taskEntryField = new JTextField();
 		taskEntryField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//processCommand();
+				Parser.parseCommand(taskEntryField.getText(), storage);
+				refreshWindow();
 			}
 		});
 		taskEntryField.setBounds(6, 244, 361, 28);
 		frame.getContentPane().add(taskEntryField);
 		taskEntryField.setColumns(10);
-		
+
 		JButton goButton = new JButton("Go");
 		goButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -85,9 +91,14 @@ public class TaskWindow {
 		});
 		goButton.setBounds(379, 245, 61, 29);
 		frame.getContentPane().add(goButton);
-		JList<String> taskList = new JList<String>();
+		taskList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				selectedIndex = taskList.getSelectedIndex();
+			}
+		});
 		taskList.setModel(new AbstractListModel() {
-			String[] values = new String[] {"Eileen's Bday!", "Office Meeting", "Book Club", "Internship Interview"};
+
+			String[] values = storage.getTaskNames();
 			public int getSize() {
 				return values.length;
 			}
@@ -97,96 +108,33 @@ public class TaskWindow {
 		});
 		taskList.setBounds(12, 12, 156, 222);
 		frame.getContentPane().add(taskList);
-		
-		JTextPane taskDetailView = new JTextPane();
-		taskDetailView.setText("Eileen's BDay!\nMarch 9th, 2016\n13:30 - 15:30\n\nEileen is having a birthday party! Reminder to get her a present and to actually show up on time!");
+
+		taskDetailView = new JTextPane();
+		setTaskDetailView();
 		taskDetailView.setBounds(183, 12, 249, 222);
 		frame.getContentPane().add(taskDetailView);
 	}
-	
-	
-	
-	private void performCommand(String[] tokens, Command command) {
-		if (command == Command.ADD) {
-			addTask(tokens);
-		} else if (command == Command.DELETE) {
-			deleteTask(tokens);
+
+	private void setTaskDetailView() {
+		if (selectedIndex < storage.getNumberOfTasks()) {
+			taskDetailView.setText(storage.getTask(selectedIndex).toString());
 		} else {
-			editTask(tokens);
+			taskDetailView.setText("");
 		}
 	}
-	
-	//Format for adding: add birthday party 11 may 2015 5:30PM
-	private void addTask(String[] tokens) {
-		String taskName = getNameFromTokens(tokens);
-	}
-	
-	private void deleteTask(String[] tokens) {
-		
-	}
-	
-	private void editTask(String[] tokens) {
-		
-	}
-	
-	//Function to save tasks that are currently in task manager
-	private static void saveTasks() {
-		Path currentRelativePath = Paths.get("");
-		String stringifiedPath = currentRelativePath.toAbsolutePath().toString();
-		String tasksSavePath = stringifiedPath + "/tasks.con";
-		File tasksSaveFile = new File(tasksSavePath);
-		try {
-			FileOutputStream fout = new FileOutputStream(tasksSaveFile.getAbsolutePath());
-			ObjectOutputStream oos = new ObjectOutputStream(fout);
-			oos.writeObject(taskManager);
-			oos.close();
 
-		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(null,
-					"Unable to save the current configuration: " + ex.getMessage());
-			ex.printStackTrace();
-		}
-	}
-	
-	private String getNameFromTokens(String[] tokens) {
-		StringBuilder sb = new StringBuilder(tokens[1]);
-		int counter = 2;
-		counterIndex = 2;
-		while (counter < tokens.length) {
-			if (isAlpha(tokens[counter])) {
-				sb.append(tokens[counter]);
-				counter++;
-			} else {
-				return sb.toString();
+	private void refreshWindow() {
+		setTaskDetailView();
+		taskList.setModel(new AbstractListModel() {
+
+			String[] values = storage.getTaskNames();
+			public int getSize() {
+				return values.length;
 			}
-		}
-		return sb.toString();
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+		});
 	}
-	
-	private boolean isAlpha(String name) {
-	    char[] chars = name.toCharArray();
 
-	    for (char c : chars) {
-	        if(!Character.isLetter(c)) {
-	            return false;
-	        }
-	    }
-
-	    return true;
-	}
-	
-	private Date getDateFromTokens(String[] tokens) throws ParseException {
-		String target = arrayToSpacedString(tokens);
-        DateFormat df = new SimpleDateFormat("MM dd yyyy kk:mm:ss ");
-        return df.parse(target);
-	}
-	
-	private String arrayToSpacedString(String[] tokens) {
-		StringBuilder sb = new StringBuilder();
-		for (String token : tokens) {
-			sb.append(token + " ");
-		}
-		return sb.toString();
-	}
-	
 }
