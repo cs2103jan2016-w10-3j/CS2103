@@ -9,6 +9,8 @@ import javax.swing.JTextPane;
 
 import org.joda.time.DateTime;
 
+import Exceptions.ParserExceptions.*;
+
 import javax.swing.AbstractListModel;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -74,7 +76,15 @@ public class TaskWindow {
 		taskEntryField = new JTextField();
 		taskEntryField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Parser.parseCommand(taskEntryField.getText(), storage);
+				try {
+					Parser.parseCommand(taskEntryField.getText(), storage);
+				} catch (NoInputException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (InvalidInputException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				refreshWindow();
 			}
 		});
