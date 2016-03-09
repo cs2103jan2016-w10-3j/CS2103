@@ -35,6 +35,7 @@ public class TaskWindow {
 					storage.readTasks();
 					TaskWindow window = new TaskWindow();
 					window.frame.setVisible(true);
+					taskManager = TaskManager.getInstance();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -111,7 +112,7 @@ public class TaskWindow {
 	}
 
 	private void setTaskDetailView() {
-		if (selectedIndex < storage.getNumberOfTasks() && selectedIndex >= 0) {
+		if (selectedIndex < storage.getNumberOfTasks()) {
 			taskDetailView.setText(storage.getTask(selectedIndex).toString());
 		} else {
 			taskDetailView.setText("");

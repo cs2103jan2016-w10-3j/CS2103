@@ -2,10 +2,9 @@ import static org.junit.Assert.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import org.junit.Test;
+
+import Exceptions.ParserExceptions.*;
 
 
 
@@ -14,7 +13,11 @@ public class ParserTest {
 	
 
 	@Test
-	public void test() throws Parser.InvalidTimeException {
+	public void test() throws InvalidTaskTimeException, InvalidInputException, 
+					NoArgumentException, TaskNameNotEnteredException, 
+					TaskTimeOrSeparatorNotEnteredException, TaskDateNotEnteredException, 
+					TaskTimeOutOfBoundException, InvalidTaskDurationException, TaskDateAlreadyPassedException, 
+					InvalidTaskDateException {
 		String s = "add sd sd ds || 05/05/2016 1:1 2.2";
 		Task t;
 		t = Parser.getTaskForAdding(s);
@@ -24,7 +27,8 @@ public class ParserTest {
 	}
 
 	@Test
-	public void test2() {
+	public void test2() throws InvalidTaskTimeException, TaskTimeOutOfBoundException, 
+								InvalidInputException, TaskDateAlreadyPassedException, InvalidTaskDateException {
 		String first = "edit 1 duration 5";
 		String second = "edit 3 name Doing Work";
 		String third = "edit 5 datetime 05/05/2016 5:5 5";

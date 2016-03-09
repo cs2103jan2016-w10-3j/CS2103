@@ -4,14 +4,26 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
+import org.joda.time.DateTime;
 
 import Exceptions.ParserExceptions.*;
 
 import javax.swing.AbstractListModel;
 import java.awt.event.ActionListener;
-
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
@@ -20,6 +32,7 @@ public class TaskWindow {
 
 	private JFrame frame;
 	private JTextField taskEntryField;
+	private static TaskManager taskManager;
 	private static Storage storage = new Storage();
 	private int selectedIndex = 0;
 	private final JList<String> taskList = new JList<String>();
@@ -35,6 +48,7 @@ public class TaskWindow {
 					storage.readTasks();
 					TaskWindow window = new TaskWindow();
 					window.frame.setVisible(true);
+					taskManager = TaskManager.getInstance();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -111,7 +125,7 @@ public class TaskWindow {
 	}
 
 	private void setTaskDetailView() {
-		if (selectedIndex < storage.getNumberOfTasks() && selectedIndex >= 0) {
+		if (selectedIndex < storage.getNumberOfTasks()) {
 			taskDetailView.setText(storage.getTask(selectedIndex).toString());
 		} else {
 			taskDetailView.setText("");
@@ -121,11 +135,13 @@ public class TaskWindow {
 	private void refreshWindow() {
 		setTaskDetailView();
 		taskList.setModel(new AbstractListModel() {
+
+			String[] values = storage.getTaskNames();
 			public int getSize() {
-				return storage.getNumberOfTasks();
+				return values.length;
 			}
 			public Object getElementAt(int index) {
-				return storage.getTask(index).getName();
+				return values[index];
 			}
 		});
 	}

@@ -118,27 +118,21 @@ public class Parser {
 			break;
 		// For DateTime Edit Case, get date, then time, then compile date and add.
 		case "datetime":
-			int hr = 0, min = 0;
-			Date date = new Date();
+			String datetime = getArgumentForEditing(input);
+			Date date = getExactDate(datetime.split(" ")[0]);
+			
+			String timeTokens[] = getTimeStringToken(datetime.split(" ")[1]);
+			int hr, min;
+			
 			try {
-				String datetime = getArgumentForEditing(input);
-				date = getExactDate(datetime.split(" ")[0]);
-				String timeTokens[] = getTimeStringToken(datetime.split(" ")[1]);
 				hr = getTimeElement(timeTokens[0]);
 				min = getTimeElement(timeTokens[1]);
-			} catch (TaskDateAlreadyPassedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvalidTaskDateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvalidTaskTimeException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (InvalidTimeException e) {
+				throw new Error(MESSAGE_ERROR_TASK_TIME_INVALID);
 			}
 			
 			if (hrOutOfBound(hr) || minOutOfBound(min)) {
-				throw new Error("MESSAGE_ERROR_TASK_TIME_OUT_OF_BOUND");
+				throw new Error(MESSAGE_ERROR_TASK_TIME_OUT_OF_BOUND);
 			}
 			
 			Calendar calendar = Calendar.getInstance();
@@ -153,7 +147,7 @@ public class Parser {
 			
 			break;
 		default:
-			throw new Error("MESSAGE_ERROR_INVALID_INPUT");
+			throw new Error(MESSAGE_ERROR_INVALID_INPUT);
 		}
 		storage.replaceTask(index, task);
 		}
