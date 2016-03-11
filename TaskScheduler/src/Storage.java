@@ -16,42 +16,12 @@ public class Storage {
 		tasks = new ArrayList<Task>();		
 	}
 
-	public int getNumberOfTasks() {
-		return tasks.size();
-	}
 
-	public void addTask(Task newTask) {
-		tasks.add(newTask);
-	}
-
-	public void addTaskatIndex(Task newTask, int index) {
-		tasks.add(index, newTask);
-	}
-
-	public void removeTask(int index) {
-		tasks.remove(index);
-	}
-
-	public Task getTask(int index) {
-		return tasks.get(index);
-	}
-
-	public void saveCurrentTasks() {
-		saveTasks(tasks);
-	}
-
-	public String[] getTaskNames() {
-		String[] taskNames = new String[tasks.size()];
-		for (int i = 0; i < tasks.size(); i++) {
-			taskNames[i] = tasks.get(i).getName();
-		}
-		return taskNames;
-	}
 
 
 	//Function to save tasks that are currently in task manager
 	@SuppressWarnings("unchecked")
-	public void readTasks() {
+	public ArrayList<Task> readTasks() {
 		this.tasks = new ArrayList<Task>();
 
 		Path currentRelativePath = Paths.get("");
@@ -71,10 +41,11 @@ public class Storage {
 				ex.printStackTrace();
 			}
 		}
+		return this.tasks;
 	}
 
 	//Function to save tasks 
-	private void saveTasks(Object taskManager) {
+	public void saveTasks(Object taskManager) {
 		Path currentRelativePath = Paths.get("");
 		String stringifiedPath = currentRelativePath.toAbsolutePath().toString();
 		String tasksSavePath = stringifiedPath + "/tasks.con";

@@ -33,7 +33,6 @@ public class TaskWindow {
 	private JFrame frame;
 	private JTextField taskEntryField;
 	private static TaskManager taskManager;
-	private static Storage storage = new Storage();
 	private int selectedIndex = 0;
 	private final JList<String> taskList = new JList<String>();
 	private JTextPane taskDetailView;
@@ -45,10 +44,10 @@ public class TaskWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					storage.readTasks();
+					taskManager = TaskManager.getInstance();
 					TaskWindow window = new TaskWindow();
 					window.frame.setVisible(true);
-					taskManager = TaskManager.getInstance();
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -77,7 +76,7 @@ public class TaskWindow {
 		taskEntryField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Parser.parseCommand(taskEntryField.getText(), storage);
+					taskManager.executeCommand(taskEntryField.getText());
 				} catch (NoInputException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -108,7 +107,7 @@ public class TaskWindow {
 		});
 		taskList.setModel(new AbstractListModel() {
 
-			String[] values = storage.getTaskNames();
+			String[] values = taskManager.getTaskNames();
 			public int getSize() {
 				return values.length;
 			}
@@ -116,6 +115,7 @@ public class TaskWindow {
 				return values[index];
 			}
 		});
+		
 		taskList.setBounds(12, 12, 156, 222);
 		frame.getContentPane().add(taskList);
 
@@ -126,8 +126,8 @@ public class TaskWindow {
 	}
 
 	private void setTaskDetailView() {
-		if (selectedIndex < storage.getNumberOfTasks()) {
-			taskDetailView.setText(storage.getTask(selectedIndex).toString());
+		if (selectedIndex < taskManager.getNumberOfTasks()) {
+			taskDetailView.setText(taskManager.getTask(selectedIndex).toString());
 		} else {
 			taskDetailView.setText("");
 		}
@@ -137,7 +137,7 @@ public class TaskWindow {
 		setTaskDetailView();
 		taskList.setModel(new AbstractListModel() {
 
-			String[] values = storage.getTaskNames();
+			String[] values = taskManager.getTaskNames();
 			public int getSize() {
 				return values.length;
 			}

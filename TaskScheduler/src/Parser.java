@@ -13,45 +13,19 @@ import Exceptions.ParserExceptions.*;
 
 public class Parser {
 	
-	private static final String SEPARATOR = "||";
-	private static final String TIME_SEPARATOR = ":";
-	private static final String DURATION_SEPARATOR = "\\.";
+	private final String SEPARATOR = "||";
+	private final String TIME_SEPARATOR = ":";
+	private final String DURATION_SEPARATOR = "\\.";
 	
+	private final int DAY_TOMORROW = 0;
+	private final int DAY_INVALID = -1;
+	private final int ONE_HOUR_IN_MINUTE = 60;
 	
-	
-	private static final int DAY_TOMORROW = 0;
-	private static final int DAY_INVALID = -1;
-	private static final int ONE_HOUR_IN_MINUTE = 60;
-	
-	public static void parseCommand(String input, Storage storage) throws NoInputException, InvalidInputException {
-		Command commandType = getCommand(input);
-		switch (commandType) {
-		case ADD:
-			Task task = null;
-			try {
-				task = getTaskForAdding(input);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			storage.addTask(task);
-			break;
-		case DELETE:
-			int deleteIndex = 0;
-			try {
-				deleteIndex = getTaskIndexForDeleting(input);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			if (deleteIndex >= 0 && deleteIndex < storage.getNumberOfTasks()) {
-				storage.removeTask(deleteIndex);
-			}
-			break;
-		case EDIT:
-			
-		default:
-			throw new InvalidInputException();
-		}
-		storage.saveCurrentTasks();
+	/**
+	 * Initialise a parser object.
+	 */
+	public Parser() {
+		
 	}
 
 	
@@ -61,7 +35,7 @@ public class Parser {
 	 * @return Command type or invalid command.
 	 * @throws NoInputException No input is entered.
 	 */
-	public static Command getCommand(String input) throws NoInputException {
+	public Command getCommand(String input) throws NoInputException {
 		if (input == null) {
 			throw new NoInputException();
 		}
@@ -84,7 +58,7 @@ public class Parser {
 	 * @throws InvalidTaskDateException Task date entered is invalid.
 	 * @throws TaskDateAlreadyPassedException Task date entered is already passed.
 	 */
-	public static Task getTaskForAdding(String input) throws InvalidInputException, NoArgumentException, 
+	public Task getTaskForAdding(String input) throws InvalidInputException, NoArgumentException, 
 						TaskNameNotEnteredException, TaskTimeOrSeparatorNotEnteredException, 
 						TaskDateNotEnteredException, InvalidTaskTimeException, TaskTimeOutOfBoundException, 
 						InvalidTaskDurationException, TaskDateAlreadyPassedException, InvalidTaskDateException {
@@ -106,7 +80,7 @@ public class Parser {
 	 * @throws InvalidTaskDateException Task date entered is invalid.
 	 * @throws TaskDateAlreadyPassedException 
 	 */
-	public static TaskToEdit getTaskForEditing(String input) throws InvalidTaskTimeException, 
+	public TaskToEdit getTaskForEditing(String input) throws InvalidTaskTimeException, 
 										TaskTimeOutOfBoundException, InvalidInputException, TaskDateAlreadyPassedException, InvalidTaskDateException {
 		
 		String[] tokens = divideTokens(input);
@@ -173,7 +147,7 @@ public class Parser {
 	 * @param input User Input
 	 * @return String with the Argument of the task.
 	 */
-	public static String getArgumentForEditing(String input) {
+	public String getArgumentForEditing(String input) {
 		
 		String[] tokens = input.split(" ", 4);
 		return tokens[3];
@@ -188,7 +162,7 @@ public class Parser {
 	 * @throws ExceededArgumentsException Numbers of argument entered is too many.
 	 * @throws InvalidTaskIndexException Index entered is invalid.
 	 */
-	public static int getTaskIndexForDeleting(String input) throws NoArgumentException, 
+	public int getTaskIndexForDeleting(String input) throws NoArgumentException, 
 									ExceededArgumentsException, InvalidTaskIndexException {
 		String[] tokens = divideTokens(input);
 		int index;
@@ -220,7 +194,7 @@ public class Parser {
 	 * @throws InvalidTaskDateException Task date entered is invalid.
 	 * @throws TaskDateAlreadyPassedException 
 	 */
-	protected static Task tryGettingTask(String input) throws NoArgumentException, TaskNameNotEnteredException, 
+	private Task tryGettingTask(String input) throws NoArgumentException, TaskNameNotEnteredException, 
 									TaskTimeOrSeparatorNotEnteredException, TaskDateNotEnteredException, 
 									InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidTaskDurationException, TaskDateAlreadyPassedException, InvalidTaskDateException {
 		String[] tokens = divideTokens(input);
@@ -310,7 +284,7 @@ public class Parser {
 	 * @param hr Hour.
 	 * @return Whether hour is out of bound.
 	 */
-	private static boolean hrOutOfBound(int hr) {
+	private boolean hrOutOfBound(int hr) {
 		return hr < 0 || hr > 24;
 	}
 	
@@ -319,7 +293,7 @@ public class Parser {
 	 * @param min Minute.
 	 * @return Whether minute is out of bound.
 	 */
-	private static boolean minOutOfBound(int min) {
+	private boolean minOutOfBound(int min) {
 		return min < 0 || min > 60;
 	}
 	
@@ -329,7 +303,7 @@ public class Parser {
 	 * @return Total minutes.
 	 * @throws InvalidTaskTimeException Time input is invalid.
 	 */
-	private static int getTotalMin(String[] timeTokens) throws InvalidTaskTimeException {
+	private int getTotalMin(String[] timeTokens) throws InvalidTaskTimeException {
 		int hr, min;
 		hr = getTimeElement(timeTokens[0]);
 		min = getTimeElement(timeTokens[1]);
@@ -345,7 +319,7 @@ public class Parser {
 	 * @return A time token.
 	 * @throws InvalidTaskTimeException Task time entered is invalid.
 	 */
-	private static String[] getTimeStringToken(String time) throws InvalidTaskTimeException {
+	private String[] getTimeStringToken(String time) throws InvalidTaskTimeException {
 		String tokens[] = time.split(TIME_SEPARATOR);
 		if (tokens.length != 2 || tokens.length == 2 && tokens[0].equals("")) {
 			throw new InvalidTaskTimeException();
@@ -359,7 +333,7 @@ public class Parser {
 	 * @return A duration token.
 	 * @throws InvalidTaskDurationException Task duration entered is invalid.
 	 */
-	private static String[] getDurationStringToken(String duration) throws InvalidTaskDurationException {
+	private String[] getDurationStringToken(String duration) throws InvalidTaskDurationException {
 		String tokens[] = duration.split(DURATION_SEPARATOR);
 		if (tokens.length != 2 || tokens.length == 2 && tokens[0].equals("")) {
 			throw new InvalidTaskDurationException();
@@ -374,7 +348,7 @@ public class Parser {
 	 * @return Integer representing hour or minute.
 	 * @throws InvalidTaskTimeException Time input is invalid.
 	 */
-	private static int getTimeElement(String time) throws InvalidTaskTimeException {
+	private int getTimeElement(String time) throws InvalidTaskTimeException {
 		try {
 			return Integer.parseInt(time);
 		} catch (NumberFormatException e) {
@@ -386,7 +360,7 @@ public class Parser {
 	 * @param taskName Task name, which is part of the user input (the second word till the separator)
 	 * @return Whether task name is entered.
 	 */
-	private static boolean taskNameIsEntered(String taskName) {
+	private boolean taskNameIsEntered(String taskName) {
 		return !taskName.equalsIgnoreCase(SEPARATOR);
 	}
 	
@@ -397,7 +371,7 @@ public class Parser {
 	 * @throws TaskDateAlreadyPassedException Task date entered is already passed.
 	 * @throws InvalidTaskDateException Task date entered is invalid.
 	 */
-	private static Date getExactDate(String dateString) throws TaskDateAlreadyPassedException, 
+	private Date getExactDate(String dateString) throws TaskDateAlreadyPassedException, 
 										InvalidTaskDateException {
 		Date date;
 		try {
@@ -428,7 +402,7 @@ public class Parser {
 	 * @return A date object.
 	 * @throws ParseException Date cannot be parsed.
 	 */
-	private static Date dateParse(String date) throws ParseException {
+	private Date dateParse(String date) throws ParseException {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		df.setLenient(false);
 		return df.parse(date);
@@ -439,7 +413,7 @@ public class Parser {
 	 * @param day Day object indicated in the Calendar class.
 	 * @return Whether the day has already passed.
 	 */
-	private static boolean dayAlreadyPassed(int day) {
+	private boolean dayAlreadyPassed(int day) {
     	int dayOfWeek = getDayOfTheWeek();
     	if (day == dayOfWeek || dayOfWeek == Calendar.MONDAY) {
     		return true;
@@ -456,7 +430,7 @@ public class Parser {
 	 * @param day Day object indicated in the Calendar class.
 	 * @return A date object.
 	 */
-	private static Date getDateInThisWeek(int day) {
+	private Date getDateInThisWeek(int day) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(calendar.getTime());
     	int dayOfWeek = getDayOfTheWeek();
@@ -484,7 +458,7 @@ public class Parser {
 	 * Get the day of today.
 	 * @return An integer representing a day specified in Calendar class.
 	 */
-	private static int getDayOfTheWeek() {
+	private int getDayOfTheWeek() {
 		Calendar calendar = Calendar.getInstance();
 		return calendar.get(Calendar.DAY_OF_WEEK);
 	}
@@ -494,7 +468,7 @@ public class Parser {
 	 * @param commandString Command string.
 	 * @return A string token split by space.
 	 */
-	private static String[] divideTokens(String commandString) {
+	private String[] divideTokens(String commandString) {
 		return commandString.split(" ");
 	}
 	
@@ -503,7 +477,7 @@ public class Parser {
 	 * @param command User input.
 	 * @return Command type.
 	 */
-	private static Command categorizeCommand(String command) {
+	private Command categorizeCommand(String command) {
 		if (command.toLowerCase().equals("add")) {
 			return Command.ADD;
 		} else if (command.toLowerCase().equals("delete")) {
@@ -520,7 +494,7 @@ public class Parser {
 	 * @param day Day string.
 	 * @return Day integer specified in Calendar class.
 	 */
-	private static int categorizeDay(String day) {
+	private int categorizeDay(String day) {
 		if (day.equalsIgnoreCase("tomorrow")) {
 			return DAY_TOMORROW;
 		} else if (day.equalsIgnoreCase("monday")) {

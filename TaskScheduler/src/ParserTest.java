@@ -2,6 +2,8 @@ import static org.junit.Assert.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import Exceptions.ParserExceptions.*;
@@ -10,6 +12,13 @@ import Exceptions.ParserExceptions.*;
 
 public class ParserTest {
 	DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
+	
+	Parser parser;
+	@Before
+	public void initialise() {
+		parser = new Parser();
+	}
+	
 	
 
 	@Test
@@ -20,7 +29,7 @@ public class ParserTest {
 					InvalidTaskDateException {
 		String s = "add sd sd ds || 05/05/2016 1:1 2.2";
 		Task t;
-		t = Parser.getTaskForAdding(s);
+		t = parser.getTaskForAdding(s);
 		System.out.println(t.getName());
 		System.out.println(df.format(t.getTimeStart()));
 		System.out.println(t.getDuration());
@@ -35,15 +44,15 @@ public class ParserTest {
 		TaskToEdit testTask;
 		
 		// Edit Duration test case
-		testTask = Parser.getTaskForEditing(first);
+		testTask = parser.getTaskForEditing(first);
 		assertEquals(testTask.getIndex(), 1);
 		assertEquals(testTask.getDuration(), 5);
 		// Edit Name test case
-		testTask = Parser.getTaskForEditing(second);
+		testTask = parser.getTaskForEditing(second);
 		assertEquals(testTask.getIndex(), 3);
 		assertEquals(testTask.getName(), "Doing Work");
 		// Edit Datetime test case
-		testTask = Parser.getTaskForEditing(third);
+		testTask = parser.getTaskForEditing(third);
 		assertEquals(testTask.getIndex(), 5);
 		assertEquals(df.format(testTask.getTimeStart()), "05/05/2016 05:05:00 AM");
 	}
