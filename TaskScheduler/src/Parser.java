@@ -1,7 +1,4 @@
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+
 import java.util.Date;
 
 import Exceptions.ParserExceptions.*;
@@ -14,13 +11,7 @@ import Exceptions.ParserExceptions.*;
 public class Parser {
 	
 	private final String SEPARATOR = "||";
-	private final String TIME_SEPARATOR = ":";
-	private final String DURATION_SEPARATOR = "\\.";
-	
-	private final int DAY_TOMORROW = 0;
-	private final int DAY_INVALID = -1;
-	private final int ONE_HOUR_IN_MINUTE = 60;
-	
+
 	/**
 	 * Initialise a parser object.
 	 */
@@ -106,29 +97,23 @@ public class Parser {
 			// For DateTime Edit Case, get date, then time, then compile date and add.
 			case "datetime":
 				String datetime = getArgumentForEditing(input);
-				Date date = getExactDate(datetime.split(" ")[0]);
+				Date date = DateTime.getExactDate(datetime.split(" ")[0]);
 				
-				String timeTokens[] = getTimeStringToken(datetime.split(" ")[1]);
+				String timeTokens[] = DateTime.getTimeStringToken(datetime.split(" ")[1]);
 				int hr, min;
 				
 				try {
-					hr = getTimeElement(timeTokens[0]);
-					min = getTimeElement(timeTokens[1]);
+					hr = DateTime.getTimeElement(timeTokens[0]);
+					min = DateTime.getTimeElement(timeTokens[1]);
 				} catch (InvalidTaskTimeException e) {
 					throw new InvalidTaskTimeException();
 				}
 				
-				if (hrOutOfBound(hr) || minOutOfBound(min)) {
+				if (DateTime.hrOutOfBound(hr) || DateTime.minOutOfBound(min)) {
 					throw new TaskTimeOutOfBoundException();
 				}
 				
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(date);
-				calendar.set(Calendar.HOUR, 0);
-				calendar.set(Calendar.MINUTE, 0);
-				calendar.add(Calendar.HOUR_OF_DAY, hr);
-				calendar.add(Calendar.MINUTE, min);
-				date = calendar.getTime();
+				date = DateTime.getDate(hr, min);
 				
 				toReturn.setTimeStart(date);
 				
@@ -229,7 +214,7 @@ public class Parser {
 		if (i == tokens.length) {
 			throw new TaskDateNotEnteredException();
 		}
-		date = getExactDate(tokens[i++]);
+		date = DateTime.getExactDate(tokens[i++]);
 		
 		// Return a new task if duration and exact time is not specified
 		if (i == tokens.length) {
@@ -238,28 +223,22 @@ public class Parser {
 		}
 		
 		// Try to get the exact time if specified
-		String timeTokens[] = getTimeStringToken(tokens[i++]);
+		String timeTokens[] = DateTime.getTimeStringToken(tokens[i++]);
 		int hr, min;
 		
 		try {
-			hr = getTimeElement(timeTokens[0]);
-			min = getTimeElement(timeTokens[1]);
+			hr = DateTime.getTimeElement(timeTokens[0]);
+			min = DateTime.getTimeElement(timeTokens[1]);
 		} catch (InvalidTaskTimeException e) {
 			throw new InvalidTaskTimeException();
 		}
 		
-		if (hrOutOfBound(hr) || minOutOfBound(min)) {
+		if (DateTime.hrOutOfBound(hr) || DateTime.minOutOfBound(min)) {
 			throw new TaskTimeOutOfBoundException();
 		}
 		
 		// Try to add time to the old date 
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		calendar.set(Calendar.HOUR, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.add(Calendar.HOUR_OF_DAY, hr);
-		calendar.add(Calendar.MINUTE, min);
-		date = calendar.getTime();
+		date = DateTime.getDate(hr, min);
 		
 		// Return the task if the exact time is valid
 		exactTime = true;
@@ -269,8 +248,7 @@ public class Parser {
 		
 		// Try to get the duration if specified
 		try {
-			timeTokens = getDurationStringToken(tokens[i]);
-			duration = getTotalMin(timeTokens);
+			duration = DateTime.getTotalMin(tokens[i]);
 		} catch (Exception e) {
 			throw new InvalidTaskDurationException();
 		}
@@ -279,82 +257,7 @@ public class Parser {
 		return new Task(name, date, exactTime, duration);
 		
 	}
-	/**
-	 * Return whether hour is out of bound.
-	 * @param hr Hour.
-	 * @return Whether hour is out of bound.
-	 */
-	private boolean hrOutOfBound(int hr) {
-		return hr < 0 || hr > 24;
-	}
 	
-	/**
-	 * Return whether minute is out of bound.
-	 * @param min Minute.
-	 * @return Whether minute is out of bound.
-	 */
-	private boolean minOutOfBound(int min) {
-		return min < 0 || min > 60;
-	}
-	
-	/**
-	 * Get the total minutes from hh:mm format.
-	 * @param timeTokens String tokens that contain time.
-	 * @return Total minutes.
-	 * @throws InvalidTaskTimeException Time input is invalid.
-	 */
-	private int getTotalMin(String[] timeTokens) throws InvalidTaskTimeException {
-		int hr, min;
-		hr = getTimeElement(timeTokens[0]);
-		min = getTimeElement(timeTokens[1]);
-		if (hr < 0 || min < 0) {
-			throw new InvalidTaskTimeException();
-		}
-		return ONE_HOUR_IN_MINUTE * hr + min;
-	}
-	
-	/**
-	 * Get the time token for processing.
-	 * @param time Time string in hh:mm format.
-	 * @return A time token.
-	 * @throws InvalidTaskTimeException Task time entered is invalid.
-	 */
-	private String[] getTimeStringToken(String time) throws InvalidTaskTimeException {
-		String tokens[] = time.split(TIME_SEPARATOR);
-		if (tokens.length != 2 || tokens.length == 2 && tokens[0].equals("")) {
-			throw new InvalidTaskTimeException();
-		}
-		return tokens;
-	}
-	
-	/**
-	 * Get the duration token for processing.
-	 * @param duration Duration string in hh.mm format.
-	 * @return A duration token.
-	 * @throws InvalidTaskDurationException Task duration entered is invalid.
-	 */
-	private String[] getDurationStringToken(String duration) throws InvalidTaskDurationException {
-		String tokens[] = duration.split(DURATION_SEPARATOR);
-		if (tokens.length != 2 || tokens.length == 2 && tokens[0].equals("")) {
-			throw new InvalidTaskDurationException();
-		}
-		return tokens;
-	}
-	
-	
-	/**
-	 * Parse a string to integer for processing as time element (hour or minute).
-	 * @param time Time string.
-	 * @return Integer representing hour or minute.
-	 * @throws InvalidTaskTimeException Time input is invalid.
-	 */
-	private int getTimeElement(String time) throws InvalidTaskTimeException {
-		try {
-			return Integer.parseInt(time);
-		} catch (NumberFormatException e) {
-			throw new InvalidTaskTimeException();
-		}
-	}
 	/**
 	 * Return if task name is entered.
 	 * @param taskName Task name, which is part of the user input (the second word till the separator)
@@ -364,104 +267,7 @@ public class Parser {
 		return !taskName.equalsIgnoreCase(SEPARATOR);
 	}
 	
-	/**
-	 * Get the exact date from a date string in format dd/mm/yyyy.
-	 * @param dateString Date string.
-	 * @return A date object.
-	 * @throws TaskDateAlreadyPassedException Task date entered is already passed.
-	 * @throws InvalidTaskDateException Task date entered is invalid.
-	 */
-	private Date getExactDate(String dateString) throws TaskDateAlreadyPassedException, 
-										InvalidTaskDateException {
-		Date date;
-		try {
-			date = dateParse(dateString);
-			if (date.before(new Date())) {
-				throw new TaskDateAlreadyPassedException();
-			}
-		} catch (ParseException e) {
-			if (categorizeDay(dateString) == DAY_INVALID) {
-				throw new InvalidTaskDateException();
-			} else {
-				// Exact day not entered by day entered e.g. Monday
-				int day = categorizeDay(dateString);
-				if (dayAlreadyPassed(day) && day != DAY_TOMORROW) {
-					throw new TaskDateAlreadyPassedException();
-				} else {
-					date = getDateInThisWeek(day);
-				}
-			}
-		}
-		return date;
-	}
 	
-	
-	/**
-	 * Parse a date string into a date object.
-	 * @param date Date string.
-	 * @return A date object.
-	 * @throws ParseException Date cannot be parsed.
-	 */
-	private Date dateParse(String date) throws ParseException {
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		df.setLenient(false);
-		return df.parse(date);
-	}
-	
-	/**
-	 * Return if a day is already passed.
-	 * @param day Day object indicated in the Calendar class.
-	 * @return Whether the day has already passed.
-	 */
-	private boolean dayAlreadyPassed(int day) {
-    	int dayOfWeek = getDayOfTheWeek();
-    	if (day == dayOfWeek || dayOfWeek == Calendar.MONDAY) {
-    		return true;
-    	} else if (dayOfWeek == Calendar.SUNDAY) {
-    		return true;
-    	} else if (dayOfWeek > day && day != Calendar.SUNDAY) {
-    		return true;
-    	}
-    	return false;
-	}
-	
-	/**
-	 * Get the date object specified by an input day.
-	 * @param day Day object indicated in the Calendar class.
-	 * @return A date object.
-	 */
-	private Date getDateInThisWeek(int day) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(calendar.getTime());
-    	int dayOfWeek = getDayOfTheWeek();
-    	int daysInterval;
-    	Date result;
-    	
-    	if (day == DAY_TOMORROW) {
-    		calendar.add(Calendar.DAY_OF_YEAR, 1);
-    		return calendar.getTime();
-    	}
-    	// It's checked days entered must be the same or ahead of the day of today
-    	if (day == dayOfWeek) {
-    		daysInterval = 0;
-    	} else if (day == Calendar.SUNDAY) {
-    		daysInterval = 8 - dayOfWeek;
-    	} else {
-    		daysInterval = day - dayOfWeek;
-    	}
-    	calendar.add(Calendar.DAY_OF_YEAR, daysInterval);
-    	result = calendar.getTime();
-    	return result;
-	}
-	
-	/**
-	 * Get the day of today.
-	 * @return An integer representing a day specified in Calendar class.
-	 */
-	private int getDayOfTheWeek() {
-		Calendar calendar = Calendar.getInstance();
-		return calendar.get(Calendar.DAY_OF_WEEK);
-	}
 	
 	/**
 	 * Return a string token split by space.
@@ -489,32 +295,7 @@ public class Parser {
 		}
 	}
 	
-	/**
-	 * Get the day from user input.
-	 * @param day Day string.
-	 * @return Day integer specified in Calendar class.
-	 */
-	private int categorizeDay(String day) {
-		if (day.equalsIgnoreCase("tomorrow")) {
-			return DAY_TOMORROW;
-		} else if (day.equalsIgnoreCase("monday")) {
-			return Calendar.MONDAY;
-		} else if (day.equalsIgnoreCase("tuesday")) {
-			return Calendar.TUESDAY;
-		} else if (day.equalsIgnoreCase("wednesday")) {
-			return Calendar.WEDNESDAY;
-		} else if (day.equalsIgnoreCase("thursday")) {
-			return Calendar.THURSDAY;
-		} else if (day.equalsIgnoreCase("friday")) {
-			return Calendar.FRIDAY;
-		} else if (day.equalsIgnoreCase("saturday")) {
-			return Calendar.SATURDAY;
-		} else if (day.equalsIgnoreCase("sunday")) {
-			return Calendar.SUNDAY;
-		} else {
-			return DAY_INVALID;
-		}
-	}
+	
 	
 	
 	
