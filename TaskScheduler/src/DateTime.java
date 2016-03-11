@@ -18,8 +18,14 @@ public class DateTime {
 	
 	private static Calendar calendar = Calendar.getInstance();	
 	
-	public static Date getDate(int hr, int min) {
-		Date date = new Date();
+	/**
+	 * Get a Date object based on old date with hr and min added to it.
+	 * @param date Date object.
+	 * @param hr hour.
+	 * @param min minute.
+	 * @return Date object.
+	 */
+	public static Date getDate(Date date, int hr, int min) {
 		calendar.setTime(date);
 		calendar.set(Calendar.HOUR, 0);
 		calendar.set(Calendar.MINUTE, 0);

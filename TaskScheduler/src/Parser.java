@@ -1,4 +1,6 @@
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import Exceptions.ParserExceptions.*;
@@ -97,7 +99,9 @@ public class Parser {
 			// For DateTime Edit Case, get date, then time, then compile date and add.
 			case "datetime":
 				String datetime = getArgumentForEditing(input);
+				System.out.println(datetime);
 				Date date = DateTime.getExactDate(datetime.split(" ")[0]);
+				DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 				
 				String timeTokens[] = DateTime.getTimeStringToken(datetime.split(" ")[1]);
 				int hr, min;
@@ -105,6 +109,7 @@ public class Parser {
 				try {
 					hr = DateTime.getTimeElement(timeTokens[0]);
 					min = DateTime.getTimeElement(timeTokens[1]);
+					System.out.println(hr + " " + min);
 				} catch (InvalidTaskTimeException e) {
 					throw new InvalidTaskTimeException();
 				}
@@ -113,7 +118,7 @@ public class Parser {
 					throw new TaskTimeOutOfBoundException();
 				}
 				
-				date = DateTime.getDate(hr, min);
+				date = DateTime.getDate(date, hr, min);
 				
 				toReturn.setTimeStart(date);
 				
@@ -238,7 +243,7 @@ public class Parser {
 		}
 		
 		// Try to add time to the old date 
-		date = DateTime.getDate(hr, min);
+		date = DateTime.getDate(date, hr, min);
 		
 		// Return the task if the exact time is valid
 		exactTime = true;
