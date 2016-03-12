@@ -1,8 +1,5 @@
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import Exceptions.ParserExceptions.*;
 
 /**
@@ -13,15 +10,23 @@ import Exceptions.ParserExceptions.*;
 public class Parser {
 	
 	private final String SEPARATOR = "||";
-
+	private static Parser instance = null;
+	
 	/**
 	 * Initialise a parser object.
 	 */
+	
+	public static Parser getInstance() {
+		if (instance == null) {
+			instance = new Parser();
+		}
+		return instance;
+	}
+	
 	public Parser() {
 		
 	}
 
-	
 	/**
 	 * Get the command of input , which is the command corresponding to the first word.
 	 * @param input User input.
@@ -77,8 +82,6 @@ public class Parser {
 										TaskTimeOutOfBoundException, InvalidInputException, TaskDateAlreadyPassedException, InvalidTaskDateException {
 		
 		String[] tokens = divideTokens(input);
-		
-		
 		// Get Index
 		int index = Integer.valueOf(tokens[1]);
 		TaskToEdit toReturn = new TaskToEdit(index);
@@ -98,30 +101,12 @@ public class Parser {
 				break;
 			// For DateTime Edit Case, get date, then time, then compile date and add.
 			case "datetime":
-				String datetime = getArgumentForEditing(input);
-				System.out.println(datetime);
-				Date date = DateTime.getExactDate(datetime.split(" ")[0]);
-				DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-				
-				String timeTokens[] = DateTime.getTimeStringToken(datetime.split(" ")[1]);
-				int hr, min;
-				
-				try {
-					hr = DateTime.getTimeElement(timeTokens[0]);
-					min = DateTime.getTimeElement(timeTokens[1]);
-					System.out.println(hr + " " + min);
-				} catch (InvalidTaskTimeException e) {
-					throw new InvalidTaskTimeException();
-				}
-				
-				if (DateTime.hrOutOfBound(hr) || DateTime.minOutOfBound(min)) {
-					throw new TaskTimeOutOfBoundException();
-				}
-				
-				date = DateTime.getDate(date, hr, min);
-				
+				String datetimeString = getArgumentForEditing(input);
+				Date date = DateTime.getExactDate(datetimeString.split(" ")[0]);
+				DateTime datetime = new DateTime(date);
+				datetime.parseAndAddTimeToDate(datetimeString.split(" ")[1]);
+				date = datetime.getDatePlusTime();
 				toReturn.setTimeStart(date);
-				
 				break;
 			default:
 				throw new InvalidInputException();
@@ -228,22 +213,9 @@ public class Parser {
 		}
 		
 		// Try to get the exact time if specified
-		String timeTokens[] = DateTime.getTimeStringToken(tokens[i++]);
-		int hr, min;
-		
-		try {
-			hr = DateTime.getTimeElement(timeTokens[0]);
-			min = DateTime.getTimeElement(timeTokens[1]);
-		} catch (InvalidTaskTimeException e) {
-			throw new InvalidTaskTimeException();
-		}
-		
-		if (DateTime.hrOutOfBound(hr) || DateTime.minOutOfBound(min)) {
-			throw new TaskTimeOutOfBoundException();
-		}
-		
-		// Try to add time to the old date 
-		date = DateTime.getDate(date, hr, min);
+		DateTime datetime = new DateTime(date);
+		datetime.parseAndAddTimeToDate(tokens[i++]);
+		date = datetime.getDatePlusTime();
 		
 		// Return the task if the exact time is valid
 		exactTime = true;
@@ -259,8 +231,7 @@ public class Parser {
 		}
 		
 		// All input valid, return a fully defined task
-		return new Task(name, date, exactTime, duration);
-		
+		return new Task(name, date, exactTime, duration);	
 	}
 	
 	/**
@@ -271,8 +242,6 @@ public class Parser {
 	private boolean taskNameIsEntered(String taskName) {
 		return !taskName.equalsIgnoreCase(SEPARATOR);
 	}
-	
-	
 	
 	/**
 	 * Return a string token split by space.
@@ -299,11 +268,6 @@ public class Parser {
 			return Command.INVALID;
 		}
 	}
-	
-	
-	
-	
-	
 }
 
 

@@ -8,6 +8,7 @@ import Exceptions.ParserExceptions.InvalidTaskDateException;
 import Exceptions.ParserExceptions.InvalidTaskDurationException;
 import Exceptions.ParserExceptions.InvalidTaskTimeException;
 import Exceptions.ParserExceptions.TaskDateAlreadyPassedException;
+import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 
 public class DateTime {
 	private final static String TIME_SEPARATOR = ":";
@@ -17,15 +18,36 @@ public class DateTime {
 	private final static int DAY_INVALID = -1;
 	
 	private static Calendar calendar = Calendar.getInstance();	
+	private Date date = new Date();
+	private int hr;
+	private int min;
 	
-	/**
-	 * Get a Date object based on old date with hr and min added to it.
-	 * @param date Date object.
-	 * @param hr hour.
-	 * @param min minute.
-	 * @return Date object.
-	 */
-	public static Date getDate(Date date, int hr, int min) {
+	public DateTime() {
+		this.date = new Date();
+		this.hr = 0;
+		this.min = 0;
+	}
+	
+	public DateTime (Date date) {
+		this.date = date;
+		this.hr = 0;
+		this.min = 0;
+	}
+	
+	public DateTime(Date date, int hr, int min) throws TaskTimeOutOfBoundException {
+		this.date = date;
+		this.hr = hr;
+		this.min = min;
+		if (hrOutOfBound() || minOutOfBound()) {
+			throw new TaskTimeOutOfBoundException();
+		}
+	}
+	
+	public Date getDate() {
+		return this.date;
+	}
+	
+	public Date getDatePlusTime() {
 		calendar.setTime(date);
 		calendar.set(Calendar.HOUR, 0);
 		calendar.set(Calendar.MINUTE, 0);
@@ -34,21 +56,33 @@ public class DateTime {
 		return calendar.getTime();
 	}
 	
+	
+	public void parseAndAddTimeToDate(String token) throws InvalidTaskTimeException, TaskTimeOutOfBoundException {
+		String timeTokens[] = getTimeStringToken(token);
+		try {
+			hr = DateTime.getTimeElement(timeTokens[0]);
+			min = DateTime.getTimeElement(timeTokens[1]);
+			if (hrOutOfBound() || minOutOfBound()) {
+				throw new TaskTimeOutOfBoundException();
+			}
+		} catch (InvalidTaskTimeException e) {
+			throw new InvalidTaskTimeException();
+		}
+	}
+	
 	/**
 	 * Return whether hour is out of bound.
-	 * @param hr Hour.
 	 * @return Whether hour is out of bound.
 	 */
-	public static boolean hrOutOfBound(int hr) {
+	private boolean hrOutOfBound() {
 		return hr < 0 || hr > 24;
 	}
 	
 	/**
 	 * Return whether minute is out of bound.
-	 * @param min Minute.
 	 * @return Whether minute is out of bound.
 	 */
-	public static boolean minOutOfBound(int min) {
+	private boolean minOutOfBound() {
 		return min < 0 || min > 60;
 	}
 	
@@ -76,7 +110,7 @@ public class DateTime {
 	 * @return A time token.
 	 * @throws InvalidTaskTimeException Task time entered is invalid.
 	 */
-	public static String[] getTimeStringToken(String time) throws InvalidTaskTimeException {
+	private String[] getTimeStringToken(String time) throws InvalidTaskTimeException {
 		String tokens[] = time.split(TIME_SEPARATOR);
 		if (tokens.length != 2 || tokens.length == 2 && tokens[0].equals("")) {
 			throw new InvalidTaskTimeException();
