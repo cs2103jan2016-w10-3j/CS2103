@@ -78,52 +78,39 @@ public class Parser {
 	 * @throws InvalidTaskDateException Task date entered is invalid.
 	 * @throws TaskDateAlreadyPassedException 
 	 */
-	
-	public int findTokenIndex(String input) {
-		String[] tokens = divideTokens(input);
-		// Get Index
-		int index = Integer.valueOf(tokens[1]);
-		return index;
-	}
-	
-	public EditType findEditTaskType(String input) throws InvalidTaskTimeException, 
+	public void editTask(String input, TaskManager taskManager) throws InvalidTaskTimeException, 
 										TaskTimeOutOfBoundException, InvalidInputException, TaskDateAlreadyPassedException, InvalidTaskDateException {
 		
 		String[] tokens = divideTokens(input);
+		// Get Index
+		int index = Integer.valueOf(tokens[1]);
+		
 		// Get Arguments
 		switch (tokens[2]) {
+
 			// For Duration Edit Case, simply get the duration from the input and add it.
 			case "duration":
-				return EditType.DURATION;
+				int duration = Integer.valueOf(tokens[3]);
+				taskManager.getTask(index).setDuration(duration);
+				break;
 			// For Name Edit Case, simply get the name from the input and add it.
 			case "name":
-				return EditType.NAME;
+				String name = getArgumentForEditing(input);
+				taskManager.getTask(index).setName(name);
+				break;
 			// For DateTime Edit Case, get date, then time, then compile date and add.
 			case "datetime":
-				return EditType.NAME;
+				String datetimeString = getArgumentForEditing(input);
+				Date date = DateTime.getExactDate(datetimeString.split(" ")[0]);
+				DateTime datetime = new DateTime(date);
+				datetime.parseAndAddTimeToDate(datetimeString.split(" ")[1]);
+				date = datetime.getDatePlusTime();
+				taskManager.getTask(index).setTimeStart(date);
+				break;
 			default:
 				throw new InvalidInputException();
 		}
-	}
-	
-	public String extractEditTokens(String input, EditType editType) {
-		String[] tokens = divideTokens(input);
-		switch (editType) {
-		case DURATION:
-			return tokens[3];
-		default:
-			return getArgumentForEditing(input);
-		}
-	}
-	
-	public Date extractDateTokens(String input) throws TaskDateAlreadyPassedException, InvalidTaskDateException, InvalidTaskTimeException, TaskTimeOutOfBoundException {
-		String[] tokens = divideTokens(input);
-		String datetimeString = getArgumentForEditing(input);
-		Date date = DateTime.getExactDate(datetimeString.split(" ")[0]);
-		DateTime datetime = new DateTime(date);
-		datetime.parseAndAddTimeToDate(datetimeString.split(" ")[1]);
-		date = datetime.getDatePlusTime();
-		return date;
+		
 	}
 	
 	/**

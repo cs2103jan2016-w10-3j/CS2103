@@ -52,8 +52,12 @@ public class TaskManager implements Serializable {
     public int getNumberOfTasks() {
 		return tasks.size();
 	}
+    
+	public void addTaskatIndex(Task newTask, int index) {
+		tasks.add(index, newTask);
+	}
 
-	private void removeTask(int index) {
+	public void removeTask(int index) {
 		tasks.remove(index);
 	}
 
@@ -86,34 +90,39 @@ public class TaskManager implements Serializable {
 			}
 			break;
 		case EDIT:
-			editTask(input);
+			parser.editTask(input, this);
 			break;
 		default:
 			throw new InvalidInputException();
 		}
 		storage.saveTasks(tasks);
 	}
-	
-	private void editTask(String input) throws InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidInputException, TaskDateAlreadyPassedException, InvalidTaskDateException {
-		int index = parser.findTokenIndex(input);
-		EditType editType = parser.findEditTaskType(input);
-		if (editType == EditType.DATETIME) {
-			Date date = parser.extractDateTokens(input);
-			getTask(index).setTimeStart(date);
-		}
-		else if (editType == EditType.NAME) {
-			String name = parser.extractEditTokens(input, editType);
-			getTask(index).setName(name);
-		}
-		else {
-			String duration = parser.extractEditTokens(input, editType);
-			getTask(index).setDuration(Integer.parseInt(duration));
-		}
-	}
     
 
-    private void addTask(Task task) {
+    public void addTask(Task task) {
         tasks.add(task);
+    }
+
+    public void deleteTaskAtIndex(int index) {
+        tasks.remove(index);
+    }
+
+    public void editTaskNameAtIndex(int index, String newTaskName) {
+        Task task = tasks.get(index);
+        task.setName(newTaskName);
+        tasks.set(index, task);
+    }
+
+    public void editTaskDurationAtIndex(int index, int newDuration) {
+        Task task = tasks.get(index);
+        task.setDuration(newDuration);
+        tasks.set(index, task);
+    }
+
+    public void editTaskTimeStartAtIndex(int index, Date newTimeStart) {
+        Task task = tasks.get(index);
+        task.setTimeStart(newTimeStart);
+        tasks.set(index, task);
     }
 
     @Override

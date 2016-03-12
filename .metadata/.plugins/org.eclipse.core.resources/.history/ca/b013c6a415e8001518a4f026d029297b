@@ -95,19 +95,9 @@ public class TaskManager implements Serializable {
 	}
 	
 	private void editTask(String input) throws InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidInputException, TaskDateAlreadyPassedException, InvalidTaskDateException {
-		int index = parser.findTokenIndex(input);
 		EditType editType = parser.findEditTaskType(input);
 		if (editType == EditType.DATETIME) {
 			Date date = parser.extractDateTokens(input);
-			getTask(index).setTimeStart(date);
-		}
-		else if (editType == EditType.NAME) {
-			String name = parser.extractEditTokens(input, editType);
-			getTask(index).setName(name);
-		}
-		else {
-			String duration = parser.extractEditTokens(input, editType);
-			getTask(index).setDuration(Integer.parseInt(duration));
 		}
 	}
     

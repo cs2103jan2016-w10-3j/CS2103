@@ -78,20 +78,16 @@ public class Parser {
 	 * @throws InvalidTaskDateException Task date entered is invalid.
 	 * @throws TaskDateAlreadyPassedException 
 	 */
-	
-	public int findTokenIndex(String input) {
-		String[] tokens = divideTokens(input);
-		// Get Index
-		int index = Integer.valueOf(tokens[1]);
-		return index;
-	}
-	
-	public EditType findEditTaskType(String input) throws InvalidTaskTimeException, 
+	public EditType findEditTaskType(String input, TaskManager taskManager) throws InvalidTaskTimeException, 
 										TaskTimeOutOfBoundException, InvalidInputException, TaskDateAlreadyPassedException, InvalidTaskDateException {
 		
 		String[] tokens = divideTokens(input);
+		// Get Index
+		int index = Integer.valueOf(tokens[1]);
+		
 		// Get Arguments
 		switch (tokens[2]) {
+
 			// For Duration Edit Case, simply get the duration from the input and add it.
 			case "duration":
 				return EditType.DURATION;
@@ -104,6 +100,7 @@ public class Parser {
 			default:
 				throw new InvalidInputException();
 		}
+		
 	}
 	
 	public String extractEditTokens(String input, EditType editType) {
