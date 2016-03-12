@@ -80,8 +80,14 @@ public class Parser {
 	 * @throws InvalidTaskDateException Task date entered is invalid.
 	 * @throws TaskDateAlreadyPassedException 
 	 */
+<<<<<<< HEAD
 	
 	public int findTokenIndex(String input) {
+=======
+	public void editTask(String input, List<Task> tasks) throws InvalidTaskTimeException, 
+										TaskTimeOutOfBoundException, InvalidInputException, TaskDateAlreadyPassedException, InvalidTaskDateException {
+		
+>>>>>>> 735c8cf4c35aebdda70812508b2ee37d39cb79bc
 		String[] tokens = divideTokens(input);
 		// Get Index
 		int index = Integer.valueOf(tokens[1]);
@@ -96,13 +102,35 @@ public class Parser {
 		switch (tokens[2]) {
 			// For Duration Edit Case, simply get the duration from the input and add it.
 			case "duration":
+<<<<<<< HEAD
 				return EditType.DURATION;
 			// For Name Edit Case, simply get the name from the input and add it.
 			case "name":
 				return EditType.NAME;
 			// For DateTime Edit Case, get date, then time, then compile date and add.
+			case "datetime":
+				return EditType.NAME;
+=======
+				int duration = Integer.valueOf(tokens[3]);
+				tasks.get(index).setDuration(duration);
+				break;
+			// For Name Edit Case, simply get the name from the input and add it.
+			case "name":
+				String name = getArgumentForEditing(input);
+				tasks.get(index).setName(name);
+				break;
+			// For DateTime Edit Case, get date, then time, then compile date and add.
+			case "datetime":
+				String datetimeString = getArgumentForEditing(input);
+				Date date = DateTime.getExactDate(datetimeString.split(" ")[0]);
+				DateTime datetime = new DateTime(date);
+				datetime.parseAndAddTimeToDate(datetimeString.split(" ")[1]);
+				date = datetime.getDatePlusTime();
+				tasks.get(index).setTimeStart(date);
+				break;
+>>>>>>> 735c8cf4c35aebdda70812508b2ee37d39cb79bc
 			default:
-				return EditType.DATETIME;
+				throw new InvalidInputException();
 		}
 	}
 	
