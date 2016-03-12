@@ -1,5 +1,7 @@
 
 import java.util.Date;
+import java.util.List;
+
 import Exceptions.ParserExceptions.*;
 
 /**
@@ -78,7 +80,7 @@ public class Parser {
 	 * @throws InvalidTaskDateException Task date entered is invalid.
 	 * @throws TaskDateAlreadyPassedException 
 	 */
-	public void editTask(String input, TaskManager taskManager) throws InvalidTaskTimeException, 
+	public void editTask(String input, List<Task> tasks) throws InvalidTaskTimeException, 
 										TaskTimeOutOfBoundException, InvalidInputException, TaskDateAlreadyPassedException, InvalidTaskDateException {
 		
 		String[] tokens = divideTokens(input);
@@ -91,12 +93,12 @@ public class Parser {
 			// For Duration Edit Case, simply get the duration from the input and add it.
 			case "duration":
 				int duration = Integer.valueOf(tokens[3]);
-				taskManager.getTask(index).setDuration(duration);
+				tasks.get(index).setDuration(duration);
 				break;
 			// For Name Edit Case, simply get the name from the input and add it.
 			case "name":
 				String name = getArgumentForEditing(input);
-				taskManager.getTask(index).setName(name);
+				tasks.get(index).setName(name);
 				break;
 			// For DateTime Edit Case, get date, then time, then compile date and add.
 			case "datetime":
@@ -105,7 +107,7 @@ public class Parser {
 				DateTime datetime = new DateTime(date);
 				datetime.parseAndAddTimeToDate(datetimeString.split(" ")[1]);
 				date = datetime.getDatePlusTime();
-				taskManager.getTask(index).setTimeStart(date);
+				tasks.get(index).setTimeStart(date);
 				break;
 			default:
 				throw new InvalidInputException();

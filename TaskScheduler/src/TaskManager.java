@@ -90,7 +90,7 @@ public class TaskManager implements Serializable {
 			}
 			break;
 		case EDIT:
-			parser.editTask(input, this);
+			parser.editTask(input, tasks);
 			break;
 		default:
 			throw new InvalidInputException();
