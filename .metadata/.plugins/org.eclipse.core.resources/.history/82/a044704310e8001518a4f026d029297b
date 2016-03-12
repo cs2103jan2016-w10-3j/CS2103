@@ -4,11 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import Exceptions.ParserExceptions.InvalidInputException;
-import Exceptions.ParserExceptions.InvalidTaskDateException;
-import Exceptions.ParserExceptions.InvalidTaskTimeException;
 import Exceptions.ParserExceptions.NoInputException;
-import Exceptions.ParserExceptions.TaskDateAlreadyPassedException;
-import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 
 /**
  * This class is the main logic of the whole application, takes input from UI,
@@ -65,9 +61,8 @@ public class TaskManager implements Serializable {
 		return tasks.get(index);
 	}
     
-	public void executeCommand(String input) throws NoInputException, InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException, TaskDateAlreadyPassedException, InvalidTaskDateException {
+	public void executeCommand(String input) throws NoInputException, InvalidInputException {
 		Command commandType = parser.getCommand(input);
-		System.out.println(commandType.toString());
 		switch (commandType) {
 		case ADD:
 			Task task = null;
@@ -90,8 +85,7 @@ public class TaskManager implements Serializable {
 			}
 			break;
 		case EDIT:
-			parser.editTask(input, this);
-			break;
+			
 		default:
 			throw new InvalidInputException();
 		}

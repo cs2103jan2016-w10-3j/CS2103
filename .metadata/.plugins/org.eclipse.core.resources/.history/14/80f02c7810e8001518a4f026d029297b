@@ -130,7 +130,7 @@ public class TaskWindow {
 	}
 
 	private void setTaskDetailView() {
-		if (selectedIndex < taskManager.getNumberOfTasks() && selectedIndex >= 0) {
+		if (selectedIndex < taskManager.getNumberOfTasks()) {
 			taskDetailView.setText(taskManager.getTask(selectedIndex).toString());
 		} else {
 			taskDetailView.setText("");

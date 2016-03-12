@@ -67,7 +67,6 @@ public class TaskManager implements Serializable {
     
 	public void executeCommand(String input) throws NoInputException, InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException, TaskDateAlreadyPassedException, InvalidTaskDateException {
 		Command commandType = parser.getCommand(input);
-		System.out.println(commandType.toString());
 		switch (commandType) {
 		case ADD:
 			Task task = null;
@@ -91,7 +90,6 @@ public class TaskManager implements Serializable {
 			break;
 		case EDIT:
 			parser.editTask(input, this);
-			break;
 		default:
 			throw new InvalidInputException();
 		}
