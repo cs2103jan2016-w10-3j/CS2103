@@ -100,6 +100,7 @@ public class TaskManager implements Serializable {
                 break;
             case EDIT :
                 editTask(input);
+                sortAndRefresh();
                 break;
             default :
                 throw new InvalidInputException();
