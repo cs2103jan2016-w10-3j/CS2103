@@ -1,5 +1,7 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -59,6 +61,15 @@ public class TaskManager implements Serializable {
     public Task getTask(int index) {
         return tasks.get(index);
     }
+    
+    public void sortAndRefresh(){//sorts the list so that the most urgent is at the top
+        Collections.sort(tasks,new Comparator<Task>(){
+            @Override
+            public int compare(Task lhs, Task rhs) {
+                return lhs.getTimeStart().getTime() < rhs.getTimeStart().getTime() ? -1 : (lhs.getTimeStart().getTime() < rhs.getTimeStart().getTime() ) ? 1 : 0;
+            }
+        });
+    }
 
     public void executeCommand(String input) throws NoInputException,
             InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException,
@@ -74,6 +85,7 @@ public class TaskManager implements Serializable {
                     e.printStackTrace();
                 }
                 addTask(task);
+                sortAndRefresh();
                 break;
             case DELETE :
                 int deleteIndex = 0;
