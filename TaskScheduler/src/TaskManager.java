@@ -113,7 +113,22 @@ public class TaskManager implements Serializable {
 
 
 	private void addTask(Task task) {
+	    boolean canAddTask = true;
+	    if(tasks==null){
 		tasks.add(task);
+	    } else if (task.isExactTime()){
+	        Date newTaskTimeStart = task.getTimeStart();
+	        for( Task tasktime : tasks){
+	            Date oldTaskTimeStart = tasktime.getTimeStart();
+	            if(newTaskTimeStart.equals(oldTaskTimeStart)){
+	                canAddTask = false;
+	            }
+	        }
+	    }
+	    if (canAddTask){
+	        tasks.add(task);
+	        System.out.println("can add task");
+	    } else {System.out.println("cannot add task because start times are the same");}
 	}
 
 	@Override
