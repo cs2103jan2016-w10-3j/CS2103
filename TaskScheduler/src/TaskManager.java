@@ -44,7 +44,7 @@ public class TaskManager implements Serializable {
 
         String[] taskNames = new String[tasks.size()];
         for (int i = 0; i < tasks.size(); i++) {
-            taskNames[i] = tasks.get(i).getName();
+            taskNames[i] = i+": "+tasks.get(i).getName();
         }
         // System.out.println(taskNames.length);
         return taskNames;
