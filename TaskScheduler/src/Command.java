@@ -1,4 +1,4 @@
 
 public enum Command {
-	ADD, EDIT, DELETE, INVALID
+	ADD, EDIT, DELETE, SEARCH, UNDO, DONE, INVALID
 }
