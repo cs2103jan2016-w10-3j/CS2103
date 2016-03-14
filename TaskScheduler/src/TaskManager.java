@@ -44,7 +44,7 @@ public class TaskManager implements Serializable {
 
         String[] taskNames = new String[tasks.size()];
         for (int i = 0; i < tasks.size(); i++) {
-            taskNames[i] = i+": "+tasks.get(i).getName();
+            taskNames[i] = i + ": " + tasks.get(i).getName();
         }
         // System.out.println(taskNames.length);
         return taskNames;
@@ -105,6 +105,9 @@ public class TaskManager implements Serializable {
                 editTask(input);
                 sortAndRefresh();
                 break;
+            case SEARCH :
+                searchTask(input);
+                break;
             case DONE :
                 completeTask(input);
                 break;
@@ -134,6 +137,21 @@ public class TaskManager implements Serializable {
             String duration = parser.extractEditTokens(input, editType);
             getTask(index).setDuration(Integer.parseInt(duration));
         }
+    }
+
+    private void searchTask(String input) {
+        // String stringToSearchFor = parser.getStringToSearchFor(input);
+        String stringToSearchFor = "haha";
+        boolean contains = false;
+        int occurance = 0;
+        for (Task currentTasks : tasks) {
+            contains = currentTasks.getName().toLowerCase()
+                    .contains(stringToSearchFor.toLowerCase());
+            if (contains) {
+                occurance++;
+            }
+        }
+        System.out.println("total occurance for haha string is" + occurance);
     }
 
     private void addTask(Task task) {
