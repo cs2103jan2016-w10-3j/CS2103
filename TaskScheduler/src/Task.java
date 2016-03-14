@@ -27,8 +27,8 @@ public class Task implements Serializable {
         return done;
     }
 	
-	public void setDoneStatus(){
-	    this.done = true;
+	public void setDoneStatus(boolean done){
+	    this.done = done;
 	}
 
 	public void setName(String name) {

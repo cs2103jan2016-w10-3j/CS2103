@@ -61,12 +61,15 @@ public class TaskManager implements Serializable {
     public Task getTask(int index) {
         return tasks.get(index);
     }
-    
-    public void sortAndRefresh(){//sorts the list so that the most urgent is at the top
-        Collections.sort(tasks,new Comparator<Task>(){
+
+    public void sortAndRefresh() {// sorts the list so that the most urgent is
+                                  // at the top
+        Collections.sort(tasks, new Comparator<Task>() {
             @Override
             public int compare(Task lhs, Task rhs) {
-                return lhs.getTimeStart().getTime() < rhs.getTimeStart().getTime() ? -1 : (lhs.getTimeStart().getTime() < rhs.getTimeStart().getTime() ) ? 1 : 0;
+                return lhs.getTimeStart().getTime() < rhs.getTimeStart().getTime() ? -1
+                        : (lhs.getTimeStart().getTime() < rhs.getTimeStart().getTime()) ? 1
+                                : 0;
             }
         });
     }
@@ -102,10 +105,18 @@ public class TaskManager implements Serializable {
                 editTask(input);
                 sortAndRefresh();
                 break;
+            case DONE :
+                completeTask(input);
+                break;
             default :
                 throw new InvalidInputException();
         }
         storage.saveTasks(tasks);
+    }
+
+    private void completeTask(String input) {
+        int index = parser.findTokenIndex(input);
+        getTask(index).setDoneStatus(true);
     }
 
     private void editTask(String input) throws InvalidTaskTimeException,
@@ -126,38 +137,40 @@ public class TaskManager implements Serializable {
     }
 
     private void addTask(Task task) {
-	    boolean canAddTask = true;
-	    if(tasks==null){
-		tasks.add(task);
-	    } else if (task.isExactTime()){
-	        Date newTaskTimeStart = task.getTimeStart();
-	        for( Task currentTasks : tasks ){
-	            Date oldTaskTimeStart = currentTasks.getTimeStart();
-	            if(newTaskTimeStart.equals(oldTaskTimeStart)){
-	                canAddTask = false;
-	                System.out.println("cannot addTask because start time is the same");
-	            } else if (currentTasks.isExactTime() && canAddTask){
-	                canAddTask = isClash(task,currentTasks);
-	            }
-	        }
-	    }
-	    if (canAddTask){
-	        tasks.add(task);
-	    } else {System.out.println("cannot addTask because of clash");}
-	}
+        boolean canAddTask = true;
+        if (tasks == null) {
+            tasks.add(task);
+        } else if (task.isExactTime()) {
+            Date newTaskTimeStart = task.getTimeStart();
+            for (Task currentTasks : tasks) {
+                Date oldTaskTimeStart = currentTasks.getTimeStart();
+                if (newTaskTimeStart.equals(oldTaskTimeStart)) {
+                    canAddTask = false;
+                    System.out.println("cannot addTask because start time is the same");
+                } else if (currentTasks.isExactTime() && canAddTask) {
+                    canAddTask = isClash(task, currentTasks);
+                }
+            }
+        }
+        if (canAddTask) {
+            tasks.add(task);
+        } else {
+            System.out.println("cannot addTask because of clash");
+        }
+    }
 
     private boolean isClash(Task task, Task currentTasks) {
         long taskTime = task.getTimeStart().getTime();
-        int taskDuration = task.getDuration()*1000*60;
+        int taskDuration = task.getDuration() * 1000 * 60;
         long currentTaskTime = currentTasks.getTimeStart().getTime();
-        int currentTaskDuration = currentTasks.getDuration()*1000*60;
-        if (task.getTimeStart().after(currentTasks.getTimeStart())){
-            if (taskTime - currentTaskTime >= currentTaskDuration){
-                return true; //doesnt clash
+        int currentTaskDuration = currentTasks.getDuration() * 1000 * 60;
+        if (task.getTimeStart().after(currentTasks.getTimeStart())) {
+            if (taskTime - currentTaskTime >= currentTaskDuration) {
+                return true; // doesnt clash
             }
         } else {
-            if (currentTaskTime - taskTime >= taskDuration){
-                return true; //doesnt clash
+            if (currentTaskTime - taskTime >= taskDuration) {
+                return true; // doesnt clash
             }
         }
         return false;
