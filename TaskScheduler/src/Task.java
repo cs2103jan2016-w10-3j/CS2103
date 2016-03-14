@@ -9,16 +9,26 @@ public class Task implements Serializable {
 	private Date timeStart;
 	private int duration; //In minutes
 	private boolean exactTime;
+	private boolean done;
 
 	public Task(String name, Date timeStart, boolean exactTime, int duration) {
 		this.name = name;
 		this.timeStart = timeStart;
 		this.exactTime = exactTime;
 		this.duration = duration;
+		this.done = false;
 	}
 
 	public String getName() {
 		return name;
+	}
+	
+	public boolean getDoneStatus() {
+        return done;
+    }
+	
+	public void setDoneStatus(){
+	    this.done = true;
 	}
 
 	public void setName(String name) {
