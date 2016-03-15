@@ -263,6 +263,8 @@ public class Parser {
 			return Command.SEARCH;
 		} else if (command.toLowerCase().equals("done")) {
 			return Command.DONE;
+		} else if (command.toLowerCase().equals("undo")) {
+			return Command.UNDO;
 		} else {
 			return Command.INVALID;
 		}

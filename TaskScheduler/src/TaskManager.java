@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Stack;
 
 import Exceptions.ParserExceptions.ArgumentForEditingNotEnteredException;
 import Exceptions.ParserExceptions.InvalidDateTimeFormatException;
@@ -26,6 +27,8 @@ public class TaskManager implements Serializable {
     private static TaskManager instance = null;
     private static Parser parser;
     private static Storage storage;
+	private static Stack<Task> undo = new Stack<Task>();
+	private static Stack<Command> operand = new Stack<Command>();
 
     public static TaskManager getInstance() {
         if (instance == null) {
@@ -71,6 +74,16 @@ public class TaskManager implements Serializable {
     public Task getTask(int index) {
         return tasks.get(index);
     }
+    
+	public int getIndexOfTask(Task task) {
+		for(int i=0; i<tasks.size(); i++) {
+			if(task == tasks.get(i)) {
+				return i;
+			}
+			
+		}
+		return -1;
+	}
 
     public void sortAndRefresh() {// sorts the list so that the most urgent is
                                   // at the top
@@ -99,6 +112,7 @@ public class TaskManager implements Serializable {
                 }
                 addTask(task);
                 sortAndRefresh();
+    			addOnUndoStack(commandType, task);
                 break;
             case DELETE :
                 int deleteIndex = 0;
@@ -108,10 +122,14 @@ public class TaskManager implements Serializable {
                     e.printStackTrace();
                 }
                 if (deleteIndex >= 0 && deleteIndex < getNumberOfTasks()) {
+    				addOnUndoStack(commandType, tasks.get(deleteIndex));
                     removeTask(deleteIndex);
                 }
                 break;
             case EDIT :
+    			int index = parser.findTokenIndex(input);
+    			addOnUndoStack(commandType, index);
+    			
                 editTask(input);
                 sortAndRefresh();
                 break;
@@ -121,11 +139,52 @@ public class TaskManager implements Serializable {
             case DONE :
                 completeTask(input);
                 break;
+    		case UNDO :
+    			undo();   			
+    			break;
             default :
                 throw new InvalidInputException();
         }
         storage.saveTasks(tasks);
     }
+    
+	private void addOnUndoStack(Command commandType, int index) {
+		Task task = tasks.get(index);
+		addOnUndoStack(commandType, new Task(task.getName(), task.getTimeStart(), task.isExactTime(),task.getDuration()));
+		addOnUndoStack(commandType, tasks.get(index));
+	}
+
+	private void addOnUndoStack(Command commandType, Task task) {
+		undo.push(task);
+		operand.push(commandType);
+	}
+
+	private void undo() {
+		Task task;
+		task = undo.pop();
+		Command op = operand.pop();
+		switch (op) {
+		case ADD :
+			int indexAdd = getIndexOfTask(task);
+			removeTask(indexAdd);
+			break;
+		case DELETE :
+			addTask(task);
+			break;
+		case EDIT :
+			int indexEdit = getIndexOfTask(task);
+			removeTask(indexEdit);
+			
+			task = undo.pop();
+			operand.pop();
+			
+			addTask(task);				
+			break;
+		default :
+			break;
+			
+		}
+	}
 
     private void completeTask(String input) {
         int index = parser.findTokenIndex(input);
