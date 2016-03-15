@@ -27,8 +27,8 @@ public class TaskManager implements Serializable {
     private static TaskManager instance = null;
     private static Parser parser;
     private static Storage storage;
-	private static Stack<Task> undo = new Stack<Task>();
-	private static Stack<Command> operand = new Stack<Command>();
+    private static Stack<Task> undo = new Stack<Task>();
+    private static Stack<Command> operand = new Stack<Command>();
 
     public static TaskManager getInstance() {
         if (instance == null) {
@@ -44,12 +44,12 @@ public class TaskManager implements Serializable {
     public static void loadTasks() {
         tasks = storage.readTasks();
     }
-    
-    public List<Task> existingList(){
+
+    public List<Task> existingList() {
         return tasks;
     }
-    
-    public void newList(List<Task> list){
+
+    public void newList(List<Task> list) {
         tasks = list;
     }
 
@@ -74,32 +74,44 @@ public class TaskManager implements Serializable {
     public Task getTask(int index) {
         return tasks.get(index);
     }
-    
-	public int getIndexOfTask(Task task) {
-		for(int i=0; i<tasks.size(); i++) {
-			if(task == tasks.get(i)) {
-				return i;
-			}
-			
-		}
-		return -1;
-	}
+
+    public int getIndexOfTask(Task task) {
+        for (int i = 0; i < tasks.size(); i++) {
+            if (task == tasks.get(i)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     public void sortAndRefresh() {// sorts the list so that the most urgent is
                                   // at the top
         Collections.sort(tasks, new Comparator<Task>() {
             @Override
             public int compare(Task lhs, Task rhs) {
-                return lhs.getTimeStart().getTime() < rhs.getTimeStart().getTime() ? -1
-                        : (lhs.getTimeStart().getTime() < rhs.getTimeStart().getTime()) ? 1
-                                : 0;
+                if (lhs.isExactTime() && !rhs.isExactTime()) {
+                    return -1;
+                } 
+//                else if(!lhs.isExactTime() && rhs.isExactTime()){
+//                    System.out.println(lhs.getName() + " " + rhs.getName()+"comapre rhs excttime");
+//                    return -1;
+//                } 
+                else if (lhs.isExactTime() && rhs.isExactTime()) {
+                    return lhs.getTimeStart().getTime() < rhs.getTimeStart().getTime() ? -1
+                            : (lhs.getTimeStart().getTime() < rhs.getTimeStart()
+                                    .getTime()) ? 1 : 0;
+                } else {
+                    return 0;
+                }
+
             }
         });
     }
 
     public void executeCommand(String input) throws NoInputException,
             InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException,
-            TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
+            TaskDateAlreadyPassedException, InvalidTaskDateException,
+            ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
         Command commandType = parser.getCommand(input);
         System.out.println(commandType.toString());
         switch (commandType) {
@@ -112,7 +124,7 @@ public class TaskManager implements Serializable {
                 }
                 addTask(task);
                 sortAndRefresh();
-    			addOnUndoStack(commandType, task);
+                addOnUndoStack(commandType, task);
                 break;
             case DELETE :
                 int deleteIndex = 0;
@@ -122,16 +134,16 @@ public class TaskManager implements Serializable {
                     e.printStackTrace();
                 }
                 if (deleteIndex >= 0 && deleteIndex < getNumberOfTasks()) {
-    				addOnUndoStack(commandType, tasks.get(deleteIndex));
+                    addOnUndoStack(commandType, tasks.get(deleteIndex));
                     removeTask(deleteIndex);
                 }
                 break;
             case EDIT :
-    			int index = parser.getEditingParser().findTokenIndex(input);
-    			addOnUndoStack(commandType, index);
-    			
+                int index = parser.getEditingParser().findTokenIndex(input);
+                addOnUndoStack(commandType, index);
+
                 editTask(input);
-                sortAndRefresh();
+                // sortAndRefresh();
                 break;
             case SEARCH :
                 searchTask(input);
@@ -139,52 +151,55 @@ public class TaskManager implements Serializable {
             case DONE :
                 completeTask(input);
                 break;
-    		case UNDO :
-    			undo();   			
-    			break;
+            case UNDO :
+                undo();
+                break;
             default :
                 throw new InvalidInputException();
         }
         storage.saveTasks(tasks);
     }
-    
-	private void addOnUndoStack(Command commandType, int index) {
-		Task task = tasks.get(index);
-		addOnUndoStack(commandType, new Task(task.getName(), task.getTimeStart(), task.isExactTime(),task.getDuration()));
-		addOnUndoStack(commandType, tasks.get(index));
-	}
 
-	private void addOnUndoStack(Command commandType, Task task) {
-		undo.push(task);
-		operand.push(commandType);
-	}
+    private void addOnUndoStack(Command commandType, int index) {
+        Task task = tasks.get(index);
+        addOnUndoStack(
+                commandType,
+                new Task(task.getName(), task.getTimeStart(), task.isExactTime(), task
+                        .getDuration()));
+        addOnUndoStack(commandType, tasks.get(index));
+    }
 
-	private void undo() {
-		Task task;
-		task = undo.pop();
-		Command op = operand.pop();
-		switch (op) {
-		case ADD :
-			int indexAdd = getIndexOfTask(task);
-			removeTask(indexAdd);
-			break;
-		case DELETE :
-			addTask(task);
-			break;
-		case EDIT :
-			int indexEdit = getIndexOfTask(task);
-			removeTask(indexEdit);
-			
-			task = undo.pop();
-			operand.pop();
-			
-			addTask(task);				
-			break;
-		default :
-			break;
-			
-		}
-	}
+    private void addOnUndoStack(Command commandType, Task task) {
+        undo.push(task);
+        operand.push(commandType);
+    }
+
+    private void undo() {
+        Task task;
+        task = undo.pop();
+        Command op = operand.pop();
+        switch (op) {
+            case ADD :
+                int indexAdd = getIndexOfTask(task);
+                removeTask(indexAdd);
+                break;
+            case DELETE :
+                addTask(task);
+                break;
+            case EDIT :
+                int indexEdit = getIndexOfTask(task);
+                removeTask(indexEdit);
+
+                task = undo.pop();
+                operand.pop();
+
+                addTask(task);
+                break;
+            default :
+                break;
+
+        }
+    }
 
     private void completeTask(String input) {
         int index = parser.getEditingParser().findTokenIndex(input);
@@ -193,7 +208,8 @@ public class TaskManager implements Serializable {
 
     private void editTask(String input) throws InvalidTaskTimeException,
             TaskTimeOutOfBoundException, InvalidInputException,
-            TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
+            TaskDateAlreadyPassedException, InvalidTaskDateException,
+            ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
         int index = parser.getEditingParser().findTokenIndex(input);
         EditType editType = parser.getEditingParser().findEditTaskType(input);
         if (editType == EditType.DATETIME) {
