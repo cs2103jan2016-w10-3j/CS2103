@@ -166,7 +166,7 @@ public class TaskManager implements Serializable {
                 Date oldTaskTimeStart = currentTasks.getTimeStart();
                 if (newTaskTimeStart.equals(oldTaskTimeStart)) {
                     canAddTask = false;
-                    System.out.println("cannot addTask because start time is the same");
+                    System.out.println("task start-time is the same");
                 } else if (currentTasks.isExactTime() && canAddTask) {
                     canAddTask = isClash(task, currentTasks);
                 }
@@ -175,7 +175,8 @@ public class TaskManager implements Serializable {
         if (canAddTask) {
             tasks.add(task);
         } else {
-            System.out.println("cannot addTask because of clash");
+            tasks.add(task);
+            System.out.println("there is a clash, but task still added");
         }
     }
 
