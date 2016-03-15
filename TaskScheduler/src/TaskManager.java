@@ -127,7 +127,7 @@ public class TaskManager implements Serializable {
                 }
                 break;
             case EDIT :
-    			int index = parser.findTokenIndex(input);
+    			int index = parser.getEditingParser().findTokenIndex(input);
     			addOnUndoStack(commandType, index);
     			
                 editTask(input);

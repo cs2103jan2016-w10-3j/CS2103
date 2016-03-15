@@ -73,9 +73,9 @@ public class AddingParser {
 		}
 		int i = 1; // Skip the first word
 		String name = "";
-		Date date;
+		Date date = null;
 		int duration = 0;
-		boolean exactTime;
+		boolean exactTime = false;
 		if (!taskNameIsEntered(tokens[i])) {
 			throw new TaskNameNotEnteredException();
 		}
@@ -91,7 +91,8 @@ public class AddingParser {
 		}
 				
 		if (i == tokens.length) {
-			throw new TaskTimeOrSeparatorNotEnteredException();
+			// throw new TaskTimeOrSeparatorNotEnteredException();
+			return new Task(name, date, exactTime, duration);
 		}
 		
 		// Try to get date if format is correct till this stage
