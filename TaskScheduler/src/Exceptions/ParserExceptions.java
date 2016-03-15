@@ -15,6 +15,9 @@ public class ParserExceptions {
 	private static final String MESSAGE_ERROR_TASK_INDEX_INVALID = "Task index entered is invalid.";
 	private static final String MESSAGE_ERROR_NO_ARGUMENT = "No argument entered";
 	private static final String MESSAGE_ERROR_TOO_MANY_ARGUMENT = "Too many arguments are entered.";
+	private static final String MESSAGE_ERROR_KEYWORD_NOT_ENTERED = "Keyword for searching is not entered.";
+	private static final String MESSAGE_ERROR_ARGUMENT_FOR_EDITING_NOT_ENTERED = "Contents to be edited is not entered.";
+	private static final String MESSAGE_ERROR_DATETIME_FORMAT_INVALID = "Datetime format entered is invalid.";
 	
 	public static class NoInputException extends Exception {
 		private static final long serialVersionUID = 1L;
@@ -120,5 +123,27 @@ public class ParserExceptions {
 		}
 	}
 	
+	public static class KeywordNotEnteredException extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		public KeywordNotEnteredException() {
+			super(MESSAGE_ERROR_KEYWORD_NOT_ENTERED);
+		}
+	}
 	
+	public static class ArgumentForEditingNotEnteredException extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		public ArgumentForEditingNotEnteredException() {
+			super(MESSAGE_ERROR_ARGUMENT_FOR_EDITING_NOT_ENTERED);
+		}
+	}
+	
+	public static class InvalidDateTimeFormatException extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		public InvalidDateTimeFormatException() {
+			super(MESSAGE_ERROR_DATETIME_FORMAT_INVALID);
+		}
+	}
 }

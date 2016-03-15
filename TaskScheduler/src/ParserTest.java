@@ -2,6 +2,7 @@ import static org.junit.Assert.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,31 +31,35 @@ public class ParserTest {
 		String s = "add sd sd ds || 05/05/2016 1:1 2.2";
 		Task t;
 		t = parser.getTaskForAdding(s);
-		System.out.println(t.getName());
-		System.out.println(df.format(t.getTimeStart()));
-		System.out.println(t.getDuration());
+		assertEquals(t.getName(), "sd sd ds");
+		assertEquals(df.format(t.getTimeStart()), "05/05/2016 01:01:00 AM");
+		assertEquals(t.getDuration(), 122);
+//		System.out.println(t.getName());
+//		System.out.println(df.format(t.getTimeStart()));
+//		System.out.println(t.getDuration());
 	}
-
-//	@Test
-//	public void test2() throws InvalidTaskTimeException, TaskTimeOutOfBoundException, 
-//								InvalidInputException, TaskDateAlreadyPassedException, InvalidTaskDateException {
-//		String first = "edit 1 duration 5";
-//		String second = "edit 3 name Doing Work";
-//		String third = "edit 5 datetime 05/05/2016 5:5 5";
-//		TaskToEdit testTask;
-//		
-//		// Edit Duration test case
-//		testTask = parser.getTaskForEditing(first);
-//		assertEquals(testTask.getIndex(), 1);
-//		assertEquals(testTask.getDuration(), 5);
-//		// Edit Name test case
-//		testTask = parser.getTaskForEditing(second);
-//		assertEquals(testTask.getIndex(), 3);
-//		assertEquals(testTask.getName(), "Doing Work");
-//		// Edit Datetime test case
-//		testTask = parser.getTaskForEditing(third);
-//		assertEquals(testTask.getIndex(), 5);
-//		assertEquals(df.format(testTask.getTimeStart()), "05/05/2016 05:05:00 AM");
-//	}
-//	
+	
+	@Test
+	public void editTest() throws ArgumentForEditingNotEnteredException, TaskDateAlreadyPassedException, InvalidTaskDateException, InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidDateTimeFormatException {
+		String first = "edit 1 duration 5";
+		String second = "edit 3 name Doing Work";
+		String third = "edit 5 datetime 05/05/2016 5:5";
+		assertEquals(parser.getArgumentForEditing(first), "5");
+		assertEquals(parser.getArgumentForEditing(second), "Doing Work");
+		assertEquals(parser.getArgumentForEditing(third), "05/05/2016 5:5");
+		Date date = parser.extractDateTokens(third);
+		assertEquals(df.format(date),"05/05/2016 05:05:00 AM");
+	}
+	
+	@Test 
+	public void doneTest() throws NoArgumentException, InvalidTaskIndexException {
+		String input = "done 1";
+		assertEquals(parser.getTaskIndex(input), 1);
+	}
+	
+	@Test
+	public void searchTest() throws KeywordNotEnteredException {
+		String input = "search blah blah";
+		assertEquals(parser.getKeywordForSearch(input), "blah blah");
+	}
 }

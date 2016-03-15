@@ -87,6 +87,12 @@ public class TaskWindow {
 				} catch (InvalidTaskDateException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				} catch (ArgumentForEditingNotEnteredException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (InvalidDateTimeFormatException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 				refreshWindow();
 			}

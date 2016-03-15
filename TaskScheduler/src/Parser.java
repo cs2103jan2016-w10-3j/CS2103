@@ -1,6 +1,5 @@
 
 import java.util.Date;
-import java.util.List;
 
 import Exceptions.ParserExceptions.*;
 
@@ -70,17 +69,6 @@ public class Parser {
 		}
 	}
 	
-	/**
-	 * Get the task to send for editing from the input (THIS METHOD ASSUMES THE FIRST WORD IS Edit).
-	 * @param input User input.
-	 * @return TaskToEdit to be edited.
-	 * @throws InvalidTaskTimeException Task time entered is invalid.
-	 * @throws TaskTimeOutOfBoundException Task time entered is out of bound.
-	 * @throws InvalidInputException Input entered is invalid.
-	 * @throws InvalidTaskDateException Task date entered is invalid.
-	 * @throws TaskDateAlreadyPassedException 
-	 */
-	
 	public int findTokenIndex(String input) {
 		String[] tokens = divideTokens(input);
 		// Get Index
@@ -106,19 +94,12 @@ public class Parser {
 		}
 	}
 	
-	public String extractEditTokens(String input, EditType editType) {
-		String[] tokens = divideTokens(input);
-		switch (editType) {
-		case DURATION:
-			return tokens[3];
-		default:
-			return getArgumentForEditing(input);
-		}
-	}
 	
-	public Date extractDateTokens(String input) throws TaskDateAlreadyPassedException, InvalidTaskDateException, InvalidTaskTimeException, TaskTimeOutOfBoundException {
-		String[] tokens = divideTokens(input);
+	public Date extractDateTokens(String input) throws TaskDateAlreadyPassedException, InvalidTaskDateException, InvalidTaskTimeException, TaskTimeOutOfBoundException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
 		String datetimeString = getArgumentForEditing(input);
+		if (datetimeString.split(" ").length != 2) {
+			throw new InvalidDateTimeFormatException();
+		}
 		Date date = DateTime.getExactDate(datetimeString.split(" ")[0]);
 		DateTime datetime = new DateTime(date);
 		datetime.parseAndAddTimeToDate(datetimeString.split(" ")[1]);
@@ -126,15 +107,23 @@ public class Parser {
 		return date;
 	}
 	
-	/**
-	 * This method helps to find the argument of the task when creating a task for editing from the user input.
-	 * @param input User Input
-	 * @return String with the Argument of the task.
-	 */
-	public String getArgumentForEditing(String input) {
-		
+	public String getArgumentForEditing(String input) throws ArgumentForEditingNotEnteredException {
+		try {
 		String[] tokens = input.split(" ", 4);
 		return tokens[3];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new ArgumentForEditingNotEnteredException();
+		}
+		
+	}
+	
+	public String getKeywordForSearch(String input) throws KeywordNotEnteredException {
+		try {
+		String[] tokens = input.split(" ", 2);
+		return tokens[1];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new KeywordNotEnteredException();
+		}
 		
 	}
 	
@@ -146,15 +135,12 @@ public class Parser {
 	 * @throws ExceededArgumentsException Numbers of argument entered is too many.
 	 * @throws InvalidTaskIndexException Index entered is invalid.
 	 */
-	public int getTaskIndexForDeleting(String input) throws NoArgumentException, 
-									ExceededArgumentsException, InvalidTaskIndexException {
+	public int getTaskIndex(String input) throws NoArgumentException, 
+									 InvalidTaskIndexException {
 		String[] tokens = divideTokens(input);
 		int index;
 		if (tokens.length == 1) {
 			throw new NoArgumentException();
-		}
-		if (tokens.length > 2) {
-			throw new ExceededArgumentsException();
 		}
 		try {
 			index = Integer.parseInt(tokens[1]);
@@ -273,6 +259,10 @@ public class Parser {
 			return Command.DELETE;
 		} else if (command.toLowerCase().equals("edit")){
 			return Command.EDIT;
+		} else if (command.toLowerCase().equals("search")) {
+			return Command.SEARCH;
+		} else if (command.toLowerCase().equals("done")) {
+			return Command.DONE;
 		} else {
 			return Command.INVALID;
 		}

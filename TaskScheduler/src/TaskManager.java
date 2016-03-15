@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import Exceptions.ParserExceptions.ArgumentForEditingNotEnteredException;
+import Exceptions.ParserExceptions.InvalidDateTimeFormatException;
 import Exceptions.ParserExceptions.InvalidInputException;
 import Exceptions.ParserExceptions.InvalidTaskDateException;
 import Exceptions.ParserExceptions.InvalidTaskTimeException;
@@ -76,7 +78,7 @@ public class TaskManager implements Serializable {
 
     public void executeCommand(String input) throws NoInputException,
             InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException,
-            TaskDateAlreadyPassedException, InvalidTaskDateException {
+            TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
         Command commandType = parser.getCommand(input);
         System.out.println(commandType.toString());
         switch (commandType) {
@@ -93,7 +95,7 @@ public class TaskManager implements Serializable {
             case DELETE :
                 int deleteIndex = 0;
                 try {
-                    deleteIndex = parser.getTaskIndexForDeleting(input);
+                    deleteIndex = parser.getTaskIndex(input);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -124,17 +126,17 @@ public class TaskManager implements Serializable {
 
     private void editTask(String input) throws InvalidTaskTimeException,
             TaskTimeOutOfBoundException, InvalidInputException,
-            TaskDateAlreadyPassedException, InvalidTaskDateException {
+            TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
         int index = parser.findTokenIndex(input);
         EditType editType = parser.findEditTaskType(input);
         if (editType == EditType.DATETIME) {
             Date date = parser.extractDateTokens(input);
             getTask(index).setTimeStart(date);
         } else if (editType == EditType.NAME) {
-            String name = parser.extractEditTokens(input, editType);
+            String name = parser.getArgumentForEditing(input);
             getTask(index).setName(name);
         } else {
-            String duration = parser.extractEditTokens(input, editType);
+            String duration = parser.getArgumentForEditing(input);
             getTask(index).setDuration(Integer.parseInt(duration));
         }
     }
