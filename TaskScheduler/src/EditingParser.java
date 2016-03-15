@@ -1,0 +1,68 @@
+import java.util.Date;
+
+import Exceptions.ParserExceptions.ArgumentForEditingNotEnteredException;
+import Exceptions.ParserExceptions.InvalidDateTimeFormatException;
+import Exceptions.ParserExceptions.InvalidInputException;
+import Exceptions.ParserExceptions.InvalidTaskDateException;
+import Exceptions.ParserExceptions.InvalidTaskTimeException;
+import Exceptions.ParserExceptions.TaskDateAlreadyPassedException;
+import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
+
+public class EditingParser {
+	private static EditingParser instance = null;
+	
+	public static EditingParser getInstance() {
+		if (instance == null) {
+			instance = new EditingParser();
+		}
+		return instance;
+	}
+	
+	public int findTokenIndex(String input) {
+		String[] tokens = Parser.divideTokens(input);
+		// Get Index
+		int index = Integer.valueOf(tokens[1]);
+		return index;
+	}
+	
+	public EditType findEditTaskType(String input) throws InvalidTaskTimeException, 
+										TaskTimeOutOfBoundException, InvalidInputException, TaskDateAlreadyPassedException, InvalidTaskDateException {
+		
+		String[] tokens = Parser.divideTokens(input);
+		// Get Arguments
+		switch (tokens[2]) {
+			// For Duration Edit Case, simply get the duration from the input and add it.
+			case "duration":
+				return EditType.DURATION;
+			// For Name Edit Case, simply get the name from the input and add it.
+			case "name":
+				return EditType.NAME;
+			// For DateTime Edit Case, get date, then time, then compile date and add.
+			default:
+				return EditType.DATETIME;
+		}
+	}
+	
+	
+	public Date extractDateTokens(String input) throws TaskDateAlreadyPassedException, InvalidTaskDateException, InvalidTaskTimeException, TaskTimeOutOfBoundException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
+		String datetimeString = getArgumentForEditing(input);
+		if (datetimeString.split(" ").length != 2) {
+			throw new InvalidDateTimeFormatException();
+		}
+		Date date = DateTime.getExactDate(datetimeString.split(" ")[0]);
+		DateTime datetime = new DateTime(date);
+		datetime.parseAndAddTimeToDate(datetimeString.split(" ")[1]);
+		date = datetime.getDatePlusTime();
+		return date;
+	}
+	
+	public String getArgumentForEditing(String input) throws ArgumentForEditingNotEnteredException {
+		try {
+		String[] tokens = input.split(" ", 4);
+		return tokens[3];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new ArgumentForEditingNotEnteredException();
+		}
+		
+	}
+}

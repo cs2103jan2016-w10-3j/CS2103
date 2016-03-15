@@ -34,7 +34,7 @@ public class TaskManager implements Serializable {
         if (instance == null) {
             instance = new TaskManager();
             tasks = new ArrayList<Task>();
-            parser = new Parser();
+            parser = Parser.getInstance();
             storage = new Storage();
             loadTasks();
         }
@@ -106,7 +106,7 @@ public class TaskManager implements Serializable {
             case ADD :
                 Task task = null;
                 try {
-                    task = parser.getTaskForAdding(input);
+                    task = parser.getAddingParser().getTaskForAdding(input);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -117,7 +117,7 @@ public class TaskManager implements Serializable {
             case DELETE :
                 int deleteIndex = 0;
                 try {
-                    deleteIndex = parser.getTaskIndex(input);
+                    deleteIndex = parser.getDeletingParser().getTaskIndex(input);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -187,23 +187,23 @@ public class TaskManager implements Serializable {
 	}
 
     private void completeTask(String input) {
-        int index = parser.findTokenIndex(input);
+        int index = parser.getEditingParser().findTokenIndex(input);
         getTask(index).setDoneStatus(true);
     }
 
     private void editTask(String input) throws InvalidTaskTimeException,
             TaskTimeOutOfBoundException, InvalidInputException,
             TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
-        int index = parser.findTokenIndex(input);
-        EditType editType = parser.findEditTaskType(input);
+        int index = parser.getEditingParser().findTokenIndex(input);
+        EditType editType = parser.getEditingParser().findEditTaskType(input);
         if (editType == EditType.DATETIME) {
-            Date date = parser.extractDateTokens(input);
+            Date date = parser.getEditingParser().extractDateTokens(input);
             getTask(index).setTimeStart(date);
         } else if (editType == EditType.NAME) {
-            String name = parser.getArgumentForEditing(input);
+            String name = parser.getEditingParser().getArgumentForEditing(input);
             getTask(index).setName(name);
         } else {
-            String duration = parser.getArgumentForEditing(input);
+            String duration = parser.getEditingParser().getArgumentForEditing(input);
             getTask(index).setDuration(Integer.parseInt(duration));
         }
     }
