@@ -41,6 +41,14 @@ public class TaskManager implements Serializable {
     public static void loadTasks() {
         tasks = storage.readTasks();
     }
+    
+    public List<Task> existingList(){
+        return tasks;
+    }
+    
+    public void newList(List<Task> list){
+        tasks = list;
+    }
 
     public String[] getTaskNames() {
 
