@@ -61,4 +61,11 @@ public class TaskManagerTest {
         assertEquals(taskManager.getNumberOfTasks(), 4);
     }
     
+    @Test
+    public void testDeleteCommand() throws NoInputException, InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException, TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
+        taskManager.executeCommand("delete 1");
+        System.out.println(taskManager.getTaskNames()[1]);
+        assertEquals(taskManager.getNumberOfTasks(), 2);
+    }
+    
 }
