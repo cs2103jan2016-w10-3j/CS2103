@@ -1,4 +1,6 @@
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import Exceptions.ParserExceptions.ArgumentForEditingNotEnteredException;
 import Exceptions.ParserExceptions.InvalidDateTimeFormatException;
@@ -10,6 +12,9 @@ import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 
 public class EditingParser {
 	private static EditingParser instance = null;
+	
+	private static final Logger logger = Logger.getLogger(EditingParser.class.getName());
+	
 	
 	public static EditingParser getInstance() {
 		if (instance == null) {
@@ -65,6 +70,7 @@ public class EditingParser {
 		String[] tokens = input.split(" ", 4);
 		return tokens[3];
 		} catch (ArrayIndexOutOfBoundsException e) {
+			logger.log(Level.SEVERE, e.toString(), e);
 			throw new ArgumentForEditingNotEnteredException();
 		}
 		

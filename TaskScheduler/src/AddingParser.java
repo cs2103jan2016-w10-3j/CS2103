@@ -1,4 +1,8 @@
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import Exceptions.ParserExceptions.InvalidInputException;
 import Exceptions.ParserExceptions.InvalidTaskDateException;
@@ -15,6 +19,10 @@ public class AddingParser {
 	
 	private final String SEPARATOR = "||";
 	private static AddingParser instance = null;
+	
+	private static final Logger logger = Logger.getLogger(AddingParser.class.getName());
+    DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
+    DateFormat dfDateOnly = new SimpleDateFormat("MM/dd/yyyy");
 	
 	public static AddingParser getInstance() {
 		if (instance == null) {
@@ -92,7 +100,7 @@ public class AddingParser {
 		}
 				
 		if (i == tokens.length) {
-			// throw new TaskTimeOrSeparatorNotEnteredException();
+			logger.log(Level.FINE, "task with name {0} added.", new Object[]{name});
 			return new Task(name, date, exactTime, duration);
 		}
 		
@@ -106,6 +114,7 @@ public class AddingParser {
 		// Return a new task if duration and exact time is not specified
 		if (i == tokens.length) {
 			exactTime = false;
+			logger.log(Level.FINE, "task with name {0}, starting time {1} added.", new Object[]{name, dfDateOnly.format(date)});
 			return new Task(name, date, exactTime, duration);
 		}
 		
@@ -117,6 +126,7 @@ public class AddingParser {
 		// Return the task if the exact time is valid
 		exactTime = true;
 		if (i == tokens.length) {
+			logger.log(Level.FINE, "task with name {0}, starting time {1} added.", new Object[]{name, df.format(date)});
 			return new Task(name, date, exactTime, duration);
 		}
 		
@@ -124,10 +134,12 @@ public class AddingParser {
 		try {
 			duration = DateTime.getTotalMin(tokens[i]);
 		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.toString(), e);
 			throw new InvalidTaskDurationException();
 		}
 		
 		// All input valid, return a fully defined task
+        logger.log(Level.FINE, "task with name {0}, duration {1}, starting time {2} added.", new Object[]{name, duration, df.format(date)});
 		return new Task(name, date, exactTime, duration);	
 	}
 	

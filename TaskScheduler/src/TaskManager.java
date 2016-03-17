@@ -1,10 +1,14 @@
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import Exceptions.ParserExceptions.ArgumentForEditingNotEnteredException;
 import Exceptions.ParserExceptions.InvalidDateTimeFormatException;
@@ -29,6 +33,9 @@ public class TaskManager implements Serializable {
     private static Storage storage;
     private static Stack<Task> undo = new Stack<Task>();
     private static Stack<Command> operand = new Stack<Command>();
+    
+    private static final Logger logger = Logger.getLogger(TaskManager.class.getName());
+    DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
 
     public static TaskManager getInstance() {
         if (instance == null) {
@@ -37,6 +44,7 @@ public class TaskManager implements Serializable {
             parser = Parser.getInstance();
             storage = new Storage();
             loadTasks();
+            logger.log(Level.FINE, "Program initialised with tasks loaded from file.");
         }
         return instance;
     }
@@ -121,6 +129,7 @@ public class TaskManager implements Serializable {
                 try {
                     task = parser.getAddingParser().getTaskForAdding(input);
                 } catch (Exception e) {
+                	logger.log(Level.SEVERE, e.toString(), e);
                     e.printStackTrace();
                 }
                 addTask(task);
@@ -132,12 +141,15 @@ public class TaskManager implements Serializable {
                 try {
                     deleteIndex = parser.getDeletingParser().getTaskIndex(input);
                 } catch (Exception e) {
+                	logger.log(Level.SEVERE, e.toString(), e);
                     e.printStackTrace();
                 }
                 if (deleteIndex >= 0 && deleteIndex < getNumberOfTasks()) {
                     addOnUndoStack(commandType, tasks.get(deleteIndex));
                     removeTask(deleteIndex);
+                    logger.log(Level.FINE, "task with index {0} removed.", deleteIndex);
                 }
+                
                 break;
             case EDIT :
                 int index = parser.getEditingParser().findTokenIndex(input);
@@ -154,11 +166,13 @@ public class TaskManager implements Serializable {
                 break;
             case UNDO :
                 undo();
+                logger.log(Level.FINE, "Undo the last operation.");
                 break;
             default :
                 throw new InvalidInputException();
         }
         storage.saveTasks(tasks);
+        logger.log(Level.FINE, "Tasks saved.");
     }
 
     private void addOnUndoStack(Command commandType, int index) {
@@ -207,6 +221,7 @@ public class TaskManager implements Serializable {
     	assert(input!=null);
         int index = parser.getEditingParser().findTokenIndex(input);
         getTask(index).setDoneStatus(true);
+        logger.log(Level.FINE, "Task {0} has been marked as done.", index);
     }
 
     private void editTask(String input) throws InvalidTaskTimeException,
@@ -219,12 +234,15 @@ public class TaskManager implements Serializable {
         if (editType == EditType.DATETIME) {
             Date date = parser.getEditingParser().extractDateTokens(input);
             getTask(index).setTimeStart(date);
+            logger.log(Level.FINE, "Date and time of the task {0} has been changed to {1}.", new Object[]{index, df.format(date)});
         } else if (editType == EditType.NAME) {
             String name = parser.getEditingParser().getArgumentForEditing(input);
             getTask(index).setName(name);
+            logger.log(Level.FINE, "Name of the task {0} has been changed to {1}.", new Object[]{index, name});
         } else {
             String duration = parser.getEditingParser().getArgumentForEditing(input);
             getTask(index).setDuration(Integer.parseInt(duration));
+            logger.log(Level.FINE, "Duration of the task {0} has been changed to {1}", new Object[]{index, duration});
         }
     }
 
@@ -241,6 +259,7 @@ public class TaskManager implements Serializable {
                 occurance++;
             }
         }
+        logger.log(Level.FINE, "A search with keyword {0} has been made", stringToSearchFor);
         System.out.println("total occurance for haha string is" + occurance);
     }
 

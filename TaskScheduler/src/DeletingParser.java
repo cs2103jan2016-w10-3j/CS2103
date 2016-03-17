@@ -1,3 +1,6 @@
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import Exceptions.ParserExceptions.ExceededArgumentsException;
 import Exceptions.ParserExceptions.InvalidTaskIndexException;
 import Exceptions.ParserExceptions.NoArgumentException;
@@ -5,6 +8,8 @@ import Exceptions.ParserExceptions.NoArgumentException;
 public class DeletingParser {
 	
 	private static DeletingParser instance = null;
+	
+	private static final Logger logger = Logger.getLogger(DeletingParser.class.getName());
 	
 	public static DeletingParser getInstance() {
 		if (instance == null) {
@@ -32,6 +37,7 @@ public class DeletingParser {
 		try {
 			index = Integer.parseInt(tokens[1]);
 		} catch (NumberFormatException e) {
+			logger.log(Level.SEVERE, e.toString(), e);
 			throw new InvalidTaskIndexException();
 		}
 		return index;
