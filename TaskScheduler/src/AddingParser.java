@@ -67,6 +67,7 @@ public class AddingParser {
 	private Task tryGettingTask(String input) throws NoArgumentException, TaskNameNotEnteredException, 
 									TaskTimeOrSeparatorNotEnteredException, TaskDateNotEnteredException, 
 									InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidTaskDurationException, TaskDateAlreadyPassedException, InvalidTaskDateException {
+		assert(input!=null);
 		String[] tokens = Parser.divideTokens(input);
 		if (tokens.length == 1) {
 			throw new NoArgumentException();
@@ -136,6 +137,7 @@ public class AddingParser {
 	 * @return Whether task name is entered.
 	 */
 	private boolean taskNameIsEntered(String taskName) {
+		assert(taskName!=null);
 		return !taskName.equalsIgnoreCase(SEPARATOR);
 	}
 }

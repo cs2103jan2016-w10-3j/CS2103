@@ -48,6 +48,7 @@ public class DateTime {
 	}
 	
 	public Date getDatePlusTime() {
+		assert(date!=null);
 		calendar.setTime(date);
 		calendar.set(Calendar.HOUR, 0);
 		calendar.set(Calendar.MINUTE, 0);
@@ -59,6 +60,7 @@ public class DateTime {
 	
 	public void parseAndAddTimeToDate(String token) throws InvalidTaskTimeException, TaskTimeOutOfBoundException {
 		String timeTokens[] = getTimeStringToken(token);
+		assert (timeTokens.length==2);
 		try {
 			hr = DateTime.getTimeElement(timeTokens[0]);
 			min = DateTime.getTimeElement(timeTokens[1]);
@@ -96,6 +98,7 @@ public class DateTime {
 	public static int getTotalMin(String timeToken) throws InvalidTaskTimeException, InvalidTaskDurationException {
 		int hr, min;
 		String[] timeTokens = getDurationStringToken(timeToken);
+		assert(timeTokens.length==2);
 		hr = getTimeElement(timeTokens[0]);
 		min = getTimeElement(timeTokens[1]);
 		if (hr < 0 || min < 0) {
@@ -157,6 +160,7 @@ public class DateTime {
 	public static Date getExactDate(String dateString) throws TaskDateAlreadyPassedException, 
 										InvalidTaskDateException {
 		Date date;
+		assert(dateString!=null);
 		try {
 			date = dateParse(dateString);
 			if (date.before(new Date())) {
@@ -186,6 +190,7 @@ public class DateTime {
 	 * @throws ParseException Date cannot be parsed.
 	 */
 	private static Date dateParse(String date) throws ParseException {
+		assert(date!=null);
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		df.setLenient(false);
 		return df.parse(date);

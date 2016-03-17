@@ -23,6 +23,7 @@ public class DeletingParser {
 	 */
 	public int getTaskIndex(String input) throws NoArgumentException, 
 									 InvalidTaskIndexException {
+		assert(input!=null);
 		String[] tokens = Parser.divideTokens(input);
 		int index;
 		if (tokens.length == 1) {

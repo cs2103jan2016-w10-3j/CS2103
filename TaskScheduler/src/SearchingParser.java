@@ -12,6 +12,7 @@ public class SearchingParser {
 	}
 	
 	public String getKeywordForSearch(String input) throws KeywordNotEnteredException {
+		assert(input!=null);
 		try {
 		String[] tokens = input.split(" ", 2);
 		return tokens[1];

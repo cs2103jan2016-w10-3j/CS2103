@@ -19,6 +19,7 @@ public class EditingParser {
 	}
 	
 	public int findTokenIndex(String input) {
+		assert(input!=null);
 		String[] tokens = Parser.divideTokens(input);
 		// Get Index
 		int index = Integer.valueOf(tokens[1]);
@@ -29,6 +30,7 @@ public class EditingParser {
 										TaskTimeOutOfBoundException, InvalidInputException, TaskDateAlreadyPassedException, InvalidTaskDateException {
 		
 		String[] tokens = Parser.divideTokens(input);
+		assert(tokens!=null);
 		// Get Arguments
 		switch (tokens[2]) {
 			// For Duration Edit Case, simply get the duration from the input and add it.
@@ -46,6 +48,7 @@ public class EditingParser {
 	
 	public Date extractDateTokens(String input) throws TaskDateAlreadyPassedException, InvalidTaskDateException, InvalidTaskTimeException, TaskTimeOutOfBoundException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
 		String datetimeString = getArgumentForEditing(input);
+		assert(datetimeString!=null);
 		if (datetimeString.split(" ").length != 2) {
 			throw new InvalidDateTimeFormatException();
 		}
@@ -57,6 +60,7 @@ public class EditingParser {
 	}
 	
 	public String getArgumentForEditing(String input) throws ArgumentForEditingNotEnteredException {
+		assert(input!=null);
 		try {
 		String[] tokens = input.split(" ", 4);
 		return tokens[3];

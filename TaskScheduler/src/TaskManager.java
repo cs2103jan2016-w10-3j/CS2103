@@ -113,6 +113,7 @@ public class TaskManager implements Serializable {
             TaskDateAlreadyPassedException, InvalidTaskDateException,
             ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
         Command commandType = parser.getCommand(input);
+        assert(commandType!=null);
         System.out.println(commandType.toString());
         switch (commandType) {
             case ADD :
@@ -162,6 +163,7 @@ public class TaskManager implements Serializable {
 
     private void addOnUndoStack(Command commandType, int index) {
         Task task = tasks.get(index);
+        assert(task!=null);
         addOnUndoStack(
                 commandType,
                 new Task(task.getName(), task.getTimeStart(), task.isExactTime(), task
@@ -202,6 +204,7 @@ public class TaskManager implements Serializable {
     }
 
     private void completeTask(String input) {
+    	assert(input!=null);
         int index = parser.getEditingParser().findTokenIndex(input);
         getTask(index).setDoneStatus(true);
     }
@@ -210,6 +213,7 @@ public class TaskManager implements Serializable {
             TaskTimeOutOfBoundException, InvalidInputException,
             TaskDateAlreadyPassedException, InvalidTaskDateException,
             ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
+    	assert(input!=null);
         int index = parser.getEditingParser().findTokenIndex(input);
         EditType editType = parser.getEditingParser().findEditTaskType(input);
         if (editType == EditType.DATETIME) {
@@ -225,6 +229,7 @@ public class TaskManager implements Serializable {
     }
 
     private void searchTask(String input) {
+    	assert(input!=null);
         // String stringToSearchFor = parser.getStringToSearchFor(input);
         String stringToSearchFor = "haha";
         boolean contains = false;
@@ -264,6 +269,7 @@ public class TaskManager implements Serializable {
     }
 
     private boolean isClash(Task task, Task currentTasks) {
+    	assert(task!=null);
         long taskTime = task.getTimeStart().getTime();
         int taskDuration = task.getDuration() * 1000 * 60;
         long currentTaskTime = currentTasks.getTimeStart().getTime();
