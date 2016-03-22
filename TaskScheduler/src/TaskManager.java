@@ -143,6 +143,7 @@ public class TaskManager implements Serializable {
                 } catch (Exception e) {
                 	logger.log(Level.SEVERE, e.toString(), e);
                     e.printStackTrace();
+                    break;
                 }
                 if (deleteIndex >= 0 && deleteIndex < getNumberOfTasks()) {
                     addOnUndoStack(commandType, tasks.get(deleteIndex));
