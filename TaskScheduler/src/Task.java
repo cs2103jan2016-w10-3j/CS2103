@@ -63,7 +63,9 @@ public class Task implements Serializable {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Name : " + this.name + "\n");
-		sb.append(" TimeStart : " + this.timeStart.toString() + "\n");
+		if (timeStart != null) {
+			sb.append(" TimeStart : " + this.timeStart.toString() + "\n");
+		}
 		sb.append(" Interval : " + this.duration + "\n");
 		sb.append(" ExactTime : " + this.exactTime + "\n");
 		return sb.toString();
