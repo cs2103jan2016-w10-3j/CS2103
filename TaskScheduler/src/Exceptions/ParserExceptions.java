@@ -18,6 +18,7 @@ public class ParserExceptions {
 	private static final String MESSAGE_ERROR_KEYWORD_NOT_ENTERED = "Keyword for searching is not entered.";
 	private static final String MESSAGE_ERROR_ARGUMENT_FOR_EDITING_NOT_ENTERED = "Contents to be edited is not entered.";
 	private static final String MESSAGE_ERROR_DATETIME_FORMAT_INVALID = "Datetime format entered is invalid.";
+	private static final String MESSAGE_ERROR_INPUT_TOO_LONG = "Too many arguments entered.";
 	
 	public static class NoInputException extends Exception {
 		private static final long serialVersionUID = 1L;
@@ -144,6 +145,14 @@ public class ParserExceptions {
 
 		public InvalidDateTimeFormatException() {
 			super(MESSAGE_ERROR_DATETIME_FORMAT_INVALID);
+		}
+	}
+	
+	public static class AddingInputTooLongException extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		public AddingInputTooLongException() {
+			super(MESSAGE_ERROR_INPUT_TOO_LONG);
 		}
 	}
 }

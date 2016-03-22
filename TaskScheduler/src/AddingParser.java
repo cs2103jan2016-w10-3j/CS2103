@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import Exceptions.ParserExceptions.AddingInputTooLongException;
 import Exceptions.ParserExceptions.InvalidInputException;
 import Exceptions.ParserExceptions.InvalidTaskDateException;
 import Exceptions.ParserExceptions.InvalidTaskDurationException;
@@ -19,6 +20,8 @@ public class AddingParser {
 	
 	private final String SEPARATOR = "||";
 	private static AddingParser instance = null;
+	private final Integer maxFlexibleTokens = 3;
+	private String flexibleTokens[];
 	
 	private static final Logger logger = Logger.getLogger(AddingParser.class.getName());
     DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
@@ -49,7 +52,7 @@ public class AddingParser {
 	public Task getTaskForAdding(String input) throws InvalidInputException, NoArgumentException, 
 						TaskNameNotEnteredException, TaskTimeOrSeparatorNotEnteredException, 
 						TaskDateNotEnteredException, InvalidTaskTimeException, TaskTimeOutOfBoundException, 
-						InvalidTaskDurationException, TaskDateAlreadyPassedException, InvalidTaskDateException {
+						InvalidTaskDurationException, TaskDateAlreadyPassedException, InvalidTaskDateException, AddingInputTooLongException {
 		
 		if (tryGettingTask(input) == null) {
 			throw new InvalidInputException();
@@ -71,10 +74,11 @@ public class AddingParser {
 	 * @throws InvalidTaskDurationException Task duration entered is invalid.
 	 * @throws InvalidTaskDateException Task date entered is invalid.
 	 * @throws TaskDateAlreadyPassedException 
+	 * @throws AddingInputTooLongException 
 	 */
 	private Task tryGettingTask(String input) throws NoArgumentException, TaskNameNotEnteredException, 
 									TaskTimeOrSeparatorNotEnteredException, TaskDateNotEnteredException, 
-									InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidTaskDurationException, TaskDateAlreadyPassedException, InvalidTaskDateException {
+									InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidTaskDurationException, TaskDateAlreadyPassedException, InvalidTaskDateException, AddingInputTooLongException {
 		assert(input!=null);
 		String[] tokens = Parser.divideTokens(input);
 		if (tokens.length == 1) {
@@ -85,6 +89,10 @@ public class AddingParser {
 		Date date = null;
 		int duration = 0;
 		boolean exactTime = false;
+		boolean dateEntered = false;
+		boolean timeEntered = false;
+		boolean durationEntered = false;
+		
 		if (!taskNameIsEntered(tokens[i])) {
 			throw new TaskNameNotEnteredException();
 		}
@@ -104,43 +112,71 @@ public class AddingParser {
 			return new Task(name, date, exactTime, duration);
 		}
 		
-		// Try to get date if format is correct till this stage
-		i++;
-		if (i == tokens.length) {
-			throw new TaskDateNotEnteredException();
-		}
-		date = DateTime.getExactDate(tokens[i++]);
+		// Get Flexible Tokens
+		String intermediate = input.split("\\s\\|\\|\\s")[1];
+		flexibleTokens = intermediate.split(" ");
+		int timeToken = 0;
 		
-		// Return a new task if duration and exact time is not specified
-		if (i == tokens.length) {
-			exactTime = false;
+		// Check if Maximum 3 tokens
+		if (flexibleTokens.length > maxFlexibleTokens) {
+			throw new AddingInputTooLongException();
+		}
+		
+		// Check each token for type and store type
+		for (String t : flexibleTokens) {
+			
+			// Check for Date
+			try {
+				date = DateTime.getExactDate(t);
+				dateEntered = true;
+				continue;
+			} catch (Throwable e) {}
+			
+			// Check for Time
+			try {
+				DateTime datetime = new DateTime();
+				datetime.parseAndAddTimeToDate(t);
+				timeEntered = true;
+				for (int j = 0; j < flexibleTokens.length; j++) {
+					if (t == flexibleTokens[j]) {
+						timeToken = j;
+					}
+				}
+				continue;
+			} catch (Throwable e) {}
+			
+			// Check for Duration
+			try {
+				DateTime datetime = new DateTime();
+				duration = DateTime.getTotalMin(t);
+				durationEntered = true;
+				continue;
+			} catch (Throwable e) {}
+			
+			// Invalid Input case
+		}
+		
+		// Merge time with date
+		if (dateEntered == true && timeEntered == true) {
+			DateTime datetime = new DateTime(date);
+			datetime.parseAndAddTimeToDate(flexibleTokens[timeToken]);
+			date = datetime.getDatePlusTime();
+		}
+		
+		// Log Appropriate Statement
+		if (dateEntered == true && timeEntered == false && durationEntered == false) {
 			logger.log(Level.FINE, "task with name {0}, starting time {1} added.", new Object[]{name, dfDateOnly.format(date)});
-			return new Task(name, date, exactTime, duration);
 		}
-		
-		// Try to get the exact time if specified
-		DateTime datetime = new DateTime(date);
-		datetime.parseAndAddTimeToDate(tokens[i++]);
-		date = datetime.getDatePlusTime();
-		
-		// Return the task if the exact time is valid
-		exactTime = true;
-		if (i == tokens.length) {
+		if (dateEntered == true && timeEntered == true && durationEntered == false) {
 			logger.log(Level.FINE, "task with name {0}, starting time {1} added.", new Object[]{name, df.format(date)});
-			return new Task(name, date, exactTime, duration);
+		}
+		if (dateEntered == true && timeEntered == true && durationEntered == true) {
+			logger.log(Level.FINE, "task with name {0}, duration {1}, starting time {2} added.", new Object[]{name, duration, df.format(date)});
 		}
 		
-		// Try to get the duration if specified
-		try {
-			duration = DateTime.getTotalMin(tokens[i]);
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.toString(), e);
-			throw new InvalidTaskDurationException();
-		}
+		// Return the task
+		return new Task(name, date, exactTime, duration);
 		
-		// All input valid, return a fully defined task
-        logger.log(Level.FINE, "task with name {0}, duration {1}, starting time {2} added.", new Object[]{name, duration, df.format(date)});
-		return new Task(name, date, exactTime, duration);	
 	}
 	
 	/**

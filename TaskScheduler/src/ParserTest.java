@@ -13,6 +13,7 @@ import Exceptions.ParserExceptions.*;
 
 public class ParserTest {
 	DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
+	DateFormat dateOnly = new SimpleDateFormat("MM/dd/yyyy");
 	
 	Parser parser;
 	@Before
@@ -27,7 +28,7 @@ public class ParserTest {
 					NoArgumentException, TaskNameNotEnteredException, 
 					TaskTimeOrSeparatorNotEnteredException, TaskDateNotEnteredException, 
 					TaskTimeOutOfBoundException, InvalidTaskDurationException, TaskDateAlreadyPassedException, 
-					InvalidTaskDateException {
+					InvalidTaskDateException, AddingInputTooLongException {
 		String s = "add sd sd ds || 05/05/2016 1:1 2.2";
 		Task t;
 		t = parser.getAddingParser().getTaskForAdding(s);
@@ -61,5 +62,25 @@ public class ParserTest {
 	public void searchTest() throws KeywordNotEnteredException {
 		String input = "search blah blah";
 		assertEquals(parser.getSearchingParser().getKeywordForSearch(input), "blah blah");
+	}
+	
+	@Test
+	public void flexibleTest() throws InvalidInputException, NoArgumentException, TaskNameNotEnteredException, TaskTimeOrSeparatorNotEnteredException, TaskDateNotEnteredException, InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidTaskDurationException, TaskDateAlreadyPassedException, InvalidTaskDateException, AddingInputTooLongException {
+		Task e;
+		String first = "add sd sd ds || 05/05/2016 1:1 2.2";
+		String second = "add work || 1:1 2.2 05/05/2016";
+		String third = "add work || 2.2 05/05/2016 1:1";
+		e = parser.getAddingParser().getTaskForAdding(first);
+		assertEquals(e.getName(), "sd sd ds");
+		assertEquals(df.format(e.getTimeStart()), "05/05/2016 01:01:00 AM");
+		assertEquals(e.getDuration(), 122);
+		e = parser.getAddingParser().getTaskForAdding(second);
+		assertEquals(e.getName(), "work");
+		assertEquals(df.format(e.getTimeStart()), "05/05/2016 01:01:00 AM");
+		assertEquals(e.getDuration(), 122);
+		e = parser.getAddingParser().getTaskForAdding(third);
+		assertEquals(e.getName(), "work");
+		assertEquals(df.format(e.getTimeStart()), "05/05/2016 01:01:00 AM");
+		assertEquals(e.getDuration(), 122);
 	}
 }
