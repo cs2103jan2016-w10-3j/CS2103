@@ -83,7 +83,7 @@ public class TaskWindow {
 				} catch (InvalidTaskTimeException e1) {
 					JOptionPane.showMessageDialog(frame, "The task time entered is invalid.");
 				} catch (TaskTimeOutOfBoundException e1) {
-					JOptionPane.showMessageDialog(frame, "The task time is out of bounds, try again.");
+					JOptionPane.showMessageDialog(frame, "The task time is out of bounds, try again");
 				} catch (TaskDateAlreadyPassedException e1) {
 					JOptionPane.showMessageDialog(frame, "The task date has already passed.");
 				} catch (InvalidTaskDateException e1) {
