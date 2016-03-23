@@ -58,4 +58,30 @@ public class Task implements Serializable {
 		sb.append(" ExactTime : " + this.exactTime + "\n");
 		return sb.toString();
 	}
+	
+	private String correctTimeNumbers(int number) {
+		if (number < 10) {
+			return "0" + number;
+		} else {
+			return "" + number;
+		}
+	}
+	
+	private String getAMOrPM(int hour) {
+		if (hour < 12) {
+			return "AM";
+		} else {
+			return "PM";
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	public String displayString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("Task Name: " + this.name + "\n");
+		sb.append("Task Start Time: " + correctTimeNumbers(this.timeStart.getHours()) + ":" + correctTimeNumbers(this.timeStart.getMinutes()) + " " + getAMOrPM(this.timeStart.getHours()) + "\n");
+		sb.append("Task Start Date: " + correctTimeNumbers(this.timeStart.getDay()) + "/" + correctTimeNumbers(this.timeStart.getMonth()) + "/" + this.timeStart.getYear() + "\n");
+		sb.append("Task Estimated Length: " + this.duration + "\n");
+		return sb.toString();
+	}
 }
