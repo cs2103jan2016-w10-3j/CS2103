@@ -43,8 +43,8 @@ public class TaskWindow {
 					TaskWindow window = new TaskWindow();
 					window.frame.setVisible(true);
 					ClassLoader cl = this.getClass().getClassLoader();
-//				    ImageIcon programIcon = new ImageIcon(cl.getResource("Icon.png"));
-//				    frame.setIconImage(programIcon.getImage());
+				    ImageIcon programIcon = new ImageIcon(cl.getResource("Icon.png"));
+				    frame.setIconImage(programIcon.getImage());
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(frame, "The application was unable to run at this time");
 					e.printStackTrace();
