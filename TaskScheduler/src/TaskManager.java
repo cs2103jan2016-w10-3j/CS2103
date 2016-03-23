@@ -1,8 +1,17 @@
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import Exceptions.ParserExceptions.ArgumentForEditingNotEnteredException;
+import Exceptions.ParserExceptions.InvalidDateTimeFormatException;
 import Exceptions.ParserExceptions.InvalidInputException;
 import Exceptions.ParserExceptions.InvalidTaskDateException;
 import Exceptions.ParserExceptions.InvalidTaskTimeException;
@@ -17,113 +26,294 @@ import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
  * returns to UI and also saves
  */
 public class TaskManager implements Serializable {
-	private static final long serialVersionUID = 5891852874329459561L;
-	private static List<Task> tasks;
-	private static TaskManager instance = null;
-	private static Parser parser;
-	private static Storage storage;
+    private static final long serialVersionUID = 5891852874329459561L;
+    private static List<Task> tasks;
+    private static TaskManager instance = null;
+    private static Parser parser;
+    private static Storage storage;
+    private static Stack<Task> undo = new Stack<Task>();
+    private static Stack<Command> operand = new Stack<Command>();
+    
+    private static final Logger logger = Logger.getLogger(TaskManager.class.getName());
+    DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
 
+    public static TaskManager getInstance() {
+        if (instance == null) {
+            instance = new TaskManager();
+            tasks = new ArrayList<Task>();
+            parser = Parser.getInstance();
+            storage = new Storage();
+            loadTasks();
+            logger.log(Level.FINE, "Program initialised with tasks loaded from file.");
+        }
+        return instance;
+    }
 
-	public static TaskManager getInstance() {
-		if (instance == null) {
-			instance = new TaskManager();
-			tasks = new ArrayList<Task>();
-			parser = new Parser();
-			storage = new Storage();
-			loadTasks();
-		}
-		return instance;
-	}
+    public static void loadTasks() {
+        tasks = storage.readTasks();
+    }
 
-	public static void loadTasks() {
-		tasks = storage.readTasks();
-	}
+    public List<Task> existingList() {
+        return tasks;
+    }
 
-	public String[] getTaskNames() {
+    public void newList(List<Task> list) {
+        tasks = list;
+    }
 
-		String[] taskNames = new String[tasks.size()];
-		for (int i = 0; i < tasks.size(); i++) {
-			taskNames[i] = tasks.get(i).getName();
-		}
-		//System.out.println(taskNames.length);
-		return taskNames;
-	}
+    public String[] getTaskNames() {
 
-	public int getNumberOfTasks() {
-		return tasks.size();
-	}
+        String[] taskNames = new String[tasks.size()];
+        for (int i = 0; i < tasks.size(); i++) {
+            taskNames[i] = i + ": " + tasks.get(i).getName();
+        }
+        // System.out.println(taskNames.length);
+        return taskNames;
+    }
 
-	private void removeTask(int index) {
-		tasks.remove(index);
-	}
+    public int getNumberOfTasks() {
+        return tasks.size();
+    }
 
-	public Task getTask(int index) {
-		return tasks.get(index);
-	}
+    private void removeTask(int index) {
+        tasks.remove(index);
+    }
 
-	public void executeCommand(String input) throws NoInputException, InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException, TaskDateAlreadyPassedException, InvalidTaskDateException {
-		Command commandType = parser.getCommand(input);
-		System.out.println(commandType.toString());
-		switch (commandType) {
-		case ADD:
-			Task task = null;
-			try {
-				task = parser.getTaskForAdding(input);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			addTask(task);
-			break;
-		case DELETE:
-			int deleteIndex = 0;
-			try {
-				deleteIndex = parser.getTaskIndexForDeleting(input);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			if (deleteIndex >= 0 && deleteIndex < getNumberOfTasks()) {
-				removeTask(deleteIndex);
-			}
-			break;
-		case EDIT:
-			editTask(input);
-			break;
-		default:
-			throw new InvalidInputException();
-		}
-		storage.saveTasks(tasks);
-	}
+    public Task getTask(int index) {
+        return tasks.get(index);
+    }
 
-	private void editTask(String input) throws InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidInputException, TaskDateAlreadyPassedException, InvalidTaskDateException {
-		int index = parser.findTokenIndex(input);
-		EditType editType = parser.findEditTaskType(input);
-		if (editType == EditType.DATETIME) {
-			Date date = parser.extractDateTokens(input);
-			getTask(index).setTimeStart(date);
-		}
-		else if (editType == EditType.NAME) {
-			String name = parser.extractEditTokens(input, editType);
-			getTask(index).setName(name);
-		}
-		else {
-			String duration = parser.extractEditTokens(input, editType);
-			getTask(index).setDuration(Integer.parseInt(duration));
-		}
-	}
+    public int getIndexOfTask(Task task) {
+        for (int i = 0; i < tasks.size(); i++) {
+            if (task == tasks.get(i)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
+    public void sortAndRefresh() {// sorts the list so that the most urgent is
+                                  // at the top
+        Collections.sort(tasks, new Comparator<Task>() {
+            @Override
+            public int compare(Task lhs, Task rhs) {
+                if (lhs.isExactTime() && !rhs.isExactTime()) {
+                    return -1;
+                } 
+//                else if(!lhs.isExactTime() && rhs.isExactTime()){
+//                    System.out.println(lhs.getName() + " " + rhs.getName()+"comapre rhs excttime");
+//                    return -1;
+//                } 
+                else if (lhs.isExactTime() && rhs.isExactTime()) {
+                    return lhs.getTimeStart().getTime() < rhs.getTimeStart().getTime() ? -1
+                            : (lhs.getTimeStart().getTime() < rhs.getTimeStart()
+                                    .getTime()) ? 1 : 0;
+                } else {
+                    return 0;
+                }
 
-	private void addTask(Task task) {
-		tasks.add(task);
-	}
+            }
+        });
+    }
 
-	@Override
-	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		int i = 0;
-		for (Task task : tasks) {
-			sb.append("Task " + i + ": " + task.toString());
-			i++;
-		}
-		return sb.toString();
-	}
+    public void executeCommand(String input) throws NoInputException,
+            InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException,
+            TaskDateAlreadyPassedException, InvalidTaskDateException,
+            ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
+        Command commandType = parser.getCommand(input);
+        assert(commandType!=null);
+        System.out.println(commandType.toString());
+        switch (commandType) {
+            case ADD :
+                Task task = null;
+                try {
+                    task = parser.getAddingParser().getTaskForAdding(input);
+                } catch (Exception e) {
+                	logger.log(Level.SEVERE, e.toString(), e);
+                    e.printStackTrace();
+                }
+                addTask(task);
+                sortAndRefresh();
+                addOnUndoStack(commandType, task);
+                break;
+            case DELETE :
+                int deleteIndex = 0;
+                try {
+                    deleteIndex = parser.getDeletingParser().getTaskIndex(input);
+                } catch (Exception e) {
+                	logger.log(Level.SEVERE, e.toString(), e);
+                    e.printStackTrace();
+                    break;
+                }
+                if (deleteIndex >= 0 && deleteIndex < getNumberOfTasks()) {
+                    addOnUndoStack(commandType, tasks.get(deleteIndex));
+                    removeTask(deleteIndex);
+                    logger.log(Level.FINE, "task with index {0} removed.", deleteIndex);
+                }
+                
+                break;
+            case EDIT :
+                int index = parser.getEditingParser().findTokenIndex(input);
+                addOnUndoStack(commandType, index);
+
+                editTask(input);
+                // sortAndRefresh();
+                break;
+            case SEARCH :
+                searchTask(input);
+                break;
+            case DONE :
+                completeTask(input);
+                break;
+            case UNDO :
+                undo();
+                logger.log(Level.FINE, "Undo the last operation.");
+                break;
+            default :
+                throw new InvalidInputException();
+        }
+        storage.saveTasks(tasks);
+        logger.log(Level.FINE, "Tasks saved.");
+    }
+
+    private void addOnUndoStack(Command commandType, int index) {
+        Task task = tasks.get(index);
+        assert(task!=null);
+        addOnUndoStack(
+                commandType,
+                new Task(task.getName(), task.getTimeStart(), task.isExactTime(), task
+                        .getDuration()));
+        addOnUndoStack(commandType, tasks.get(index));
+    }
+
+    private void addOnUndoStack(Command commandType, Task task) {
+        undo.push(task);
+        operand.push(commandType);
+    }
+
+    private void undo() {
+        Task task;
+        task = undo.pop();
+        Command op = operand.pop();
+        switch (op) {
+            case ADD :
+                int indexAdd = getIndexOfTask(task);
+                removeTask(indexAdd);
+                break;
+            case DELETE :
+                addTask(task);
+                break;
+            case EDIT :
+                int indexEdit = getIndexOfTask(task);
+                removeTask(indexEdit);
+
+                task = undo.pop();
+                operand.pop();
+
+                addTask(task);
+                break;
+            default :
+                break;
+
+        }
+    }
+
+    private void completeTask(String input) {
+    	assert(input!=null);
+        int index = parser.getEditingParser().findTokenIndex(input);
+        getTask(index).setDoneStatus(true);
+        logger.log(Level.FINE, "Task {0} has been marked as done.", index);
+    }
+
+    private void editTask(String input) throws InvalidTaskTimeException,
+            TaskTimeOutOfBoundException, InvalidInputException,
+            TaskDateAlreadyPassedException, InvalidTaskDateException,
+            ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
+    	assert(input!=null);
+        int index = parser.getEditingParser().findTokenIndex(input);
+        EditType editType = parser.getEditingParser().findEditTaskType(input);
+        if (editType == EditType.DATETIME) {
+            Date date = parser.getEditingParser().extractDateTokens(input);
+            getTask(index).setTimeStart(date);
+            logger.log(Level.FINE, "Date and time of the task {0} has been changed to {1}.", new Object[]{index, df.format(date)});
+        } else if (editType == EditType.NAME) {
+            String name = parser.getEditingParser().getArgumentForEditing(input);
+            getTask(index).setName(name);
+            logger.log(Level.FINE, "Name of the task {0} has been changed to {1}.", new Object[]{index, name});
+        } else {
+            String duration = parser.getEditingParser().getArgumentForEditing(input);
+            getTask(index).setDuration(Integer.parseInt(duration));
+            logger.log(Level.FINE, "Duration of the task {0} has been changed to {1}", new Object[]{index, duration});
+        }
+    }
+
+    private void searchTask(String input) {
+    	assert(input!=null);
+        // String stringToSearchFor = parser.getStringToSearchFor(input);
+        String stringToSearchFor = "haha";
+        boolean contains = false;
+        int occurance = 0;
+        for (Task currentTasks : tasks) {
+            contains = currentTasks.getName().toLowerCase()
+                    .contains(stringToSearchFor.toLowerCase());
+            if (contains) {
+                occurance++;
+            }
+        }
+        logger.log(Level.FINE, "A search with keyword {0} has been made", stringToSearchFor);
+        System.out.println("total occurance for haha string is" + occurance);
+    }
+
+    private void addTask(Task task) {
+        boolean canAddTask = true;
+        if (tasks == null) {
+            tasks.add(task);
+        } else if (task.isExactTime()) {
+            Date newTaskTimeStart = task.getTimeStart();
+            for (Task currentTasks : tasks) {
+                Date oldTaskTimeStart = currentTasks.getTimeStart();
+                if (newTaskTimeStart.equals(oldTaskTimeStart)) {
+                    canAddTask = false;
+                    System.out.println("task start-time is the same");
+                } else if (currentTasks.isExactTime() && canAddTask) {
+                    canAddTask = isClash(task, currentTasks);
+                }
+            }
+        }
+        if (canAddTask) {
+            tasks.add(task);
+        } else {
+            tasks.add(task);
+            System.out.println("there is a clash, but task still added");
+        }
+    }
+
+    private boolean isClash(Task task, Task currentTasks) {
+    	assert(task!=null);
+        long taskTime = task.getTimeStart().getTime();
+        int taskDuration = task.getDuration() * 1000 * 60;
+        long currentTaskTime = currentTasks.getTimeStart().getTime();
+        int currentTaskDuration = currentTasks.getDuration() * 1000 * 60;
+        if (task.getTimeStart().after(currentTasks.getTimeStart())) {
+            if (taskTime - currentTaskTime >= currentTaskDuration) {
+                return true; // doesnt clash
+            }
+        } else {
+            if (currentTaskTime - taskTime >= taskDuration) {
+                return true; // doesnt clash
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        int i = 0;
+        for (Task task : tasks) {
+            sb.append("Task " + i + ": " + task.toString());
+            i++;
+        }
+        return sb.toString();
+    }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="TaskScheduler/src"/>
+	<classpathentry kind="lib" path="TaskScheduler/lib/joda-time-2.9.2-javadoc.jar"/>
+	<classpathentry kind="lib" path="TaskScheduler/lib/joda-time-2.9.2-no-tzdb.jar"/>
+	<classpathentry kind="lib" path="TaskScheduler/lib/joda-time-2.9.2-sources.jar"/>
+	<classpathentry kind="lib" path="TaskScheduler/lib/joda-time-2.9.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

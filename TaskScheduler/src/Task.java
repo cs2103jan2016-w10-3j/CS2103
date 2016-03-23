@@ -9,16 +9,26 @@ public class Task implements Serializable {
 	private Date timeStart;
 	private int duration; //In minutes
 	private boolean exactTime;
+	private boolean done;
 
 	public Task(String name, Date timeStart, boolean exactTime, int duration) {
 		this.name = name;
 		this.timeStart = timeStart;
 		this.exactTime = exactTime;
 		this.duration = duration;
+		this.done = false;
 	}
 
 	public String getName() {
 		return name;
+	}
+	
+	public boolean getDoneStatus() {
+        return done;
+    }
+	
+	public void setDoneStatus(boolean done){
+	    this.done = done;
 	}
 
 	public void setName(String name) {
@@ -53,7 +63,9 @@ public class Task implements Serializable {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Name : " + this.name + "\n");
-		sb.append(" TimeStart : " + this.timeStart.toString() + "\n");
+		if (timeStart != null) {
+			sb.append(" TimeStart : " + this.timeStart.toString() + "\n");
+		}
 		sb.append(" Interval : " + this.duration + "\n");
 		sb.append(" ExactTime : " + this.exactTime + "\n");
 		return sb.toString();
