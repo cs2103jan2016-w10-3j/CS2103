@@ -57,7 +57,7 @@ public class EditingParser {
 		if (datetimeString.split(" ").length != 2) {
 			throw new InvalidDateTimeFormatException();
 		}
-		Date date = DateTime.getExactDate(datetimeString.split(" ")[0]);
+		Date date = DateTime.getExactDate(datetimeString.split(" ")[0], 0);
 		DateTime datetime = new DateTime(date);
 		datetime.parseAndAddTimeToDate(datetimeString.split(" ")[1]);
 		date = datetime.getDatePlusTime();

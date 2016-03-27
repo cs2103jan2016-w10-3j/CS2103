@@ -20,7 +20,7 @@ public class AddingParser {
 	
 	private final String SEPARATOR = "||";
 	private static AddingParser instance = null;
-	private final Integer maxFlexibleTokens = 3;
+	private final Integer maxFlexibleTokens = 4;
 	private String flexibleTokens[];
 	
 	private static final Logger logger = Logger.getLogger(AddingParser.class.getName());
@@ -88,6 +88,7 @@ public class AddingParser {
 		String name = "";
 		Date date = null;
 		int duration = 0;
+		int weeksToAdd = 0;
 		boolean exactTime = false;
 		boolean dateEntered = false;
 		boolean timeEntered = false;
@@ -117,7 +118,7 @@ public class AddingParser {
 		flexibleTokens = intermediate.split(" ");
 		int timeToken = 0;
 		
-		// Check if Maximum 3 tokens
+		// Check if Maximum 4 tokens
 		if (flexibleTokens.length > maxFlexibleTokens) {
 			throw new AddingInputTooLongException();
 		}
@@ -127,7 +128,11 @@ public class AddingParser {
 			
 			// Check for Date
 			try {
-				date = DateTime.getExactDate(t);
+				if (t.equalsIgnoreCase("next")) {
+					weeksToAdd = 1;
+					continue;
+				}
+				date = DateTime.getExactDate(t, weeksToAdd);
 				dateEntered = true;
 				continue;
 			} catch (Throwable e) {}
@@ -147,7 +152,6 @@ public class AddingParser {
 			
 			// Check for Duration
 			try {
-				DateTime datetime = new DateTime();
 				duration = DateTime.getTotalMin(t);
 				durationEntered = true;
 				continue;
