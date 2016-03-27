@@ -128,7 +128,7 @@ public class AddingParser {
 			
 			// Check for Date
 			try {
-				if (t.equalsIgnoreCase("next")) {
+				if (t.equalsIgnoreCase("next") && flexibleTokens[0].equalsIgnoreCase("next")) {
 					weeksToAdd = 1;
 					continue;
 				}
