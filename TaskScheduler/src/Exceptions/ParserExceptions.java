@@ -20,7 +20,9 @@ public class ParserExceptions {
 	private static final String MESSAGE_ERROR_DATETIME_FORMAT_INVALID = "Datetime format entered is invalid.";
 	private static final String MESSAGE_ERROR_INPUT_TOO_LONG = "Too many arguments entered.";
 	private static final String MESSAGE_ERROR_INDEX_INVALID = "The index entered is invalid.";
-	private static final String MESSAGE_ERROR_INDEX_NOT_ENTERED = "Please enter the index to display";
+	private static final String MESSAGE_ERROR_INDEX_NOT_ENTERED = "Please enter the index to display.";
+	private static final String MESSAGE_ERROR_SEARCH_TYPE_NOT_ENTERED = "Please enter a search type.";
+	private static final String MESSAGE_ERROR_SEARCH_NOT_IN_PAIR = "Please enter type and content one by one.";
 	
 	public static class NoInputException extends Exception {
 		private static final long serialVersionUID = 1L;
@@ -171,6 +173,22 @@ public class ParserExceptions {
 
 		public IndexInvalidException() {
 			super(MESSAGE_ERROR_INDEX_INVALID);
+		}
+	}
+	
+	public static class SearchTypeNotEnteredException extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		public SearchTypeNotEnteredException() {
+			super(MESSAGE_ERROR_SEARCH_TYPE_NOT_ENTERED);
+		}
+	}
+	
+	public static class SearchNotInPairException extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		public SearchNotInPairException() {
+			super(MESSAGE_ERROR_SEARCH_NOT_IN_PAIR);
 		}
 	}
 }

@@ -58,6 +58,9 @@ public class EditingParser {
 			throw new InvalidDateTimeFormatException();
 		}
 		Date date = DateTime.getExactDate(datetimeString.split(" ")[0], 0);
+		if (DateTime.dayAlreadyPassed(date)) {
+			throw new TaskDateAlreadyPassedException();
+		}
 		DateTime datetime = new DateTime(date);
 		datetime.parseAndAddTimeToDate(datetimeString.split(" ")[1]);
 		date = datetime.getDatePlusTime();

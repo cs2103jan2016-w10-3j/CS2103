@@ -7,7 +7,6 @@ import java.util.Date;
 import Exceptions.ParserExceptions.InvalidTaskDateException;
 import Exceptions.ParserExceptions.InvalidTaskDurationException;
 import Exceptions.ParserExceptions.InvalidTaskTimeException;
-import Exceptions.ParserExceptions.TaskDateAlreadyPassedException;
 import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 
 public class DateTime {
@@ -89,10 +88,26 @@ public class DateTime {
 	}
 	
 	/**
+	 * Return whether a given hour is out of bound.
+	 * @return Whether hour is out of bound.
+	 */
+	public static boolean hrOutOfBound(int hr) {
+		return hr < 0 || hr > 24;
+	}
+	
+	/**
 	 * Return whether minute is out of bound.
 	 * @return Whether minute is out of bound.
 	 */
 	private boolean minOutOfBound() {
+		return min < 0 || min > 60;
+	}
+	
+	/**
+	 * Return whether a given minute is out of bound.
+	 * @return Whether minute is out of bound.
+	 */
+	public static boolean minOutOfBound(int min) {
 		return min < 0 || min > 60;
 	}
 	
@@ -121,7 +136,7 @@ public class DateTime {
 	 * @return A time token.
 	 * @throws InvalidTaskTimeException Task time entered is invalid.
 	 */
-	private String[] getTimeStringToken(String time) throws InvalidTaskTimeException {
+	public static String[] getTimeStringToken(String time) throws InvalidTaskTimeException {
 		String tokens[] = time.split(TIME_SEPARATOR);
 		if (tokens.length != 2 || tokens.length == 2 && tokens[0].equals("")) {
 			throw new InvalidTaskTimeException();
@@ -163,11 +178,9 @@ public class DateTime {
 	 * @param dateString Date string.
 	 * @param numOfWeekToAdd Number of weeks to add on original date.
 	 * @return A date object.
-	 * @throws TaskDateAlreadyPassedException Task date entered is already passed.
 	 * @throws InvalidTaskDateException Task date entered is invalid.
 	 */
-	public static Date getExactDate(String dateString, int numOfWeekToAdd) throws TaskDateAlreadyPassedException, 
-										InvalidTaskDateException {
+	public static Date getExactDate(String dateString, int numOfWeekToAdd) throws  InvalidTaskDateException {
 		Date date;
 		assert(dateString!=null);
 		try {
@@ -182,9 +195,6 @@ public class DateTime {
 				DateFormat dateOnly = new SimpleDateFormat("dd/MM/yyyy");
 				System.out.println("A: "+dateOnly.format(date));
 				date = DateTime.getDatePlusDays(date, numOfWeekToAdd * 7);
-				}
-				if (dayAlreadyPassed(date)) {
-					throw new TaskDateAlreadyPassedException();
 				}
 		}
 		return date;
@@ -209,7 +219,7 @@ public class DateTime {
 	 * @param day Date A date object used to compare.
 	 * @return Whether the day has already passed.
 	 */
-	private static boolean dayAlreadyPassed(Date day) {
+	public static boolean dayAlreadyPassed(Date day) {
 		return day.before(new Date());
 	}
 	

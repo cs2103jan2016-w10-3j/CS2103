@@ -59,9 +59,30 @@ public class ParserTest {
 	}
 	
 	@Test
-	public void searchTest() throws KeywordNotEnteredException {
-		String input = "search blah blah";
-		assertEquals(parser.getSearchingParser().getKeywordForSearch(input), "blah blah");
+	public void searchTest() throws KeywordNotEnteredException, SearchTypeNotEnteredException, SearchNotInPairException, InvalidTaskDateException, InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidTaskDurationException {
+		String first = "search date 04/03/2016";
+		String second = "search time 13:40";
+		String third = "search duration 2.3";
+		String fourth = "search name blah blah";
+		String fifth = "search duration 2.3 name blah blah time 13:40 date 04/03/2016";
+		String sixth = "search name blah blah duration 2.3 time 13:40 date 04/03/2016";
+		assertEquals(dateOnly.format(parser.getSearchingParser().getDateForSearch(first)), "04/03/2016");
+		assertEquals(parser.getSearchingParser().getTimeForSearch(second)[0], 13);
+		assertEquals(parser.getSearchingParser().getTimeForSearch(second)[1], 40);
+		assertEquals(parser.getSearchingParser().getDurationForSearch(third), 123);
+		assertEquals(parser.getSearchingParser().getNameForSearch(fourth), "blah blah");
+		assertEquals(dateOnly.format(parser.getSearchingParser().getDateForSearch(fifth)), "04/03/2016");
+		assertEquals(parser.getSearchingParser().getTimeForSearch(fifth)[0], 13);
+		assertEquals(parser.getSearchingParser().getTimeForSearch(fifth)[1], 40);
+		assertEquals(parser.getSearchingParser().getDurationForSearch(fifth), 123);
+		assertEquals(parser.getSearchingParser().getNameForSearch(fifth), "blah blah");
+		assertEquals(dateOnly.format(parser.getSearchingParser().getDateForSearch(sixth)), "04/03/2016");
+		assertEquals(parser.getSearchingParser().getTimeForSearch(sixth)[0], 13);
+		assertEquals(parser.getSearchingParser().getTimeForSearch(sixth)[1], 40);
+		assertEquals(parser.getSearchingParser().getDurationForSearch(sixth), 123);
+		assertEquals(parser.getSearchingParser().getNameForSearch(sixth), "blah blah");
+		
+		
 	}
 	
 	@Test

@@ -133,6 +133,9 @@ public class AddingParser {
 					continue;
 				}
 				date = DateTime.getExactDate(t, weeksToAdd);
+				if (DateTime.dayAlreadyPassed(date)) {
+					throw new TaskDateAlreadyPassedException();
+				}
 				dateEntered = true;
 				continue;
 			} catch (Throwable e) {}
