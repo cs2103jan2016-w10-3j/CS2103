@@ -43,5 +43,20 @@ public class testUndo {
 		System.out.println("after undo\n"+task.toString());
 
 	}
+	
+	@Test
+	public void test3() throws NoInputException, InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException, TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
+		TaskManager task = new TaskManager();
+		
+		task.getInstance();
+		System.out.println("before\n"+task.toString());
+		task.executeCommand("clear");
+		task.getInstance();
+		System.out.println("after\n"+task.toString());
+		task.executeCommand("clear");
+		task.getInstance();
+		System.out.println("after\n"+task.toString());
+
+	}
 
 }

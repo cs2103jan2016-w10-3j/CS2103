@@ -159,6 +159,9 @@ public class TaskManager implements Serializable {
                 editTask(input);
                 // sortAndRefresh();
                 break;
+            case CLEAR :           	
+            	removeAllTasks(commandType);
+            	break;
             case SEARCH :
                 searchTask(input);
                 break;
@@ -176,7 +179,17 @@ public class TaskManager implements Serializable {
         logger.log(Level.FINE, "Tasks saved.");
     }
 
-    private void addOnUndoStack(Command commandType, int index) {
+    private void removeAllTasks(Command commandType) {
+    	int numOfTasks = getNumberOfTasks();
+    	
+    	for(int i = numOfTasks - 1 ; 0 <= i ; i --) {
+    		addOnUndoStack(commandType, tasks.get(i));
+    		removeTask(i);
+    	}
+		
+	}
+
+	private void addOnUndoStack(Command commandType, int index) {
         Task task = tasks.get(index);
         assert(task!=null);
         addOnUndoStack(
@@ -192,8 +205,12 @@ public class TaskManager implements Serializable {
     }
 
     private void undo() {
-        Task task;
-        task = undo.pop();
+    	
+		if(operand.empty()){
+			return;
+		}
+    	
+        Task task = undo.pop();
         Command op = operand.pop();
         switch (op) {
             case ADD :
@@ -202,6 +219,24 @@ public class TaskManager implements Serializable {
                 break;
             case DELETE :
                 addTask(task);
+                break;
+            case CLEAR :
+            	
+            	do{
+            		addTask(task);
+            		
+            		if(operand.empty()){
+            			return;
+            		}
+            		
+            		op = operand.pop();
+            		task = undo.pop();
+            		           		
+            	}while(op == Command.CLEAR);
+            	
+                undo.push(task);
+                operand.push(op);
+            	           
                 break;
             case EDIT :
                 int indexEdit = getIndexOfTask(task);

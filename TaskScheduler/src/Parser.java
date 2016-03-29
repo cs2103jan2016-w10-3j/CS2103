@@ -113,6 +113,8 @@ public class Parser {
 			return Command.UNDO;
 		} else if (command.toLowerCase().equals("display")) {
 			return Command.DISPLAY;
+		} else if (command.toLowerCase().equals("clear")) {
+			return Command.CLEAR;
 		} else {
 			return Command.INVALID;
 		}
