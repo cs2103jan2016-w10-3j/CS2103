@@ -24,5 +24,8 @@
 <fullyQualifiedTypeName name="java.io.FileOutputStream"/>
 <fullyQualifiedTypeName name="java.io.ObjectOutputStream"/>
 <fullyQualifiedTypeName name="tb2.tb2.COMMAND_TYPE"/>
+<fullyQualifiedTypeName name="TaskWindow"/>
 <fullyQualifiedTypeName name="javax.swing.JOptionPane"/>
+<fullyQualifiedTypeName name="javax.swing.ImageIcon"/>
+<fullyQualifiedTypeName name="java.awt.Image"/>
 </qualifiedTypeNameHistroy>

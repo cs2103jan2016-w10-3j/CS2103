@@ -28,9 +28,10 @@ public class TaskWindow {
 	private static JFrame frame;
 	private JTextField taskEntryField;
 	private static TaskManager taskManager;
-	private int selectedIndex = 0;
-	public final JList<String> taskList = new JList<String>();
+	public int selectedIndex = 0;
+	public static final JList<String> taskList = new JList<String>();
 	public JTextPane taskDetailView;
+	private TaskWindow window = this;
 
 	/**
 	 * Launch the application.
@@ -43,8 +44,6 @@ public class TaskWindow {
 					TaskWindow window = new TaskWindow();
 					window.frame.setVisible(true);
 					ClassLoader cl = this.getClass().getClassLoader();
-//				    ImageIcon programIcon = new ImageIcon(cl.getResource("Icon.png"));
-//				    frame.setIconImage(programIcon.getImage());
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(frame, "The application was unable to run at this time");
 					e.printStackTrace();
@@ -75,7 +74,7 @@ public class TaskWindow {
 		taskEntryField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					taskManager.executeCommand(taskEntryField.getText());
+					taskManager.executeCommand(taskEntryField.getText(), window);
 				} catch (NoInputException e1) {
 					JOptionPane.showMessageDialog(frame, "No input was found.");
 				} catch (InvalidInputException e1) {
@@ -148,7 +147,7 @@ public class TaskWindow {
 		frame.getContentPane().add(taskDetailView);
 	}
 
-	private void setTaskDetailView() {
+	public void setTaskDetailView() {
 		if (selectedIndex < taskManager.getNumberOfTasks() && selectedIndex >= 0) {
 			taskDetailView.setText(taskManager.getTask(selectedIndex).displayString());
 		} else {
@@ -156,7 +155,7 @@ public class TaskWindow {
 		}
 	}
 
-	private void refreshWindow() {
+	public void refreshWindow() {
 		setTaskDetailView();
 		taskList.setModel(new AbstractListModel() {
 
@@ -168,6 +167,10 @@ public class TaskWindow {
 				return values[index];
 			}
 		});
+	}
+	
+	public void test() {
+		System.out.println(taskList.getSelectedIndex());
 	}
 
 }

@@ -7,7 +7,7 @@ public class Task implements Serializable {
 	private static final long serialVersionUID = 7775975714514675089L;
 	private String name;
 	private Date timeStart;
-	private int duration; //In minutes
+	private int duration = 0; //In minutes
 	private boolean exactTime;
 	private boolean done;
 
@@ -90,10 +90,16 @@ public class Task implements Serializable {
 	@SuppressWarnings("deprecation")
 	public String displayString() {
 		StringBuffer sb = new StringBuffer();
+		if (this.name != null) {
 		sb.append("Task Name: " + this.name + "\n");
+		}
+		if (this.timeStart != null) {
 		sb.append("Task Start Time: " + correctTimeNumbers(this.timeStart.getHours()) + ":" + correctTimeNumbers(this.timeStart.getMinutes()) + " " + getAMOrPM(this.timeStart.getHours()) + "\n");
 		sb.append("Task Start Date: " + correctTimeNumbers(this.timeStart.getDay()) + "/" + correctTimeNumbers(this.timeStart.getMonth()) + "/" + this.timeStart.getYear() + "\n");
+		}
+		if (this.duration != 0) {
 		sb.append("Task Estimated Length: " + this.duration + "\n");
+		}
 		return sb.toString();
 	}
 }

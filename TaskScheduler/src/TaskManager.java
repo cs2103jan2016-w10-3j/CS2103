@@ -116,7 +116,7 @@ public class TaskManager implements Serializable {
         });
     }
 
-    public void executeCommand(String input) throws NoInputException,
+    public void executeCommand(String input, TaskWindow window) throws NoInputException,
             InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException,
             TaskDateAlreadyPassedException, InvalidTaskDateException,
             ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
@@ -169,11 +169,23 @@ public class TaskManager implements Serializable {
                 undo();
                 logger.log(Level.FINE, "Undo the last operation.");
                 break;
+            case DISPLAY:
+            	displayTask(input, window);
+            	window.test();
+            	break;
             default :
                 throw new InvalidInputException();
         }
         storage.saveTasks(tasks);
         logger.log(Level.FINE, "Tasks saved.");
+    }
+    
+    private void displayTask(String input, TaskWindow window) {
+    	int index = parser.getEditingParser().findTokenIndex(input);
+    	if (index < window.taskList.getModel().getSize() && index >= 0) {
+    		System.out.println(index);
+    		window.selectedIndex = index;
+    	}
     }
 
     private void addOnUndoStack(Command commandType, int index) {

@@ -101,6 +101,8 @@ public class Parser {
 			return Command.DONE;
 		} else if (command.toLowerCase().equals("undo")) {
 			return Command.UNDO;
+		} else if (command.toLowerCase().equals("display")) {
+			return Command.DISPLAY;
 		} else {
 			return Command.INVALID;
 		}
