@@ -12,8 +12,8 @@ import Exceptions.ParserExceptions.*;
 
 
 public class ParserTest {
-	DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
-	DateFormat dateOnly = new SimpleDateFormat("MM/dd/yyyy");
+	DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss aa");
+	DateFormat dateOnly = new SimpleDateFormat("dd/MM/yyyy");
 	
 	Parser parser;
 	@Before
@@ -59,20 +59,42 @@ public class ParserTest {
 	}
 	
 	@Test
-	public void searchTest() throws KeywordNotEnteredException {
-		String input = "search blah blah";
-		assertEquals(parser.getSearchingParser().getKeywordForSearch(input), "blah blah");
+	public void searchTest() throws KeywordNotEnteredException, SearchTypeNotEnteredException, SearchNotInPairException, InvalidTaskDateException, InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidTaskDurationException {
+		String first = "search date 04/03/2016";
+		String second = "search time 13:40";
+		String third = "search duration 2.3";
+		String fourth = "search name blah blah";
+		String fifth = "search duration 2.3 name blah blah time 13:40 date 04/03/2016";
+		String sixth = "search name blah blah duration 2.3 time 13:40 date 04/03/2016";
+		assertEquals(dateOnly.format(parser.getSearchingParser().getDateForSearch(first)), "04/03/2016");
+		assertEquals(parser.getSearchingParser().getTimeForSearch(second)[0], 13);
+		assertEquals(parser.getSearchingParser().getTimeForSearch(second)[1], 40);
+		assertEquals(parser.getSearchingParser().getDurationForSearch(third), 123);
+		assertEquals(parser.getSearchingParser().getNameForSearch(fourth), "blah blah");
+		assertEquals(dateOnly.format(parser.getSearchingParser().getDateForSearch(fifth)), "04/03/2016");
+		assertEquals(parser.getSearchingParser().getTimeForSearch(fifth)[0], 13);
+		assertEquals(parser.getSearchingParser().getTimeForSearch(fifth)[1], 40);
+		assertEquals(parser.getSearchingParser().getDurationForSearch(fifth), 123);
+		assertEquals(parser.getSearchingParser().getNameForSearch(fifth), "blah blah");
+		assertEquals(dateOnly.format(parser.getSearchingParser().getDateForSearch(sixth)), "04/03/2016");
+		assertEquals(parser.getSearchingParser().getTimeForSearch(sixth)[0], 13);
+		assertEquals(parser.getSearchingParser().getTimeForSearch(sixth)[1], 40);
+		assertEquals(parser.getSearchingParser().getDurationForSearch(sixth), 123);
+		assertEquals(parser.getSearchingParser().getNameForSearch(sixth), "blah blah");
+		
+		
 	}
 	
 	@Test
 	public void flexibleTest() throws InvalidInputException, NoArgumentException, TaskNameNotEnteredException, TaskTimeOrSeparatorNotEnteredException, TaskDateNotEnteredException, InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidTaskDurationException, TaskDateAlreadyPassedException, InvalidTaskDateException, AddingInputTooLongException {
 		Task e;
-		String first = "add sd sd ds || 05/05/2016 1:1 2.2";
+		String first = "add sd sd ds || 31/05/2016 1:1 2.2";
 		String second = "add work || 1:1 2.2 05/05/2016";
 		String third = "add work || 2.2 05/05/2016 1:1";
+		//String fourth = "add work || next sunday";
 		e = parser.getAddingParser().getTaskForAdding(first);
 		assertEquals(e.getName(), "sd sd ds");
-		assertEquals(df.format(e.getTimeStart()), "05/05/2016 01:01:00 AM");
+		assertEquals(df.format(e.getTimeStart()), "31/05/2016 01:01:00 AM");
 		assertEquals(e.getDuration(), 122);
 		e = parser.getAddingParser().getTaskForAdding(second);
 		assertEquals(e.getName(), "work");
@@ -82,5 +104,11 @@ public class ParserTest {
 		assertEquals(e.getName(), "work");
 		assertEquals(df.format(e.getTimeStart()), "05/05/2016 01:01:00 AM");
 		assertEquals(e.getDuration(), 122);
+	}
+	
+	@Test
+	public void displayTest() throws NoArgumentException, InvalidTaskIndexException {
+		String first = "display 1";
+		assertEquals(parser.getDeletingParser().getTaskIndex(first), 1);
 	}
 }

@@ -1,3 +1,9 @@
+/*
+ * PLEASE NOTE: with changes to executecommand method, these tests need to be modified slightly. TAKE NOTE
+ */
+
+
+//
 //import static org.junit.Assert.*;
 //
 //import org.junit.Test;
@@ -41,6 +47,21 @@
 //		task.getInstance();
 //		task.executeCommand("Undo");
 //		System.out.println("after undo\n"+task.toString());
+//
+//	}
+//	
+//	@Test
+//	public void test3() throws NoInputException, InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException, TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
+//		TaskManager task = new TaskManager();
+//		
+//		task.getInstance();
+//		System.out.println("before\n"+task.toString());
+//		task.executeCommand("clear");
+//		task.getInstance();
+//		System.out.println("after\n"+task.toString());
+//		task.executeCommand("clear");
+//		task.getInstance();
+//		System.out.println("after\n"+task.toString());
 //
 //	}
 //

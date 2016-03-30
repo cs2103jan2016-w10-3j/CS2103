@@ -7,7 +7,6 @@ import java.util.Date;
 import Exceptions.ParserExceptions.InvalidTaskDateException;
 import Exceptions.ParserExceptions.InvalidTaskDurationException;
 import Exceptions.ParserExceptions.InvalidTaskTimeException;
-import Exceptions.ParserExceptions.TaskDateAlreadyPassedException;
 import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 
 public class DateTime {
@@ -15,6 +14,7 @@ public class DateTime {
 	private final static String DURATION_SEPARATOR = "\\.";
 	private final static int ONE_HOUR_IN_MINUTE = 60;
 	private final static int DAY_TOMORROW = 0;
+	private final static int DAY_TODAY = 8;
 	private final static int DAY_INVALID = -1;
 	
 	private static Calendar calendar = Calendar.getInstance();	
@@ -57,6 +57,13 @@ public class DateTime {
 		return calendar.getTime();
 	}
 	
+	public static Date getDatePlusDays(Date date, int day) {
+		assert(date!=null);
+		calendar.setTime(date);
+		calendar.add(Calendar.DAY_OF_YEAR, day);
+		return calendar.getTime();
+	}
+	
 	
 	public void parseAndAddTimeToDate(String token) throws InvalidTaskTimeException, TaskTimeOutOfBoundException {
 		String timeTokens[] = getTimeStringToken(token);
@@ -81,10 +88,26 @@ public class DateTime {
 	}
 	
 	/**
+	 * Return whether a given hour is out of bound.
+	 * @return Whether hour is out of bound.
+	 */
+	public static boolean hrOutOfBound(int hr) {
+		return hr < 0 || hr > 24;
+	}
+	
+	/**
 	 * Return whether minute is out of bound.
 	 * @return Whether minute is out of bound.
 	 */
 	private boolean minOutOfBound() {
+		return min < 0 || min > 60;
+	}
+	
+	/**
+	 * Return whether a given minute is out of bound.
+	 * @return Whether minute is out of bound.
+	 */
+	public static boolean minOutOfBound(int min) {
 		return min < 0 || min > 60;
 	}
 	
@@ -113,7 +136,7 @@ public class DateTime {
 	 * @return A time token.
 	 * @throws InvalidTaskTimeException Task time entered is invalid.
 	 */
-	private String[] getTimeStringToken(String time) throws InvalidTaskTimeException {
+	public static String[] getTimeStringToken(String time) throws InvalidTaskTimeException {
 		String tokens[] = time.split(TIME_SEPARATOR);
 		if (tokens.length != 2 || tokens.length == 2 && tokens[0].equals("")) {
 			throw new InvalidTaskTimeException();
@@ -153,31 +176,26 @@ public class DateTime {
 	/**
 	 * Get the exact date from a date string in format dd/mm/yyyy.
 	 * @param dateString Date string.
+	 * @param numOfWeekToAdd Number of weeks to add on original date.
 	 * @return A date object.
-	 * @throws TaskDateAlreadyPassedException Task date entered is already passed.
 	 * @throws InvalidTaskDateException Task date entered is invalid.
 	 */
-	public static Date getExactDate(String dateString) throws TaskDateAlreadyPassedException, 
-										InvalidTaskDateException {
+	public static Date getExactDate(String dateString, int numOfWeekToAdd) throws  InvalidTaskDateException {
 		Date date;
 		assert(dateString!=null);
 		try {
 			date = dateParse(dateString);
-			if (date.before(new Date())) {
-				throw new TaskDateAlreadyPassedException();
-			}
 		} catch (ParseException e) {
 			if (categorizeDay(dateString) == DAY_INVALID) {
 				throw new InvalidTaskDateException();
 			} else {
 				// Exact day not entered by day entered e.g. Monday
 				int day = categorizeDay(dateString);
-				if (dayAlreadyPassed(day) && day != DAY_TOMORROW) {
-					throw new TaskDateAlreadyPassedException();
-				} else {
-					date = getDateInThisWeek(day);
+				date = getDateInThisWeek(day);
+				DateFormat dateOnly = new SimpleDateFormat("dd/MM/yyyy");
+				System.out.println("A: "+dateOnly.format(date));
+				date = DateTime.getDatePlusDays(date, numOfWeekToAdd * 7);
 				}
-			}
 		}
 		return date;
 	}
@@ -198,19 +216,11 @@ public class DateTime {
 	
 	/**
 	 * Return if a day is already passed.
-	 * @param day Day object indicated in the Calendar class.
+	 * @param day Date A date object used to compare.
 	 * @return Whether the day has already passed.
 	 */
-	private static boolean dayAlreadyPassed(int day) {
-    	int dayOfWeek = getDayOfTheWeek();
-    	if (day == dayOfWeek || dayOfWeek == Calendar.MONDAY) {
-    		return true;
-    	} else if (dayOfWeek == Calendar.SUNDAY) {
-    		return true;
-    	} else if (dayOfWeek > day && day != Calendar.SUNDAY) {
-    		return true;
-    	}
-    	return false;
+	public static boolean dayAlreadyPassed(Date day) {
+		return day.before(new Date());
 	}
 	
 	/**
@@ -225,17 +235,23 @@ public class DateTime {
     	int daysInterval;
     	Date result;
     	
+    	if (day == DAY_TODAY) {
+    		return calendar.getTime();
+    	}
+    	
     	if (day == DAY_TOMORROW) {
     		calendar.add(Calendar.DAY_OF_YEAR, 1);
     		return calendar.getTime();
     	}
-    	// It's checked days entered must be the same or ahead of the day of today
+    	
     	if (day == dayOfWeek) {
     		daysInterval = 0;
+    	} else if (dayOfWeek == Calendar.SUNDAY) {
+    		daysInterval = day - 8;
     	} else if (day == Calendar.SUNDAY) {
     		daysInterval = 8 - dayOfWeek;
     	} else {
-    		daysInterval = day - dayOfWeek;
+    		daysInterval = dayOfWeek - day;
     	}
     	calendar.add(Calendar.DAY_OF_YEAR, daysInterval);
     	result = calendar.getTime();
@@ -273,6 +289,8 @@ public class DateTime {
 			return Calendar.SATURDAY;
 		} else if (day.equalsIgnoreCase("sunday")) {
 			return Calendar.SUNDAY;
+		} else if (day.equalsIgnoreCase("today")) {
+			return DAY_TODAY;
 		} else {
 			return DAY_INVALID;
 		}

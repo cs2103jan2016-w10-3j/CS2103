@@ -154,6 +154,10 @@ public class TaskWindow {
 			taskDetailView.setText("");
 		}
 	}
+	
+	public void invalidIndex() {
+		JOptionPane.showMessageDialog(frame, "The index entered was invalid.");
+	}
 
 	public void refreshWindow() {
 		setTaskDetailView();
@@ -167,10 +171,6 @@ public class TaskWindow {
 				return values[index];
 			}
 		});
-	}
-	
-	public void test() {
-		System.out.println(taskList.getSelectedIndex());
 	}
 
 }

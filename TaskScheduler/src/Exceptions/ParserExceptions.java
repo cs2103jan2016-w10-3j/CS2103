@@ -13,12 +13,16 @@ public class ParserExceptions {
 	private static final String MESSAGE_ERROR_TASK_TIME_OUT_OF_BOUND = "Task time entered is out of bound";
 	private static final String MESSAGE_ERROR_TASK_DATE_NOT_ENTERED = "Task date is not entered.";
 	private static final String MESSAGE_ERROR_TASK_INDEX_INVALID = "Task index entered is invalid.";
-	private static final String MESSAGE_ERROR_NO_ARGUMENT = "No argument entered";
+	private static final String MESSAGE_ERROR_NO_ARGUMENT = "No argument entered.";
 	private static final String MESSAGE_ERROR_TOO_MANY_ARGUMENT = "Too many arguments are entered.";
 	private static final String MESSAGE_ERROR_KEYWORD_NOT_ENTERED = "Keyword for searching is not entered.";
 	private static final String MESSAGE_ERROR_ARGUMENT_FOR_EDITING_NOT_ENTERED = "Contents to be edited is not entered.";
 	private static final String MESSAGE_ERROR_DATETIME_FORMAT_INVALID = "Datetime format entered is invalid.";
 	private static final String MESSAGE_ERROR_INPUT_TOO_LONG = "Too many arguments entered.";
+	private static final String MESSAGE_ERROR_INDEX_INVALID = "The index entered is invalid.";
+	private static final String MESSAGE_ERROR_INDEX_NOT_ENTERED = "Please enter the index to display.";
+	private static final String MESSAGE_ERROR_SEARCH_TYPE_NOT_ENTERED = "Please enter a search type.";
+	private static final String MESSAGE_ERROR_SEARCH_NOT_IN_PAIR = "Please enter type and content one by one.";
 	
 	public static class NoInputException extends Exception {
 		private static final long serialVersionUID = 1L;
@@ -153,6 +157,38 @@ public class ParserExceptions {
 
 		public AddingInputTooLongException() {
 			super(MESSAGE_ERROR_INPUT_TOO_LONG);
+		}
+	}
+	
+	public static class IndexEmptyException extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		public IndexEmptyException() {
+			super(MESSAGE_ERROR_INDEX_NOT_ENTERED);
+		}
+	}
+	
+	public static class IndexInvalidException extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		public IndexInvalidException() {
+			super(MESSAGE_ERROR_INDEX_INVALID);
+		}
+	}
+	
+	public static class SearchTypeNotEnteredException extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		public SearchTypeNotEnteredException() {
+			super(MESSAGE_ERROR_SEARCH_TYPE_NOT_ENTERED);
+		}
+	}
+	
+	public static class SearchNotInPairException extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		public SearchNotInPairException() {
+			super(MESSAGE_ERROR_SEARCH_NOT_IN_PAIR);
 		}
 	}
 }

@@ -13,6 +13,7 @@ public class Parser {
 	private static EditingParser editingParser = null;
 	private static DeletingParser deletingParser = null;
 	private static SearchingParser searchingParser = null;
+	private static DisplayParser displayParser = null;
 	
 	/**
 	 * Getter to get addingParser value
@@ -45,6 +46,14 @@ public class Parser {
 	public SearchingParser getSearchingParser() {
 		return searchingParser;
 	}
+	
+	/**
+	 * Getter to get displayParser value
+	 * @return the displayerParser
+	 */
+	public DisplayParser getDisplayParser() {
+		return displayParser;
+	}
 
 	/**
 	 * Initialise a parser object.
@@ -55,6 +64,7 @@ public class Parser {
 			editingParser = EditingParser.getInstance();
 			deletingParser = DeletingParser.getInstance();
 			searchingParser = SearchingParser.getInstance();
+			displayParser = DisplayParser.getInstance();
 			instance = new Parser();
 		}
 		return instance;
@@ -103,6 +113,8 @@ public class Parser {
 			return Command.UNDO;
 		} else if (command.toLowerCase().equals("display")) {
 			return Command.DISPLAY;
+		} else if (command.toLowerCase().equals("clear")) {
+			return Command.CLEAR;
 		} else {
 			return Command.INVALID;
 		}
