@@ -1,5 +1,6 @@
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -71,34 +72,32 @@ public class Task implements Serializable {
 		return sb.toString();
 	}
 	
-	private String correctTimeNumbers(int number) {
-		if (number < 10) {
-			return "0" + number;
-		} else {
-			return "" + number;
-		}
-	}
-	
-	private String getAMOrPM(int hour) {
-		if (hour < 12) {
+	private String getAMOrPM(Calendar cal) {
+		if (cal.get(Calendar.AM_PM) == Calendar.AM) {
 			return "AM";
 		} else {
 			return "PM";
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public String displayString() {
 		StringBuffer sb = new StringBuffer();
+		Calendar cal = Calendar.getInstance();
+		if (this.timeStart!= null) {
+			cal.setTime(this.timeStart);
+		}
+		
 		if (this.name != null) {
-		sb.append("Task Name: " + this.name + "\n");
+			sb.append("Task Name: " + this.name + "\n");
 		}
 		if (this.timeStart != null) {
-		sb.append("Task Start Time: " + correctTimeNumbers(this.timeStart.getHours()) + ":" + correctTimeNumbers(this.timeStart.getMinutes()) + " " + getAMOrPM(this.timeStart.getHours()) + "\n");
-		sb.append("Task Start Date: " + correctTimeNumbers(this.timeStart.getDay()) + "/" + correctTimeNumbers(this.timeStart.getMonth()) + "/" + this.timeStart.getYear() + "\n");
+			sb.append(String.format("Task Start Date: %02d/%02d/%04d\n", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR)));
+		}
+		if (isExactTime()) {
+			sb.append(String.format("Task Start Time: %02d:%02d", cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE)) + " " + getAMOrPM(cal) + "\n");
 		}
 		if (this.duration != 0) {
-		sb.append("Task Estimated Length: " + this.duration + "\n");
+			sb.append("Task Estimated Length: " + this.duration + "\n");
 		}
 		return sb.toString();
 	}

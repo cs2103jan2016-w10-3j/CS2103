@@ -75,22 +75,8 @@ public class TaskWindow {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					taskManager.executeCommand(taskEntryField.getText(), window);
-				} catch (NoInputException e1) {
-					JOptionPane.showMessageDialog(frame, "No input was found.");
-				} catch (InvalidInputException e1) {
-					JOptionPane.showMessageDialog(frame, "The input entered was invalid.");
-				} catch (InvalidTaskTimeException e1) {
-					JOptionPane.showMessageDialog(frame, "The task time entered is invalid.");
-				} catch (TaskTimeOutOfBoundException e1) {
-					JOptionPane.showMessageDialog(frame, "The task time is out of bounds, try again.");
-				} catch (TaskDateAlreadyPassedException e1) {
-					JOptionPane.showMessageDialog(frame, "The task date has already passed.");
-				} catch (InvalidTaskDateException e1) {
-					JOptionPane.showMessageDialog(frame, "The task date entered is invalid.");
-				} catch (ArgumentForEditingNotEnteredException e1) {
-					JOptionPane.showMessageDialog(frame, "Please enter correct arguments for editing data.");
-				} catch (InvalidDateTimeFormatException e1) {
-					JOptionPane.showMessageDialog(frame, "The date time format entered is invalid.");	
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(frame, e1.getMessage());
 				}
 				refreshWindow();
 				taskEntryField.setText("");

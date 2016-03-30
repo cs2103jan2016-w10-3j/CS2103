@@ -145,6 +145,7 @@ public class AddingParser {
 				DateTime datetime = new DateTime();
 				datetime.parseAndAddTimeToDate(t);
 				timeEntered = true;
+				exactTime = true;
 				for (int j = 0; j < flexibleTokens.length; j++) {
 					if (t == flexibleTokens[j]) {
 						timeToken = j;
