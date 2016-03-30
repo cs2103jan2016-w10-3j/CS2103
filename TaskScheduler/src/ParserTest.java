@@ -91,7 +91,7 @@ public class ParserTest {
 		String first = "add sd sd ds || 31/05/2016 1:1 2.2";
 		String second = "add work || 1:1 2.2 05/05/2016";
 		String third = "add work || 2.2 05/05/2016 1:1";
-		//String fourth = "add work || next sunday";
+		String fourth = "add work || today";
 		e = parser.getAddingParser().getTaskForAdding(first);
 		assertEquals(e.getName(), "sd sd ds");
 		assertEquals(df.format(e.getTimeStart()), "31/05/2016 01:01:00 AM");
@@ -104,6 +104,8 @@ public class ParserTest {
 		assertEquals(e.getName(), "work");
 		assertEquals(df.format(e.getTimeStart()), "05/05/2016 01:01:00 AM");
 		assertEquals(e.getDuration(), 122);
+		e = parser.getAddingParser().getTaskForAdding(fourth);
+		System.out.println(df.format(e.getTimeStart()));
 	}
 	
 	@Test

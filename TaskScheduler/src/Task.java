@@ -1,5 +1,7 @@
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -83,6 +85,8 @@ public class Task implements Serializable {
 	public String displayString() {
 		StringBuffer sb = new StringBuffer();
 		Calendar cal = Calendar.getInstance();
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm aa");
+		DateFormat dateOnly = new SimpleDateFormat("dd/MM/yyyy");
 		if (this.timeStart!= null) {
 			cal.setTime(this.timeStart);
 		}
@@ -90,11 +94,11 @@ public class Task implements Serializable {
 		if (this.name != null) {
 			sb.append("Task Name: " + this.name + "\n");
 		}
-		if (this.timeStart != null) {
-			sb.append(String.format("Task Start Date: %02d/%02d/%04d\n", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR)));
+		if (this.timeStart != null && isExactTime()) {
+			sb.append("Task Start Time: " + df.format(this.timeStart));
 		}
-		if (isExactTime()) {
-			sb.append(String.format("Task Start Time: %02d:%02d", cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE)) + " " + getAMOrPM(cal) + "\n");
+		if (this.timeStart != null && !isExactTime()) {
+			sb.append("Task Start Time: " + dateOnly.format(this.timeStart));
 		}
 		if (this.duration != 0) {
 			sb.append("Task Estimated Length: " + this.duration + "\n");
