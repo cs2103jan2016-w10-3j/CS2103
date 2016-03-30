@@ -57,8 +57,14 @@ public class TaskManagerTest {
     
     @Test
     public void testAddCommand() throws NoInputException, InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException, TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
-        taskManager.executeCommand("add 4th || 22/11/2022 19:00 2.2");
-        assertEquals(taskManager.getNumberOfTasks(), 4);
+        taskManager.executeCommand("add 4th || 27/11/2022 19:00 2.2");
+        taskManager.executeCommand("add 3.5th || 24/11/2022 19:00 2.2");
+        taskManager.executeCommand("add 5th || 28/11/2022 19:00 2.2");
+        assertEquals(taskManager.getNumberOfTasks(), 6);
+        String[] haha = taskManager.getTaskNames();
+        for(String t:haha){
+        System.out.println(t);}
+//        assertEquals(taskManager.getTaskNames(), 5);
     }
     
     @Test
@@ -67,5 +73,7 @@ public class TaskManagerTest {
         System.out.println(taskManager.getTaskNames()[1]);
         assertEquals(taskManager.getNumberOfTasks(), 2);
     }
+    
+   
     
 }
