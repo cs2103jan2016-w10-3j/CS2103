@@ -125,8 +125,6 @@ public class Parser {
 			return Command.SETTINGS;
 		} else if (command.toLowerCase().equals("filter")) {
 			return Command.FILTER;
-		} else if (command.toLowerCase().equals("sort")) {
-			return Command.SORT;
 		} else {
 			return Command.INVALID;
 		}
