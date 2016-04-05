@@ -476,6 +476,24 @@ public class TaskManager implements Serializable {
 		window.refreshWindow();
 	}
 
+	/*Collections.sort(tasks, new Comparator<Task>() {
+			@Override
+			public int compare(Task lhs, Task rhs) {
+				if (lhs.isExactTime() && !rhs.isExactTime()) {
+					return -1;
+				} else if (lhs.isExactTime() && rhs.isExactTime()) {
+					return lhs.getTimeStart().getTime() < rhs.getTimeStart().getTime()
+							? -1
+									: (lhs.getTimeStart().getTime() < rhs.getTimeStart()
+											.getTime()) ? 1 : 0;
+				} else {
+					return 0;
+				}
+
+			}
+		});*/
+
+
 	private void sortStart(ApplicationWindow window) {
 		Collections.sort(tasks, new Comparator<Task>() {
 			@Override

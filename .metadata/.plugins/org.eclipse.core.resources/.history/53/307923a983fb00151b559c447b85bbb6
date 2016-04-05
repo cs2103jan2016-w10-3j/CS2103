@@ -296,40 +296,7 @@ public class ApplicationWindow {
 		filterDropdown.setBounds(6, 6, 258, 36);
 		panel_3.add(filterDropdown);
 
-		final JComboBox sortDropdown = new JComboBox();
-		sortDropdown.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String sortString;
-				switch (sortDropdown.getSelectedIndex()) {
-				case 0:
-					sortString = "sort default";
-					break;
-				case 1:
-					sortString = "sort name";
-					break;
-				case 2:
-					sortString = "sort date";
-					break;
-				case 3:
-					sortString = "sort start";
-					break;
-				case 4:
-					sortString = "sort end";
-					break;
-				case 5:
-					sortString = "sort duration";
-					break;
-				default:
-					sortString = "";
-					break;
-				}
-				try {
-					taskManager.executeCommand(sortString, window);
-				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(frame, e1.getMessage());
-				}
-			}
-		});
+		JComboBox sortDropdown = new JComboBox();
 		sortDropdown.setOpaque(true);
 		sortDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		sortDropdown.setModel(new DefaultComboBoxModel(new String[] {"Sort By...", "Name", "Date", "Starting Time", "Ending Time", "Duration"}));

@@ -296,11 +296,11 @@ public class ApplicationWindow {
 		filterDropdown.setBounds(6, 6, 258, 36);
 		panel_3.add(filterDropdown);
 
-		final JComboBox sortDropdown = new JComboBox();
+		JComboBox sortDropdown = new JComboBox();
 		sortDropdown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String sortString;
-				switch (sortDropdown.getSelectedIndex()) {
+				switch (filterDropdown.getSelectedIndex()) {
 				case 0:
 					sortString = "sort default";
 					break;
