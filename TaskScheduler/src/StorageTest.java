@@ -1,5 +1,7 @@
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.junit.After;
@@ -11,39 +13,49 @@ import Exceptions.ParserExceptions.InvalidDateTimeFormatException;
 import Exceptions.ParserExceptions.InvalidInputException;
 import Exceptions.ParserExceptions.InvalidTaskDateException;
 import Exceptions.ParserExceptions.InvalidTaskTimeException;
+import Exceptions.ParserExceptions.KeywordNotEnteredException;
 import Exceptions.ParserExceptions.NoInputException;
+import Exceptions.ParserExceptions.SearchNotInPairException;
+import Exceptions.ParserExceptions.SearchTypeNotEnteredException;
 import Exceptions.ParserExceptions.TaskDateAlreadyPassedException;
 import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 
-//@@author Sophie
+
 public class StorageTest {
 	
 	public TaskManager tasksToStore;
 	Storage store;
 	ArrayList<Task> orginalTasks;
 	
-    @Before
-    public void initialise() throws NoInputException, InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException, TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
+    @Test
+    public void initialise() throws NoInputException, InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException, TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException, KeywordNotEnteredException, SearchTypeNotEnteredException, SearchNotInPairException, FileNotFoundException, IOException {
     	store = new Storage();
     	tasksToStore = TaskManager.getInstance();
     	
     	orginalTasks = store.readTasks();
-    	System.out.println("orginalTasks "+orginalTasks);
-    	
-//    	tasksToStore.executeCommand("add 4th || 22/11/2022 19:00 2.2");
-//    	tasksToStore.executeCommand("add 5th || 03/05/2023 19:00 2.0");
-//    	tasksToStore.executeCommand("add 6th || 03/05/2044 19:00 2.0");
+//    	System.out.println("orginalTasks "+orginalTasks);
+//    	
+//    	tasksToStore.executeCommand("add 4th || 22/11/2022 19:00 2.2", null);
+//    	tasksToStore.executeCommand("add 5th || 03/05/2023 19:00 2.0", null);
+//    	tasksToStore.executeCommand("add 6th || 03/05/2044 19:00 2.0", null);
     }
     
     @After
     public void reset() throws Exception {
-    	store.saveTasks(orginalTasks);
+//    	store.saveTasks(orginalTasks);
     }
+    
+    
+    
+//    @Test
+//    public void initialise2() throws NoInputException, InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException, TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException, KeywordNotEnteredException, SearchTypeNotEnteredException, SearchNotInPairException, FileNotFoundException, IOException {
+//    	store = new Storage();
+//    }
 
-	@Test
-	public void save() {
-		store.saveTasks(tasksToStore);
-
+//	@Test
+//	public void save() {
+//		store.saveTasks(tasksToStore);
+//	}
 
 //		System.out.println(tasks);
 //		assertEquals(tasks, tasksToStore);
@@ -61,11 +73,12 @@ public class StorageTest {
 //		System.out.println(tasks);
 //		
 //		store.saveTasks(tasks);
-	}
+
 	
-	@Test
-	public void read() {
-		ArrayList<Task> tasks = store.readTasks();
-	}
+//	@Test
+//	public void read() {
+//
+//		ArrayList<Task> tasks = store.readTasks();
+//	}
 
 }

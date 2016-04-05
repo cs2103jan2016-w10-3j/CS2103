@@ -1,3 +1,5 @@
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -43,7 +45,7 @@ public class TaskManager implements Serializable {
 	private static final Logger logger = Logger.getLogger(TaskManager.class.getName());
 	DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
 
-	public static TaskManager getInstance() {
+	public static TaskManager getInstance() throws FileNotFoundException, IOException {
 		if (instance == null) {
 			instance = new TaskManager();
 			tasks = new ArrayList<Task>();
