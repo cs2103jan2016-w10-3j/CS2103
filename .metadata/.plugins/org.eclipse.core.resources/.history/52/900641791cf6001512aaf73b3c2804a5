@@ -95,10 +95,10 @@ public class Task implements Serializable {
 			sb.append("Task Name: " + this.name + "\n");
 		}
 		if (this.timeStart != null && isExactTime()) {
-			sb.append("Task Start Time: " + df.format(this.timeStart) + "\n");
+			sb.append("Task Start Time: " + df.format(this.timeStart));
 		}
 		if (this.timeStart != null && !isExactTime()) {
-			sb.append("Task Start Time: " + dateOnly.format(this.timeStart) + "\n");
+			sb.append("Task Start Time: " + dateOnly.format(this.timeStart));
 		}
 		if (this.duration != 0) {
 			sb.append("Task Estimated Length: " + this.duration + "\n");
