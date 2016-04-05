@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Exceptions.ParserExceptions.ArgumentForEditingNotEnteredException;
+import Exceptions.ParserExceptions.FileTypeInvalidException;
 import Exceptions.ParserExceptions.InvalidDateTimeFormatException;
 import Exceptions.ParserExceptions.InvalidInputException;
 import Exceptions.ParserExceptions.InvalidTaskDateException;
@@ -228,6 +230,9 @@ public class TaskManager implements Serializable {
 			undo();
 			logger.log(Level.FINE, "Undo the last operation.");
 			break;
+		case STORE :
+			changeStore(input);
+			break;
 		case DISPLAY:
 			displayTask(input, window);
 			break;
@@ -255,6 +260,24 @@ public class TaskManager implements Serializable {
 		}
 		storage.saveTasks(tasks);
 		logger.log(Level.FINE, "Tasks saved.");
+	}
+
+	private void changeStore(String input) throws FileTypeInvalidException, FileNotFoundException, UnsupportedEncodingException {
+		StorageParserType commandType = parser.getStorageParser().findStorageParserType(input);
+		
+		switch (commandType) {
+		case CHANGEPATH:
+			storage.setPath(parser.divideTokens(input)[2]);
+			break;
+		case CHANGENAME:
+			storage.setFileName(parser.divideTokens(input)[2]);
+			break;
+		case READPATH:
+			break;
+		default:
+		}
+		
+		
 	}
 
 	private void filterTasks(String input, ApplicationWindow window) {

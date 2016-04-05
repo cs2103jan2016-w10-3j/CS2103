@@ -85,7 +85,7 @@ public class Storage {
 	}
 	
 	public void setFileName(String fileName) {
-		this.fileName = fileName;
+		this.fileName = fileName + ".con";
 	}
 
 
@@ -96,16 +96,10 @@ public class Storage {
 		return tasksSavePath;
 	}
 
-
-//	public ArrayList<Task> readTasks() {
-//		String filename = "tasks";
-//		this.tasks = readTasks();
-//		return this.tasks;
-//	}
 	
 	
-//	//Function to save tasks that are currently in task manager
-//	@SuppressWarnings("unchecked")
+	//Function to save tasks that are currently in task manager
+	@SuppressWarnings("unchecked")
 	public ArrayList<Task> readTasks() {
 		
 		System.out.println("hejhej +filePath + fileName");
@@ -129,19 +123,11 @@ public class Storage {
 		return this.tasks;
 	}
 
-	public void saveTasks(Object taskManager) {
-		String filename = "tasks";
-		saveTasks(taskManager, filename);
-	}
-	
-	public void changeFile(String fileName) {
-		this.fileName = fileName;
-		
-	}
+
 	
 	//Function to save tasks 
-	public void saveTasks(Object taskManager, String fileName) {
-		File tasksSaveFile = new File(filePath + fileName+".con");
+	public void saveTasks(Object taskManager) {
+		File tasksSaveFile = new File(filePath + fileName);
 		try {
 			FileOutputStream fout = new FileOutputStream(tasksSaveFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
