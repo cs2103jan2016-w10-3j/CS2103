@@ -197,11 +197,13 @@ public class ApplicationWindow {
 		txtLabelStatus.setFont(new Font("Open Sans", Font.PLAIN, 20));
 		txtLabelStatus.setForeground(new Color(255, 255, 255));
 		txtLabelStatus.setBackground(new Color(255, 165, 0));
+		txtLabelStatus.setText("Incomplete");
 		panel_2.add(txtLabelStatus);
 
 		txtAreaDescription = new JTextPane();
 		txtAreaDescription.setFont(new Font("Open Sans", Font.PLAIN, 14));
 		txtAreaDescription.setForeground(new Color(60, 179, 113));
+		txtAreaDescription.setText("I need to get my work done and finally do something with my life and make money.");
 		txtAreaDescription.setBounds(10, 232, 208, 159);
 		txtAreaDescription.setEnabled(false);
 		panel.add(txtAreaDescription);
@@ -209,6 +211,7 @@ public class ApplicationWindow {
 		txtAreaTaskDetails = new JTextArea();
 		txtAreaTaskDetails.setFont(new Font("Open Sans", Font.PLAIN, 17));
 		txtAreaTaskDetails.setForeground(SystemColor.scrollbar);
+		txtAreaTaskDetails.setText("Name: Work\nDate: 05 April 2016\nStarts at: 23:00PM\nEnds at: 01:00 AM\nDuration: 3 hours\n\nDescription:");
 		txtAreaTaskDetails.setBounds(10, 61, 233, 231);
 		txtAreaTaskDetails.setEnabled(false);
 		panel.add(txtAreaTaskDetails);
@@ -315,7 +318,9 @@ public class ApplicationWindow {
 		if (selectedListIndex < taskManager.getNumberOfTasks() && selectedListIndex >= 0) {
 			txtAreaTaskDetails.setText(taskManager.getTask(selectedListIndex).displayString());
 			txtLabelStatus.setText(taskManager.getTask(selectedListIndex).getStatusString());
-		} 
+		} else {
+			txtAreaTaskDetails.setText("");
+		}
 	}
 	
 	private void refreshButtons() {
