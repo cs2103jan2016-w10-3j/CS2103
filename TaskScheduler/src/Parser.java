@@ -1,11 +1,11 @@
 
 import Exceptions.ParserExceptions.NoInputException;
 
+//@@author JunWei
 /**
  * Parser class used to give return a task or command
  *
  */
-
 public class Parser {
 	
 	private static Parser instance = null;

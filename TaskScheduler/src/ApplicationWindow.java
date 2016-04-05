@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
+//@@author Erika
 public class ApplicationWindow {
 
 	private JFrame frame;

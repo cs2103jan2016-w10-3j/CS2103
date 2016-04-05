@@ -12,6 +12,7 @@ import Exceptions.ParserExceptions.SearchTypeNotEnteredException;
 import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 import Exceptions.ParserExceptions.SearchNotInPairException;
 
+//@@author JunWei
 public class SearchingParser {
 	
 	private static final String SEARCH_NAME = "name";

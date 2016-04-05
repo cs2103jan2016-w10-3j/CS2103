@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import Exceptions.ParserExceptions.FileTypeInvalidException;
 import Exceptions.ParserExceptions.FilePathInvalidException;
 
+//@@author Jared
 public class StorageParser {
 	
 	private static StorageParser instance = null;

@@ -9,6 +9,7 @@ import Exceptions.ParserExceptions.InvalidTaskDurationException;
 import Exceptions.ParserExceptions.InvalidTaskTimeException;
 import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 
+//@@author JunWei
 public class DateTime {
 	private final static String TIME_SEPARATOR = ":";
 	private final static String DURATION_SEPARATOR = "\\.";

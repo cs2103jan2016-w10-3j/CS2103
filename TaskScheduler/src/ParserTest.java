@@ -23,7 +23,7 @@ public class ParserTest {
 	}
 	
 	
-
+	//@@author JunWei
 	@Test
 	public void test() throws InvalidTaskTimeException, InvalidInputException, 
 					NoArgumentException, TaskNameNotEnteredException, 
@@ -41,6 +41,7 @@ public class ParserTest {
 //		System.out.println(t.getDuration());
 	}
 	
+	//@@author Jared
 	@Test
 	public void editTest() throws ArgumentForEditingNotEnteredException, TaskDateAlreadyPassedException, InvalidTaskDateException, InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidDateTimeFormatException {
 		String first = "edit 1 duration 5";
@@ -53,12 +54,14 @@ public class ParserTest {
 		assertEquals(df.format(date),"05/05/2016 05:05:00 AM");
 	}
 	
+	//@@author JunWei
 	@Test 
 	public void doneTest() throws NoArgumentException, InvalidTaskIndexException {
 		String input = "done 1";
 		assertEquals(parser.getDeletingParser().getTaskIndex(input), 1);
 	}
 	
+	//@@author JunWei
 	@Test
 	public void searchTest() throws KeywordNotEnteredException, SearchTypeNotEnteredException, SearchNotInPairException, InvalidTaskDateException, InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidTaskDurationException {
 		String first = "search date 04/03/2016";
@@ -96,6 +99,7 @@ public class ParserTest {
 		
 	}
 	
+	//@@author Jared
 	@Test
 	public void flexibleTest() throws InvalidInputException, NoArgumentException, TaskNameNotEnteredException, TaskTimeOrSeparatorNotEnteredException, TaskDateNotEnteredException, InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidTaskDurationException, TaskDateAlreadyPassedException, InvalidTaskDateException, AddingInputTooLongException {
 		Task e;
@@ -119,12 +123,14 @@ public class ParserTest {
 		System.out.println(df.format(e.getTimeStart()));
 	}
 	
+	//@@author JunWei
 	@Test
 	public void displayTest() throws NoArgumentException, InvalidTaskIndexException {
 		String first = "display 1";
 		assertEquals(parser.getDeletingParser().getTaskIndex(first), 1);
 	}
 	
+	//@@author Jared
 	@Test
 	public void storageTest() throws FileTypeInvalidException, FilePathInvalidException {
 		Throwable e = null;

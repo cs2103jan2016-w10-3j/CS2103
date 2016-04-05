@@ -16,6 +16,7 @@ import Exceptions.ParserExceptions.TaskNameNotEnteredException;
 import Exceptions.ParserExceptions.TaskTimeOrSeparatorNotEnteredException;
 import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 
+//@@author JunWei
 public class AddingParser {
 	
 	private final String SEPARATOR = "||";
