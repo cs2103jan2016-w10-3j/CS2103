@@ -15,7 +15,10 @@ import Exceptions.ParserExceptions.InvalidDateTimeFormatException;
 import Exceptions.ParserExceptions.InvalidInputException;
 import Exceptions.ParserExceptions.InvalidTaskDateException;
 import Exceptions.ParserExceptions.InvalidTaskTimeException;
+import Exceptions.ParserExceptions.KeywordNotEnteredException;
 import Exceptions.ParserExceptions.NoInputException;
+import Exceptions.ParserExceptions.SearchNotInPairException;
+import Exceptions.ParserExceptions.SearchTypeNotEnteredException;
 import Exceptions.ParserExceptions.TaskDateAlreadyPassedException;
 import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 
@@ -94,16 +97,13 @@ public class TaskManager implements Serializable {
 
     public void sortAndRefresh() {// sorts the list so that the most urgent is
                                   // at the top
+                                  // only sorts those with exactTime
         Collections.sort(tasks, new Comparator<Task>() {
             @Override
             public int compare(Task lhs, Task rhs) {
                 if (lhs.isExactTime() && !rhs.isExactTime()) {
                     return -1;
-                } 
-//                else if(!lhs.isExactTime() && rhs.isExactTime()){
-//                    System.out.println(lhs.getName() + " " + rhs.getName()+"comapre rhs excttime");
-//                    return -1;
-//                } 
+                }
                 else if (lhs.isExactTime() && rhs.isExactTime()) {
                     return lhs.getTimeStart().getTime() < rhs.getTimeStart().getTime() ? -1
                             : (lhs.getTimeStart().getTime() < rhs.getTimeStart()
@@ -119,7 +119,7 @@ public class TaskManager implements Serializable {
     public void executeCommand(String input, TaskWindow window) throws NoInputException,
             InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException,
             TaskDateAlreadyPassedException, InvalidTaskDateException,
-            ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
+            ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException, KeywordNotEnteredException, SearchTypeNotEnteredException, SearchNotInPairException {
         Command commandType = parser.getCommand(input);
         assert(commandType!=null);
         System.out.println(commandType.toString());
@@ -157,7 +157,7 @@ public class TaskManager implements Serializable {
                 addOnUndoStack(commandType, index);
 
                 editTask(input);
-                // sortAndRefresh();
+                sortAndRefresh();
                 break;
             case CLEAR :           	
             	removeAllTasks(commandType);
@@ -295,21 +295,21 @@ public class TaskManager implements Serializable {
         }
     }
 
-    private void searchTask(String input) {
+    private void searchTask(String input) throws KeywordNotEnteredException, SearchTypeNotEnteredException, SearchNotInPairException {
     	assert(input!=null);
-        // String stringToSearchFor = parser.getStringToSearchFor(input);
-        String stringToSearchFor = "haha";
+    	String nameToSearchFor = parser.getSearchingParser().getNameForSearch(input);
         boolean contains = false;
         int occurance = 0;
         for (Task currentTasks : tasks) {
             contains = currentTasks.getName().toLowerCase()
-                    .contains(stringToSearchFor.toLowerCase());
+                    .contains(nameToSearchFor.toLowerCase());
             if (contains) {
+                System.out.println(currentTasks.getName());
                 occurance++;
             }
         }
-        logger.log(Level.FINE, "A search with keyword {0} has been made", stringToSearchFor);
-        System.out.println("total occurance for haha string is" + occurance);
+        logger.log(Level.FINE, "A search with keyword {0} has been made", nameToSearchFor);
+        System.out.println("total occurance for haha string is " + occurance);
     }
 
     private void addTask(Task task) {
