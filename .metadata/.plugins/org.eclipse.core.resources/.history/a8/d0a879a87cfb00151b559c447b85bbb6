@@ -128,9 +128,6 @@ public class Storage {
 	//Function to save tasks 
 	public void saveTasks(Object taskManager) {
 		File tasksSaveFile = new File(filePath + fileName);
-		System.out.println(filePath);
-		System.out.println(fileName);
-		
 		try {
 			FileOutputStream fout = new FileOutputStream(tasksSaveFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fout);

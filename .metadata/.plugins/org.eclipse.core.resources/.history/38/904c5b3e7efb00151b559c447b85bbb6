@@ -380,6 +380,14 @@ public class ApplicationWindow {
 		JOptionPane.showMessageDialog(frame, warning);
 	}
 	
+	public void warnInvalidIndex() {
+		JOptionPane.showMessageDialog(frame, "The index entered was invalid.");
+	}
+	
+	public void warnFilterSet() {
+		JOptionPane.showMessageDialog(frame, "You cannot perform this operation when applying a filter. Please filter by all. ");
+	}
+
 	public void refreshWindow() {
 		setTaskDetailView();
 		refreshButtons();

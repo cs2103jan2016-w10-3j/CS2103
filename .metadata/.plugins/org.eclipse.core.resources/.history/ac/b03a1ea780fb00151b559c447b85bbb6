@@ -122,33 +122,33 @@ public class TaskManager implements Serializable {
 	}
 
 	private static void setAlertForComingTasks() {
-//		Date currentDate = new Date();
-//		Date smallestTime = null;
-//		// search for the latest && undone && have start-time task.
-//		for (Task task : tasks) {
-//			if (task.getTimeStart() != null // have start-time
-//					&& !task.getDoneStatus() // not done
-//					&& task.getTimeStart().after(currentDate)) {
-//				if (smallestTime == null) {
-//					smallestTime = task.getTimeStart();
-//				} else if (task.getTimeStart().before(smallestTime)) {
-//					smallestTime = task.getTimeStart();
-//					dueTask = task.displayString();
-//				}
-//			}
-//		}
-//		long delay = smallestTime.getTime() - currentDate.getTime(); // milliseconds
-//		ActionListener taskPerformer = new ActionListener() {
-//			public void actionPerformed(ActionEvent evt) {
-//				System.out.println(
-//						"TIMES UP!!!! **PUT A WINDOW HERE** for this task" + dueTask);
-//				// once action performed, look for the next task
-//				setAlertForComingTasks();
-//			}
-//		};
-//		Timer timer = new Timer((int) delay+1, taskPerformer);
-//		timer.start();
-//		timer.setRepeats(false);
+		Date currentDate = new Date();
+		Date smallestTime = null;
+		// search for the latest && undone && have start-time task.
+		for (Task task : tasks) {
+			if (task.getTimeStart() != null // have start-time
+					&& !task.getDoneStatus() // not done
+					&& task.getTimeStart().after(currentDate)) {
+				if (smallestTime == null) {
+					smallestTime = task.getTimeStart();
+				} else if (task.getTimeStart().before(smallestTime)) {
+					smallestTime = task.getTimeStart();
+					dueTask = task.displayString();
+				}
+			}
+		}
+		long delay = smallestTime.getTime() - currentDate.getTime(); // milliseconds
+		ActionListener taskPerformer = new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				System.out.println(
+						"TIMES UP!!!! **PUT A WINDOW HERE** for this task" + dueTask);
+				// once action performed, look for the next task
+				setAlertForComingTasks();
+			}
+		};
+		Timer timer = new Timer((int) delay+1, taskPerformer);
+		timer.start();
+		timer.setRepeats(false);
 	}
 
 	public void sortAndRefresh() {// sorts the list so that the most urgent is
@@ -475,94 +475,17 @@ public class TaskManager implements Serializable {
 		});
 		window.refreshWindow();
 	}
-
-	/*Collections.sort(tasks, new Comparator<Task>() {
-			@Override
-			public int compare(Task lhs, Task rhs) {
-				if (lhs.isExactTime() && !rhs.isExactTime()) {
-					return -1;
-				} else if (lhs.isExactTime() && rhs.isExactTime()) {
-					return lhs.getTimeStart().getTime() < rhs.getTimeStart().getTime()
-							? -1
-									: (lhs.getTimeStart().getTime() < rhs.getTimeStart()
-											.getTime()) ? 1 : 0;
-				} else {
-					return 0;
-				}
-
-			}
-		});*/
-
-
+	
 	private void sortStart(ApplicationWindow window) {
-		Collections.sort(tasks, new Comparator<Task>() {
-			@Override
-			public int compare(Task lhs, Task rhs) {
-				if (lhs.isExactTime() && !rhs.isExactTime()) {
-					return -1;
-				} else if (lhs.isExactTime() && rhs.isExactTime()) {
-					if (lhs.getTimeStart().getHours() < rhs.getTimeStart().getHours()) {
-						return -1;
-					} else if (lhs.getTimeStart().getHours() > rhs.getTimeStart().getHours()) {
-						return 1;
-					} else if (lhs.getTimeStart().getMinutes() < rhs.getTimeStart().getMinutes()) {
-						return -1;
-					} else if (lhs.getTimeStart().getMinutes() > rhs.getTimeStart().getMinutes()) {
-						return 1;
-					} else {
-						return 0;
-					}
-				} else {
-					return 0;
-				}
-			}
-		});
-	}
 
+	}
+	
 	private void sortEnd(ApplicationWindow window) {
-		Collections.sort(tasks, new Comparator<Task>() {
-			@Override
-			public int compare(Task lhs, Task rhs) {
-				if (lhs.isExactTime() && !rhs.isExactTime() && lhs.getDuration() == 0 && rhs.getDuration() == 0) {
-					return -1;
-				} else if (lhs.isExactTime() && rhs.isExactTime() && lhs.getDuration() != 0 && rhs.getDuration() != 0) {
-					if (lhs.getEndTime().getHours() < rhs.getEndTime().getHours()) {
-						return -1;
-					} else if (lhs.getEndTime().getHours() > rhs.getEndTime().getHours()) {
-						return 1;
-					} else if (lhs.getEndTime().getMinutes() < rhs.getEndTime().getMinutes()) {
-						return -1;
-					} else if (lhs.getEndTime().getMinutes() > rhs.getEndTime().getMinutes()) {
-						return 1;
-					} else {
-						return 0;
-					}
-				} else {
-					return 0;
-				}
-			}
-		});
-	}
 
+	}
+	
 	private void sortDuration(ApplicationWindow window) {
-		Collections.sort(tasks, new Comparator<Task>() {
-			@Override
-			public int compare(Task lhs, Task rhs) {
-				if (lhs.getDuration() == 0 && rhs.getDuration() == 0) {
-					return -1;
-				} else if (lhs.getDuration() != 0 && rhs.getDuration() != 0) {
-					if (lhs.getDuration() < rhs.getDuration()) {
-						return -1;
-					} else if (lhs.getDuration() > rhs.getDuration()) {
-						return 1;
-					} else {
-						return 0;
-					}
-				} else {
-					return 0;
-				}
-			}
-		});
+
 	}
 
 

@@ -545,24 +545,7 @@ public class TaskManager implements Serializable {
 	}
 
 	private void sortDuration(ApplicationWindow window) {
-		Collections.sort(tasks, new Comparator<Task>() {
-			@Override
-			public int compare(Task lhs, Task rhs) {
-				if (lhs.getDuration() == 0 && rhs.getDuration() == 0) {
-					return -1;
-				} else if (lhs.getDuration() != 0 && rhs.getDuration() != 0) {
-					if (lhs.getDuration() < rhs.getDuration()) {
-						return -1;
-					} else if (lhs.getDuration() > rhs.getDuration()) {
-						return 1;
-					} else {
-						return 0;
-					}
-				} else {
-					return 0;
-				}
-			}
-		});
+
 	}
 
 
