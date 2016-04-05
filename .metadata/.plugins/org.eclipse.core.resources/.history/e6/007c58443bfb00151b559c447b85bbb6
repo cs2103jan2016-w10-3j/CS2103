@@ -147,16 +147,16 @@ public class TaskManager implements Serializable {
 				filtered = false;
 				window.refreshWindow();
 			} else {
-				Task task = null;
-				try {
-					task = parser.getAddingParser().getTaskForAdding(input);
-				} catch (Exception e) {
-					logger.log(Level.SEVERE, e.toString(), e);
-					e.printStackTrace();
-				}
-				addTask(task);
-				sortAndRefresh();
-				addOnUndoStack(commandType, task);
+			Task task = null;
+			try {
+				task = parser.getAddingParser().getTaskForAdding(input);
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, e.toString(), e);
+				e.printStackTrace();
+			}
+			addTask(task);
+			sortAndRefresh();
+			addOnUndoStack(commandType, task);
 			}
 			break;
 		case DELETE :
@@ -165,19 +165,19 @@ public class TaskManager implements Serializable {
 				filtered = false;
 				window.refreshWindow();
 			} else {
-				int deleteIndex = 0;
-				try {
-					deleteIndex = parser.getDeletingParser().getTaskIndex(input);
-				} catch (Exception e) {
-					logger.log(Level.SEVERE, e.toString(), e);
-					e.printStackTrace();
-					break;
-				}
-				if (deleteIndex >= 0 && deleteIndex < getNumberOfTasks()) {
-					addOnUndoStack(commandType, tasks.get(deleteIndex));
-					removeTask(deleteIndex);
-					logger.log(Level.FINE, "task with index {0} removed.", deleteIndex);
-				}
+			int deleteIndex = 0;
+			try {
+				deleteIndex = parser.getDeletingParser().getTaskIndex(input);
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, e.toString(), e);
+				e.printStackTrace();
+				break;
+			}
+			if (deleteIndex >= 0 && deleteIndex < getNumberOfTasks()) {
+				addOnUndoStack(commandType, tasks.get(deleteIndex));
+				removeTask(deleteIndex);
+				logger.log(Level.FINE, "task with index {0} removed.", deleteIndex);
+			}
 			}
 
 			break;
@@ -187,11 +187,11 @@ public class TaskManager implements Serializable {
 				filtered = false;
 				window.refreshWindow();
 			} else {
-				int index = parser.getEditingParser().findTokenIndex(input);
-				addOnUndoStack(commandType, index);
+			int index = parser.getEditingParser().findTokenIndex(input);
+			addOnUndoStack(commandType, index);
 
-				editTask(input);
-				sortAndRefresh();
+			editTask(input);
+			sortAndRefresh();
 			}
 			break;
 		case CLEAR :      
@@ -200,7 +200,7 @@ public class TaskManager implements Serializable {
 				filtered = false;
 				window.refreshWindow();
 			} else {
-				removeAllTasks(commandType);
+			removeAllTasks(commandType);
 			}
 			break;
 		case SEARCH :
@@ -209,7 +209,7 @@ public class TaskManager implements Serializable {
 				filtered = false;
 				window.refreshWindow();
 			} else {
-				searchTask(input);
+			searchTask(input);
 			}
 			break;
 		case DONE :
@@ -218,7 +218,7 @@ public class TaskManager implements Serializable {
 				filtered = false;
 				window.refreshWindow();
 			} else {
-				completeTask(input);
+			completeTask(input);
 			}
 			break;
 		case UNDO :
@@ -339,20 +339,12 @@ public class TaskManager implements Serializable {
 	}
 
 	private void filterSoon(ApplicationWindow window) {
-		Date currentDate = new Date();
-		for (Task task : tasks) {
-			if (task.getTimeStart() != null && task.getTimeStart().getYear() == currentDate.getYear() && (task.getTimeStart().getDay() == currentDate.getDay() 
-					|| Math.abs(task.getTimeStart().getDay() - currentDate.getDay()) == 1) && task.getTimeStart().getMonth() == currentDate.getMonth()) {
-				temporaryTasks.add(task);
-			}
-		}
 		filtered = true;
 		window.refreshWindow();
 	}
 
 	private void filterAll(ApplicationWindow window) {
 		filtered = false;
-		window.refreshWindow();
 	}
 
 

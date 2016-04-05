@@ -123,8 +123,6 @@ public class Parser {
 			return Command.HISTORY;
 		} else if (command.toLowerCase().equals("settings")) {
 			return Command.SETTINGS;
-		} else if (command.toLowerCase().equals("filter")) {
-			return Command.FILTER;
 		} else {
 			return Command.INVALID;
 		}

@@ -285,6 +285,7 @@ public class ApplicationWindow {
 					JOptionPane.showMessageDialog(frame, e1.getMessage());
 				}
 				refreshWindow();
+				textFieldTaskManage.setText("");
 			}
 		});
 		filterDropdown.setBackground(new Color(255, 255, 255));

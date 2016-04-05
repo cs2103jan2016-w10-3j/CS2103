@@ -339,20 +339,12 @@ public class TaskManager implements Serializable {
 	}
 
 	private void filterSoon(ApplicationWindow window) {
-		Date currentDate = new Date();
-		for (Task task : tasks) {
-			if (task.getTimeStart() != null && task.getTimeStart().getYear() == currentDate.getYear() && (task.getTimeStart().getDay() == currentDate.getDay() 
-					|| Math.abs(task.getTimeStart().getDay() - currentDate.getDay()) == 1) && task.getTimeStart().getMonth() == currentDate.getMonth()) {
-				temporaryTasks.add(task);
-			}
-		}
 		filtered = true;
 		window.refreshWindow();
 	}
 
 	private void filterAll(ApplicationWindow window) {
 		filtered = false;
-		window.refreshWindow();
 	}
 
 
