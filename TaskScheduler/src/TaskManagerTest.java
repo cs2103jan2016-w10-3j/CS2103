@@ -1,5 +1,7 @@
 import static org.junit.Assert.assertEquals;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.After;
@@ -24,7 +26,7 @@ public class TaskManagerTest {
     public List<Task> workingTasks;
 
     @Before
-    public void initialise() {
+    public void initialise() throws FileNotFoundException, IOException {
         tm = new TaskManager();
         taskManager = TaskManager.getInstance();
         existingTasks = taskManager.existingList();
