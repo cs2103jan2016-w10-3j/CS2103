@@ -75,7 +75,7 @@ public class Task implements Serializable {
 	}
 	
 	private Date getEndTime() {
-		Date endDate = new Date();
+		Date endDate = timeStart;
 		int hour = timeStart.getHours();
 		int minute = timeStart.getMinutes();
 		int day = timeStart.getDay();
@@ -125,13 +125,13 @@ public class Task implements Serializable {
 		if (this.name != null) {
 			sb.append("Name: " + this.name + "\n");
 		}
-		if (this.timeStart != null && isExactTime()) {
+		if (this.timeStart != null && !isExactTime()) {
 			sb.append("Date: " + dateOnly.format(this.timeStart) + "\n");
 		}
-		if (this.timeStart != null && isExactTime()) {
+		if (this.timeStart != null && !isExactTime()) {
 			sb.append("Starts at: " + timeOnly.format(this.timeStart) + "\n");
 		}
-		if (this.timeStart != null && isExactTime() && this.duration != 0) {
+		if (this.timeStart != null && !isExactTime() && this.duration != 0) {
 			sb.append("Ends at: " + timeOnly.format(getEndTime()) + "\n");
 		}
 		if (this.duration != 0) {

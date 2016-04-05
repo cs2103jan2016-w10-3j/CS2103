@@ -263,14 +263,7 @@ public class TaskManager implements Serializable {
 	}
 
 	private void filterMedium(ApplicationWindow window) {
-		temporaryTasks.clear();
-		for (Task task : tasks) {
-			if (task.getDuration() != 0 && task.getDuration() >= 60 && task.getDuration() <= 180) {
-				temporaryTasks.add(task);
-			}
-		}
-		filtered = true;
-		window.refreshWindow();
+
 	}
 
 	private void filterLong(ApplicationWindow window) {

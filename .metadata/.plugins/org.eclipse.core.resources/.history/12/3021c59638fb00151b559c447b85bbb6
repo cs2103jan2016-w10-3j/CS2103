@@ -37,7 +37,6 @@ public class TaskManager implements Serializable {
 	private static Storage storage;
 	private static Stack<Task> undo = new Stack<Task>();
 	private static Stack<Command> operand = new Stack<Command>();
-	public boolean filtered = false;
 
 	private static final Logger logger = Logger.getLogger(TaskManager.class.getName());
 	DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
@@ -230,47 +229,19 @@ public class TaskManager implements Serializable {
 	}
 
 	private void filterIncomplete(ApplicationWindow window) {
-		temporaryTasks.clear();
-		for (Task task : tasks) {
-			if (!task.getDoneStatus()) {
-				temporaryTasks.add(task);
-			}
-		}
-		filtered = true;
-		window.refreshWindow();
+		
 	}
 
 	private void filterComplete(ApplicationWindow window) {
-		temporaryTasks.clear();
-		for (Task task : tasks) {
-			if (task.getDoneStatus()) {
-				temporaryTasks.add(task);
-			}
-		}
-		filtered = true;
-		window.refreshWindow();
+
 	}
 
 	private void filterShort(ApplicationWindow window) {
-		temporaryTasks.clear();
-		for (Task task : tasks) {
-			if (task.getDuration() != 0 && task.getDuration() < 60) {
-				temporaryTasks.add(task);
-			}
-		}
-		filtered = true;
-		window.refreshWindow();
+
 	}
 
 	private void filterMedium(ApplicationWindow window) {
-		temporaryTasks.clear();
-		for (Task task : tasks) {
-			if (task.getDuration() != 0 && task.getDuration() >= 60 && task.getDuration() <= 180) {
-				temporaryTasks.add(task);
-			}
-		}
-		filtered = true;
-		window.refreshWindow();
+
 	}
 
 	private void filterLong(ApplicationWindow window) {

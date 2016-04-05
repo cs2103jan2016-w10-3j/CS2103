@@ -31,13 +31,11 @@ import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 public class TaskManager implements Serializable {
 	private static final long serialVersionUID = 5891852874329459561L;
 	private static List<Task> tasks;
-	private static List<Task> temporaryTasks;
 	private static TaskManager instance = null;
 	private static Parser parser;
 	private static Storage storage;
 	private static Stack<Task> undo = new Stack<Task>();
 	private static Stack<Command> operand = new Stack<Command>();
-	public boolean filtered = false;
 
 	private static final Logger logger = Logger.getLogger(TaskManager.class.getName());
 	DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
@@ -205,72 +203,31 @@ public class TaskManager implements Serializable {
 		String filterType = parser.divideTokens(input)[1];
 		switch (filterType) {
 		case "incomplete":
-			filterIncomplete(window);
-			break;
+
 		case "complete":
-			filterComplete(window);
-			break;
 		case "short":
-			filterShort(window);
-			break;
 		case "medium":
-			filterMedium(window);
-			break;
 		case "long":
-			filterLong(window);
-			break;
 		case "soon":
-			filterSoon(window);
-			break;
 		case "all":
-			filterAll(window);
-			break;
 		default:
 		}
 	}
 
 	private void filterIncomplete(ApplicationWindow window) {
-		temporaryTasks.clear();
-		for (Task task : tasks) {
-			if (!task.getDoneStatus()) {
-				temporaryTasks.add(task);
-			}
-		}
-		filtered = true;
-		window.refreshWindow();
+
 	}
 
 	private void filterComplete(ApplicationWindow window) {
-		temporaryTasks.clear();
-		for (Task task : tasks) {
-			if (task.getDoneStatus()) {
-				temporaryTasks.add(task);
-			}
-		}
-		filtered = true;
-		window.refreshWindow();
+
 	}
 
 	private void filterShort(ApplicationWindow window) {
-		temporaryTasks.clear();
-		for (Task task : tasks) {
-			if (task.getDuration() != 0 && task.getDuration() < 60) {
-				temporaryTasks.add(task);
-			}
-		}
-		filtered = true;
-		window.refreshWindow();
+
 	}
 
 	private void filterMedium(ApplicationWindow window) {
-		temporaryTasks.clear();
-		for (Task task : tasks) {
-			if (task.getDuration() != 0 && task.getDuration() >= 60 && task.getDuration() <= 180) {
-				temporaryTasks.add(task);
-			}
-		}
-		filtered = true;
-		window.refreshWindow();
+
 	}
 
 	private void filterLong(ApplicationWindow window) {

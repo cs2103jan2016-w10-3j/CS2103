@@ -75,7 +75,7 @@ public class Task implements Serializable {
 	}
 	
 	private Date getEndTime() {
-		Date endDate = new Date();
+		Date endDate = timeStart;
 		int hour = timeStart.getHours();
 		int minute = timeStart.getMinutes();
 		int day = timeStart.getDay();

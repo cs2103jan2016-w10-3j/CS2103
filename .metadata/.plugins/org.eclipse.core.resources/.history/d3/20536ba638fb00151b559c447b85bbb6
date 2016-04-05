@@ -46,7 +46,7 @@ public class ApplicationWindow {
 	private JTextPane txtLabelStatus;
 	private boolean firstFocusManageText = true;
 	private boolean firstFocusSearchText = true;
-	public boolean filtered = false;
+	private boolean filtered = false;
 	
 	/**
 	 * Launch the application.
