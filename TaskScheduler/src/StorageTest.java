@@ -1,5 +1,7 @@
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.junit.After;
@@ -11,7 +13,10 @@ import Exceptions.ParserExceptions.InvalidDateTimeFormatException;
 import Exceptions.ParserExceptions.InvalidInputException;
 import Exceptions.ParserExceptions.InvalidTaskDateException;
 import Exceptions.ParserExceptions.InvalidTaskTimeException;
+import Exceptions.ParserExceptions.KeywordNotEnteredException;
 import Exceptions.ParserExceptions.NoInputException;
+import Exceptions.ParserExceptions.SearchNotInPairException;
+import Exceptions.ParserExceptions.SearchTypeNotEnteredException;
 import Exceptions.ParserExceptions.TaskDateAlreadyPassedException;
 import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 
@@ -21,51 +26,37 @@ public class StorageTest {
 	public TaskManager tasksToStore;
 	Storage store;
 	ArrayList<Task> orginalTasks;
-	
+
     @Before
-    public void initialise() throws NoInputException, InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException, TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
-    	store = new Storage();
-    	tasksToStore = TaskManager.getInstance();
-    	
+    public void initialise() throws NoInputException, InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException, TaskDateAlreadyPassedException, InvalidTaskDateException, ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException, KeywordNotEnteredException, SearchTypeNotEnteredException, SearchNotInPairException, FileNotFoundException, IOException {
+    	store = new Storage();   	
     	orginalTasks = store.readTasks();
-    	System.out.println("orginalTasks "+orginalTasks);
-    	
-//    	tasksToStore.executeCommand("add 4th || 22/11/2022 19:00 2.2");
-//    	tasksToStore.executeCommand("add 5th || 03/05/2023 19:00 2.0");
-//    	tasksToStore.executeCommand("add 6th || 03/05/2044 19:00 2.0");
     }
     
-    @After
-    public void reset() throws Exception {
-    	store.saveTasks(orginalTasks);
-    }
-
 	@Test
-	public void save() {
-		store.saveTasks(tasksToStore);
-
-
-//		System.out.println(tasks);
-//		assertEquals(tasks, tasksToStore);
-		
-		
-//		ArrayList<Task> tasks = store.readTasks();
-//		
-//		System.out.println(tasks);
-//		
-//		store.saveTasks(tasks);
-//		
+	public void read() throws FileNotFoundException, IOException {
+		orginalTasks = store.readTasks();
+	}
 //
-//		tasks = store.readTasks();
-//		
-//		System.out.println(tasks);
-//		
-//		store.saveTasks(tasks);
+	@Test
+	public void save() throws FileNotFoundException, IOException {
+		store.saveTasks(tasksToStore);
 	}
 	
 	@Test
-	public void read() {
-		ArrayList<Task> tasks = store.readTasks();
+	public void changeStorName() throws FileNotFoundException, IOException {
+		store.setFileName("testFile");
+		store.saveTasks(tasksToStore);
 	}
+	
+	@Test
+	public void pathChangeName() throws FileNotFoundException, IOException {
+		store.setPath("C:/Users/sophieE/Documents/GitHub/");
+		store.saveTasks(tasksToStore);
+	}
+
+
+	
+
 
 }

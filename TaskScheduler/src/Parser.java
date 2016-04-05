@@ -1,11 +1,11 @@
 
 import Exceptions.ParserExceptions.NoInputException;
 
+//@@author JunWei
 /**
  * Parser class used to give return a task or command
  *
  */
-
 public class Parser {
 	
 	private static Parser instance = null;
@@ -14,6 +14,7 @@ public class Parser {
 	private static DeletingParser deletingParser = null;
 	private static SearchingParser searchingParser = null;
 	private static DisplayParser displayParser = null;
+	private static StorageParser storageParser = null;
 	
 	/**
 	 * Getter to get addingParser value
@@ -54,6 +55,14 @@ public class Parser {
 	public DisplayParser getDisplayParser() {
 		return displayParser;
 	}
+	
+	/**
+	 * Getter to get storageParser value
+	 * @return the storageParser
+	 */
+	public StorageParser getStorageParser() {
+		return storageParser;
+	}
 
 	/**
 	 * Initialise a parser object.
@@ -65,6 +74,7 @@ public class Parser {
 			deletingParser = DeletingParser.getInstance();
 			searchingParser = SearchingParser.getInstance();
 			displayParser = DisplayParser.getInstance();
+			storageParser = StorageParser.getInstance();
 			instance = new Parser();
 		}
 		return instance;
@@ -111,6 +121,8 @@ public class Parser {
 			return Command.DONE;
 		} else if (command.toLowerCase().equals("undo")) {
 			return Command.UNDO;
+        } else if (command.toLowerCase().equals("filestorage")) {
+            return Command.FILESTORAGE;
 		} else if (command.toLowerCase().equals("display")) {
 			return Command.DISPLAY;
 		} else if (command.toLowerCase().equals("clear")) {

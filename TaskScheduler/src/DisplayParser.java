@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 import Exceptions.ParserExceptions.IndexInvalidException;
 import Exceptions.ParserExceptions.IndexEmptyException;
 
+//@@author JunWei
 public class DisplayParser {
 	private static DisplayParser instance = null;
 	private static final Logger logger = Logger.getLogger(DisplayParser.class.getName());

@@ -23,6 +23,8 @@ public class ParserExceptions {
 	private static final String MESSAGE_ERROR_INDEX_NOT_ENTERED = "Please enter the index to display.";
 	private static final String MESSAGE_ERROR_SEARCH_TYPE_NOT_ENTERED = "Please enter a search type.";
 	private static final String MESSAGE_ERROR_SEARCH_NOT_IN_PAIR = "Please enter type and content one by one.";
+	private static final String MESSAGE_ERROR_FILE_TYPE_INVALID = "The file command argument is invalid.";
+	private static final String MESSAGE_ERROR_FILE_PATH_INVALID = "The path entered is invalid.";
 	
 	public static class NoInputException extends Exception {
 		private static final long serialVersionUID = 1L;
@@ -191,4 +193,21 @@ public class ParserExceptions {
 			super(MESSAGE_ERROR_SEARCH_NOT_IN_PAIR);
 		}
 	}
+	
+	public static class FileTypeInvalidException extends Exception {
+		private static final long serialVersionUID = 1L;
+		
+		public FileTypeInvalidException() {
+			super(MESSAGE_ERROR_FILE_TYPE_INVALID);
+		}
+	}
+	
+	public static class FilePathInvalidException extends Exception {
+		private static final long serialVersionUID = 1L;
+		
+		public FilePathInvalidException() {
+			super(MESSAGE_ERROR_FILE_PATH_INVALID);
+		}
+	}
+	
 }
