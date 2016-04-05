@@ -124,4 +124,26 @@ public class ParserTest {
 		String first = "display 1";
 		assertEquals(parser.getDeletingParser().getTaskIndex(first), 1);
 	}
+	
+	@Test
+	public void storageTest() throws FileTypeInvalidException, FilePathInvalidException {
+		Throwable e = null;
+		
+		String first = "file changepath C:\\";
+		String second = "file changepath aoieh";
+		String third = "file changename Hello.xml";
+		String fourth = "file readpath C:\\";
+		assertEquals(parser.getStorageParser().findStorageParserType(first), StorageParserType.CHANGEPATH);
+		assertEquals(parser.getStorageParser().getPath(first), "C:\\");
+		try {
+			parser.getStorageParser().getPath(second);
+		} catch (Throwable ex) {
+			e = ex;
+		}
+		assertTrue(e instanceof FilePathInvalidException);
+		assertEquals(parser.getStorageParser().findStorageParserType(third), StorageParserType.CHANGENAME);
+		assertEquals(parser.getStorageParser().getName(third), "Hello.xml");
+		assertEquals(parser.getStorageParser().findStorageParserType(fourth), StorageParserType.READPATH);
+		assertEquals(parser.getStorageParser().getPath(fourth), "C:\\");
+	}
 }
