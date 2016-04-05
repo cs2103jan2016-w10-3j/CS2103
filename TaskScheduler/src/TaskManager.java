@@ -146,7 +146,7 @@ public class TaskManager implements Serializable {
                 setAlertForComingTasks();
             }
         };
-        Timer timer = new Timer((int) delay, taskPerformer);
+        Timer timer = new Timer((int) delay+1, taskPerformer);
         timer.start();
         timer.setRepeats(false);
     }
@@ -234,7 +234,6 @@ public class TaskManager implements Serializable {
                 } else {
                     int index = parser.getEditingParser().findTokenIndex(input);
                     addOnUndoStack(commandType, index);
-
                     editTask(input);
                     sortAndRefresh();
                 }
@@ -270,7 +269,7 @@ public class TaskManager implements Serializable {
                 undo();
                 logger.log(Level.FINE, "Undo the last operation.");
                 break;
-            case FILESTORE :
+            case FILESTORAGE :
                 changeFileStore(input);
                 break;
             case DISPLAY :
@@ -315,6 +314,7 @@ public class TaskManager implements Serializable {
                 storage.setFileName(parser.divideTokens(input)[2]);
                 break;
             case READPATH :
+                System.out.println(storage.getPath());
                 break;
             default :
         }
