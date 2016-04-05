@@ -115,14 +115,6 @@ public class Parser {
 			return Command.DISPLAY;
 		} else if (command.toLowerCase().equals("clear")) {
 			return Command.CLEAR;
-		} else if (command.toLowerCase().equals("home")) {
-			return Command.HOME;
-		} else if (command.toLowerCase().equals("help")) {
-			return Command.HELP;
-		} else if (command.toLowerCase().equals("history")) {
-			return Command.HISTORY;
-		} else if (command.toLowerCase().equals("settings")) {
-			return Command.SETTINGS;
 		} else {
 			return Command.INVALID;
 		}

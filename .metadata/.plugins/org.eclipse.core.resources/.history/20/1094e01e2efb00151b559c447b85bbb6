@@ -1,0 +1,4 @@
+
+public enum Command {
+	ADD, EDIT, DELETE, SEARCH, UNDO, DONE, DISPLAY, INVALID, CLEAR
+}

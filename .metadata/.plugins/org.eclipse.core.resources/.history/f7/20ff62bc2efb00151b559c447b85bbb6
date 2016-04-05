@@ -117,8 +117,8 @@ public class Parser {
 			return Command.CLEAR;
 		} else if (command.toLowerCase().equals("home")) {
 			return Command.HOME;
-		} else if (command.toLowerCase().equals("help")) {
-			return Command.HELP;
+		} else if (command.toLowerCase().equals("home")) {
+			return Command.HOME;
 		} else if (command.toLowerCase().equals("history")) {
 			return Command.HISTORY;
 		} else if (command.toLowerCase().equals("settings")) {

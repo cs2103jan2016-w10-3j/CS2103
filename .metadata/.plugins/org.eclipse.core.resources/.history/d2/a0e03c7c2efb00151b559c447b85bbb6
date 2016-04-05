@@ -176,20 +176,8 @@ public class TaskManager implements Serializable {
             	break;
             case HISTORY:
             	window.selectedButtonIndex = 1;
-            	window.refreshWindow();
-            	break;
             case HOME:
-            	window.selectedButtonIndex = 0;
-            	window.refreshWindow();
-            	break;
-            case SETTINGS:
-            	window.selectedButtonIndex = 2;
-            	window.refreshWindow();
-            	break;
-            case HELP:
-            	window.selectedButtonIndex = 3;
-            	window.refreshWindow();
-            	break;
+            	
             default :
                 throw new InvalidInputException();
         }
