@@ -276,15 +276,8 @@ public class ApplicationWindow {
 					filterString = "filter soon";
 					break;
 				default:
-					filterString = "";
 					break;
 				}
-				try {
-					taskManager.executeCommand(filterString, window);
-				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(frame, e1.getMessage());
-				}
-				refreshWindow();
 			}
 		});
 		filterDropdown.setBackground(new Color(255, 255, 255));

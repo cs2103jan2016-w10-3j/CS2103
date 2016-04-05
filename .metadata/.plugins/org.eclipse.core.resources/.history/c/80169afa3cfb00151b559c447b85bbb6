@@ -246,64 +246,28 @@ public class ApplicationWindow {
 			}
 		});
 		taskList.setFixedCellHeight(25);
+		//list.setCellRenderer(new CustomCellRenderer());
 		taskList.setBounds(11, 44, 496, 368);
 		panel_3.add(taskList);
 
-		final JComboBox filterDropdown = new JComboBox();
-		filterDropdown.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String filterString;
-				switch (filterDropdown.getSelectedIndex()) {
-				case 0:
-					filterString = "filter all";
-					break;
-				case 1:
-					filterString = "filter incomplete";
-					break;
-				case 2:
-					filterString = "filter complete";
-					break;
-				case 3:
-					filterString = "filter short";
-					break;
-				case 4:
-					filterString = "filter medium";
-					break;
-				case 5:
-					filterString = "filter long";
-					break;
-				case 6:
-					filterString = "filter soon";
-					break;
-				default:
-					filterString = "";
-					break;
-				}
-				try {
-					taskManager.executeCommand(filterString, window);
-				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(frame, e1.getMessage());
-				}
-				refreshWindow();
-			}
-		});
-		filterDropdown.setBackground(new Color(255, 255, 255));
-		filterDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		filterDropdown.setForeground(new Color(60, 179, 113));
-		filterDropdown.setModel(new DefaultComboBoxModel(new String[] {"Filter by...", "Incomplete Tasks", "Complete Tasks", "Short Tasks (<1 hour)", "Medium Tasks (1 - 3 hours)", "Long Tasks (3+ hours)", "Tasks Ending Soon"}));
-		filterDropdown.setFont(new Font("Open Sans", Font.PLAIN, 15));
-		filterDropdown.setBounds(6, 6, 258, 36);
-		panel_3.add(filterDropdown);
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBackground(new Color(255, 255, 255));
+		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboBox.setForeground(new Color(60, 179, 113));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Filter by...", "Incomplete Tasks", "Complete Tasks", "Short Tasks (<1 hour)", "Medium Tasks (1 - 3 hours)", "Long Tasks (3+ hours)", "Tasks Ending Soon"}));
+		comboBox.setFont(new Font("Open Sans", Font.PLAIN, 15));
+		comboBox.setBounds(6, 6, 258, 36);
+		panel_3.add(comboBox);
 
-		JComboBox sortDropdown = new JComboBox();
-		sortDropdown.setOpaque(true);
-		sortDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		sortDropdown.setModel(new DefaultComboBoxModel(new String[] {"Sort By...", "Name", "Date", "Starting Time", "Ending Time", "Duration"}));
-		sortDropdown.setForeground(new Color(60, 179, 113));
-		sortDropdown.setFont(new Font("Open Sans", Font.PLAIN, 15));
-		sortDropdown.setBackground(Color.WHITE);
-		sortDropdown.setBounds(261, 6, 249, 36);
-		panel_3.add(sortDropdown);
+		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setOpaque(true);
+		comboBox_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Sort By...", "Name", "Date", "Starting Time", "Ending Time", "Duration"}));
+		comboBox_1.setForeground(new Color(60, 179, 113));
+		comboBox_1.setFont(new Font("Open Sans", Font.PLAIN, 15));
+		comboBox_1.setBackground(Color.WHITE);
+		comboBox_1.setBounds(261, 6, 249, 36);
+		panel_3.add(comboBox_1);
 
 
 		JPanel taskManageLine = new JPanel();
