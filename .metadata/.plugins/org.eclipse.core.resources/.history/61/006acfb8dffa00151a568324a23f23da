@@ -1,0 +1,90 @@
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JList;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+import java.awt.SystemColor;
+
+public class ApplicationWindow {
+
+	private JFrame frame;
+	private JTextField searchField;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ApplicationWindow window = new ApplicationWindow();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public ApplicationWindow() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 828, 580);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(new Color(51, 204, 153));
+		panel_1.setBounds(0, 0, 828, 64);
+		frame.getContentPane().add(panel_1);
+		panel_1.setLayout(null);
+		
+		JLabel lblSnaptask = new JLabel("snaptask");
+		lblSnaptask.setFont(new Font("Open Sans", Font.PLAIN, 48));
+		lblSnaptask.setForeground(new Color(255, 255, 255));
+		lblSnaptask.setBounds(16, 0, 216, 58);
+		panel_1.add(lblSnaptask);
+		
+		JPanel searchLine = new JPanel();
+		searchLine.setBackground(new Color(255, 165, 0));
+		searchLine.setBorder(null);
+		searchLine.setBounds(555, 44, 252, 8);
+		searchLine.setEnabled(false);
+		panel_1.add(searchLine);
+		
+		searchField = new JTextField();
+		searchField.setBounds(552, 15, 258, 36);
+		panel_1.add(searchField);
+		searchField.setColumns(10);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new LineBorder(SystemColor.textHighlight));
+		panel.setBackground(new Color(255, 255, 255));
+		panel.setBounds(557, 80, 251, 461);
+		frame.getContentPane().add(panel);
+		
+		
+	}
+}

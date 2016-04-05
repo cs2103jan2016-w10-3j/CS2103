@@ -67,7 +67,6 @@ public class TaskManager implements Serializable {
         for (int i = 0; i < tasks.size(); i++) {
             taskNames[i] = i + ": " + tasks.get(i).getName();
         }
-        // System.out.println(taskNames.length);
         return taskNames;
     }
 
@@ -116,7 +115,7 @@ public class TaskManager implements Serializable {
         });
     }
 
-    public void executeCommand(String input, TaskWindow window) throws NoInputException,
+    public void executeCommand(String input, ApplicationWindow window) throws NoInputException,
             InvalidInputException, InvalidTaskTimeException, TaskTimeOutOfBoundException,
             TaskDateAlreadyPassedException, InvalidTaskDateException,
             ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
@@ -182,11 +181,10 @@ public class TaskManager implements Serializable {
         logger.log(Level.FINE, "Tasks saved.");
     }
     
-    private void displayTask(String input, TaskWindow window) {
+    private void displayTask(String input, ApplicationWindow window) {
     	int index = parser.getEditingParser().findTokenIndex(input);
     	if (index < window.taskList.getModel().getSize() && index >= 0) {
-    		System.out.println(index);
-    		window.selectedIndex = index;
+    		window.selectedListIndex = index;
     	} else {
     		window.invalidIndex();
     	}

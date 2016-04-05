@@ -1,0 +1,171 @@
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JList;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+import java.awt.SystemColor;
+import javax.swing.JTextPane;
+import javax.swing.JTextArea;
+import javax.swing.AbstractListModel;
+import java.awt.Dimension;
+
+public class ApplicationWindow {
+
+	private JFrame frame;
+	private JTextField searchField;
+	private JTextField textFieldTaskManage;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ApplicationWindow window = new ApplicationWindow();
+					window.frame.setVisible(true);
+					window.frame.setResizable(false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public ApplicationWindow() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 828, 580);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(new Color(51, 204, 153));
+		panel_1.setBounds(0, 0, 828, 64);
+		frame.getContentPane().add(panel_1);
+		panel_1.setLayout(null);
+		
+		JLabel lblSnaptask = new JLabel("snaptask");
+		lblSnaptask.setFont(new Font("Open Sans", Font.PLAIN, 48));
+		lblSnaptask.setForeground(new Color(255, 255, 255));
+		lblSnaptask.setBounds(16, 0, 216, 58);
+		panel_1.add(lblSnaptask);
+		
+		JPanel searchLine = new JPanel();
+		searchLine.setBackground(new Color(255, 165, 0));
+		searchLine.setBorder(null);
+		searchLine.setBounds(556, 44, 251, 6);
+		searchLine.setEnabled(false);
+		panel_1.add(searchLine);
+		
+		searchField = new JTextField();
+		searchField.setBounds(552, 15, 258, 36);
+		panel_1.add(searchField);
+		searchField.setColumns(10);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new LineBorder(SystemColor.textHighlight));
+		panel.setBackground(new Color(255, 255, 255));
+		panel.setBounds(557, 80, 251, 422);
+		frame.getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setEnabled(false);
+		panel_2.setBorder(null);
+		panel_2.setBackground(new Color(255, 165, 0));
+		panel_2.setBounds(0, 20, 252, 29);
+		panel.add(panel_2);
+		panel_2.setLayout(null);
+		
+		JTextPane txtLabelStatus = new JTextPane();
+		txtLabelStatus.setDisabledTextColor(SystemColor.text);
+		txtLabelStatus.setSelectionColor(SystemColor.activeCaption);
+		txtLabelStatus.setEnabled(false);
+		txtLabelStatus.setBounds(72, 0, 105, 28);
+		txtLabelStatus.setFont(new Font("Open Sans", Font.PLAIN, 20));
+		txtLabelStatus.setForeground(new Color(255, 255, 255));
+		txtLabelStatus.setBackground(new Color(255, 165, 0));
+		txtLabelStatus.setText("Incomplete");
+		panel_2.add(txtLabelStatus);
+		
+		JTextPane txtAreaDescription = new JTextPane();
+		txtAreaDescription.setFont(new Font("Open Sans", Font.PLAIN, 14));
+		txtAreaDescription.setForeground(SystemColor.scrollbar);
+		txtAreaDescription.setText("I need to get my work done and finally do something with my life and make money.");
+		txtAreaDescription.setBounds(10, 232, 208, 159);
+		txtAreaDescription.setEnabled(false);
+		panel.add(txtAreaDescription);
+		
+		JTextArea txtAreaTaskDetails = new JTextArea();
+		txtAreaTaskDetails.setFont(new Font("Open Sans", Font.PLAIN, 17));
+		txtAreaTaskDetails.setForeground(SystemColor.scrollbar);
+		txtAreaTaskDetails.setText("Name: Work\nDate: 05 April 2016\nStarts at: 23:00PM\nEnds at: 01:00 AM\nDuration: 3 hours\n\nDescription:");
+		txtAreaTaskDetails.setBounds(10, 61, 233, 231);
+		txtAreaTaskDetails.setEnabled(false);
+		panel.add(txtAreaTaskDetails);
+		
+		JPanel panel_3 = new JPanel();
+		panel_3.setBorder(new LineBorder(SystemColor.textHighlight));
+		panel_3.setBackground(new Color(255, 255, 255));
+		panel_3.setBounds(20, 80, 516, 422);
+		frame.getContentPane().add(panel_3);
+		panel_3.setLayout(null);
+		
+		JList list = new JList();
+		list.setFixedCellHeight(50);
+		list.setSelectionForeground(new Color(255, 165, 0));
+		list.setSelectionBackground(SystemColor.window);
+		list.setFont(new Font("Open Sans", Font.PLAIN, 17));
+		list.setForeground(new Color(255, 165, 0));
+		list.setModel(new AbstractListModel() {
+			String[] values = new String[] {"Drive mom to work", "Drive mom to work", "Drive mom to work", "Work"};
+			public int getSize() {
+				return values.length;
+			}
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+		});
+		list.setBackground(new Color(255, 255, 255));
+		list.setBounds(6, 6, 504, 410);
+		panel_3.add(list);
+		
+		JPanel taskManageLine = new JPanel();
+		taskManageLine.setEnabled(false);
+		taskManageLine.setBorder(null);
+		taskManageLine.setBackground(new Color(255, 165, 0));
+		taskManageLine.setBounds(21, 540, 786, 6);
+		taskManageLine.setEnabled(false);
+		frame.getContentPane().add(taskManageLine);
+		
+		textFieldTaskManage = new JTextField();
+		textFieldTaskManage.setColumns(10);
+		textFieldTaskManage.setBounds(18, 510, 792, 36);
+		frame.getContentPane().add(textFieldTaskManage);
+		
+		
+	}
+}

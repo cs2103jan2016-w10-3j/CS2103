@@ -74,35 +74,77 @@ public class Task implements Serializable {
 		return sb.toString();
 	}
 	
-	private String getAMOrPM(Calendar cal) {
-		if (cal.get(Calendar.AM_PM) == Calendar.AM) {
-			return "AM";
-		} else {
-			return "PM";
+	private Date getEndTime() {
+		Date endDate = timeStart;
+		int hour = timeStart.getHours();
+		int minute = timeStart.getMinutes();
+		int day = timeStart.getDay();
+		hour += duration / 60;
+		minute += duration % 60;
+		if (minute > 60) {
+			hour++;
+			minute -= 60;
+		}
+		if (hour > 24) {
+			day++;
+			hour -= 24;
+		}
+		endDate.setHours(hour);
+		endDate.setMinutes(minute);
+		endDate.setDate(day);
+		return endDate;
+	}
+	
+	private String getDurationString() {
+		if (duration == 1) {
+			return "1 minute";
+		}
+		else if (duration < 60) {
+			return duration + " minutes";
+		}
+		else if (duration < 60 * 24 && duration % 60 == 0) {
+			return duration / 60 + " hours";
+		}
+		else if (duration < 60 * 24 && duration % 60 != 0) {
+			return duration / 60 + " hours " + duration % 60 + " minutes";
+		}
+		else {
+			return ">1 day";
 		}
 	}
 	
 	public String displayString() {
 		StringBuffer sb = new StringBuffer();
 		Calendar cal = Calendar.getInstance();
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm aa");
-		DateFormat dateOnly = new SimpleDateFormat("dd/MM/yyyy");
+		DateFormat timeOnly = new SimpleDateFormat("HH:mm aa");
+		DateFormat dateOnly = new SimpleDateFormat("dd MMMM yyyy");
 		if (this.timeStart!= null) {
 			cal.setTime(this.timeStart);
 		}
 		
 		if (this.name != null) {
-			sb.append("Task Name: " + this.name + "\n");
-		}
-		if (this.timeStart != null && isExactTime()) {
-			sb.append("Task Start Time: " + df.format(this.timeStart) + "\n");
+			sb.append("Name: " + this.name + "\n");
 		}
 		if (this.timeStart != null && !isExactTime()) {
-			sb.append("Task Start Time: " + dateOnly.format(this.timeStart) + "\n");
+			sb.append("Date: " + dateOnly.format(this.timeStart) + "\n");
+		}
+		if (this.timeStart != null && !isExactTime()) {
+			sb.append("Starts at: " + timeOnly.format(this.timeStart) + "\n");
+		}
+		if (this.timeStart != null && !isExactTime() && this.duration != 0) {
+			sb.append("Ends at: " + timeOnly.format(getEndTime()) + "\n");
 		}
 		if (this.duration != 0) {
-			sb.append("Task Estimated Length: " + this.duration + "\n");
+			sb.append("Duration: " + getDurationString() + "\n");
 		}
 		return sb.toString();
+	}
+	
+	public String getStatusString() {
+		if (done) {
+			return "Complete";
+		} else {
+			return "Incomplete";
+		}
 	}
 }
