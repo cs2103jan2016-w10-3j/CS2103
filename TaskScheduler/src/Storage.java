@@ -29,7 +29,6 @@ public class Storage {
 		tasks = new ArrayList<Task>();
 				
 		getStoredFileName();
-		System.out.println("Filename " + fileName);
 	}
 
 	private void getStoredFileName() throws FileNotFoundException,
@@ -84,8 +83,10 @@ public class Storage {
 		writer.close();
 	}
 	
-	public void setFileName(String fileName) {
-		this.fileName = fileName + ".con";
+	public void setFileName(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
+		this.fileName = fileName;
+		savePathAndFilenameToFile();
+		saveTasks(tasks);
 	}
 
 
@@ -101,12 +102,9 @@ public class Storage {
 	//Function to save tasks that are currently in task manager
 	@SuppressWarnings("unchecked")
 	public ArrayList<Task> readTasks() {
-		
-		System.out.println("hejhej +filePath + fileName");
 		this.tasks = new ArrayList<Task>();
 
-		fileName ="tasks.con";
-		File tasksSaveFile = new File(filePath + fileName);
+		File tasksSaveFile = new File(filePath + fileName + ".con");
 		if(tasksSaveFile.exists()) {
 			try {
 				FileInputStream fout = new FileInputStream(tasksSaveFile);
@@ -127,9 +125,7 @@ public class Storage {
 	
 	//Function to save tasks 
 	public void saveTasks(Object taskManager) {
-		File tasksSaveFile = new File(filePath + fileName);
-		System.out.println(filePath);
-		System.out.println(fileName);
+		File tasksSaveFile = new File(filePath + fileName + ".con");
 		
 		try {
 			FileOutputStream fout = new FileOutputStream(tasksSaveFile);
