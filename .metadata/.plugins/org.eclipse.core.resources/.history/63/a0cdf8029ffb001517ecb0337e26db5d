@@ -422,7 +422,6 @@ public class ApplicationWindow {
 			taskList.setVisible(true);
 			txtAreaHelp.setVisible(false);
 			historyList.setVisible(false);
-			scrollPane.setVisible(true);
 			break;
 		case 1:
 			historyButton.setBackground(new Color(68, 220, 168));
@@ -434,7 +433,6 @@ public class ApplicationWindow {
 			taskList.setVisible(false);
 			txtAreaHelp.setVisible(false);
 			historyList.setVisible(true);
-			scrollPane.setVisible(false);
 			break;
 		case 2:
 			helpButton.setBackground(new Color(68, 220, 168));
@@ -446,7 +444,6 @@ public class ApplicationWindow {
 			taskList.setVisible(false);
 			txtAreaHelp.setVisible(true);
 			historyList.setVisible(false);
-			scrollPane.setVisible(false);
 			break;
 		default:
 			break;
