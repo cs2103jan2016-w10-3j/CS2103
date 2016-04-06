@@ -248,9 +248,8 @@ public class ApplicationWindow {
 		taskList.setFixedCellHeight(25);
 		taskList.setBounds(11, 44, 496, 368);
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(11, 44, 496, 368);
 		scrollPane.setViewportView(taskList);
-		panel_3.add(scrollPane);
+		panel_3.add(taskList);
 
 		filterDropdown = new JComboBox();
 		filterDropdown.addActionListener(new ActionListener() {
