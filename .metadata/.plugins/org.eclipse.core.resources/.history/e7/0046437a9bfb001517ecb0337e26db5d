@@ -126,7 +126,7 @@ public class TaskManager implements Serializable {
 		return -1;
 	}
 
-	private static void setAlertForComingTasks(final ApplicationWindow window) {
+	private static void setAlertForComingTasks() {
 		Date currentDate = new Date();
 		Date smallestTime = null;
 		Boolean hasDueTask = false;
@@ -149,9 +149,8 @@ public class TaskManager implements Serializable {
 			public void actionPerformed(ActionEvent evt) {
 				System.out.println(
 						"TIMES UP!!!! **PUT A WINDOW HERE** for this task\n" + dueTask);
-				window.warnInvalid("TIMES UP!!!!  for this task\n" + dueTask);
 				// once action performed, look for the next task
-				setAlertForComingTasks(window);
+				setAlertForComingTasks();
 			}
 		};
         if (hasDueTask) { // sets the timer only if there is a upcoming task
@@ -208,7 +207,7 @@ public class TaskManager implements Serializable {
 					e.printStackTrace();
 				}
 				addTask(task);
-				setAlertForComingTasks(window);
+				setAlertForComingTasks();
 				sortAndRefresh();
 				addOnUndoStack(commandType, task);
 			}

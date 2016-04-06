@@ -149,7 +149,6 @@ public class TaskManager implements Serializable {
 			public void actionPerformed(ActionEvent evt) {
 				System.out.println(
 						"TIMES UP!!!! **PUT A WINDOW HERE** for this task\n" + dueTask);
-				window.warnInvalid("TIMES UP!!!!  for this task\n" + dueTask);
 				// once action performed, look for the next task
 				setAlertForComingTasks(window);
 			}

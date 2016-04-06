@@ -47,8 +47,8 @@ public class ApplicationWindow {
 	private JTextPane txtLabelStatus;
 	private boolean firstFocusManageText = true;
 	private boolean firstFocusSearchText = true;
-	public JComboBox filterDropdown;
-	public JComboBox sortDropdown;
+	private JComboBox filterDropdown;
+	private JComboBox sortDropdown;
 	private JPanel warningBackground;
 	private JTextPane txtAreaHelp;
 	private JList historyList;
