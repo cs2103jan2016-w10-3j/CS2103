@@ -1,2 +1,0 @@
-tasks
-/Users/admin/Desktop/main/TaskScheduler/

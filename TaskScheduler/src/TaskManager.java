@@ -127,33 +127,37 @@ public class TaskManager implements Serializable {
 	}
 
 	private static void setAlertForComingTasks() {
-//		Date currentDate = new Date();
-//		Date smallestTime = null;
-//		// search for the latest && undone && have start-time task.
-//		for (Task task : tasks) {
-//			if (task.getTimeStart() != null // have start-time
-//					&& !task.getDoneStatus() // not done
-//					&& task.getTimeStart().after(currentDate)) {
-//				if (smallestTime == null) {
-//					smallestTime = task.getTimeStart();
-//				} else if (task.getTimeStart().before(smallestTime)) {
-//					smallestTime = task.getTimeStart();
-//					dueTask = task.displayString();
-//				}
-//			}
-//		}
-//		long delay = smallestTime.getTime() - currentDate.getTime(); // milliseconds
-//		ActionListener taskPerformer = new ActionListener() {
-//			public void actionPerformed(ActionEvent evt) {
-//				System.out.println(
-//						"TIMES UP!!!! **PUT A WINDOW HERE** for this task" + dueTask);
-//				// once action performed, look for the next task
-//				setAlertForComingTasks();
-//			}
-//		};
-//		Timer timer = new Timer((int) delay+1, taskPerformer);
-//		timer.start();
-//		timer.setRepeats(false);
+		Date currentDate = new Date();
+		Date smallestTime = null;
+		Boolean hasDueTask = false;
+		// search for the latest && undone && have start-time task.
+		for (Task task : tasks) {
+			if (task.getTimeStart() != null // have start-time
+					&& !task.getDoneStatus() // not done
+					&& task.getTimeStart().after(currentDate)) {
+				if (smallestTime == null) {
+					smallestTime = task.getTimeStart();
+				} else if (task.getTimeStart().before(smallestTime)) {
+					smallestTime = task.getTimeStart();
+					dueTask = task.displayString();
+					hasDueTask = true;
+				}
+			}
+		}
+		long delay = smallestTime.getTime() - currentDate.getTime(); // milliseconds
+		ActionListener taskPerformer = new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				System.out.println(
+						"TIMES UP!!!! **PUT A WINDOW HERE** for this task\n" + dueTask);
+				// once action performed, look for the next task
+				setAlertForComingTasks();
+			}
+		};
+        if (hasDueTask) { // sets the timer only if there is a upcoming task
+            Timer timer = new Timer((int) delay + 1, taskPerformer);
+            timer.start();
+            timer.setRepeats(false);
+        }
 	}
 
 	public void sortAndRefresh() {// sorts the list so that the most urgent is
