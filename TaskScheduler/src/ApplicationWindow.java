@@ -26,6 +26,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.List;
 
 //@@author Erika
 public class ApplicationWindow {
@@ -43,10 +44,14 @@ public class ApplicationWindow {
 	private JButton homeButton;
 	private JButton historyButton;
 	private JButton helpButton;
-	private JButton settingsButton;
 	private JTextPane txtLabelStatus;
 	private boolean firstFocusManageText = true;
 	private boolean firstFocusSearchText = true;
+	private JComboBox filterDropdown;
+	private JComboBox sortDropdown;
+	private JPanel warningBackground;
+	private JTextPane txtAreaHelp;
+	private JList historyList;
 	
 	/**
 	 * Launch the application.
@@ -147,32 +152,18 @@ public class ApplicationWindow {
 		historyButton.setBounds(312, 0, 66, 64);
 		panel_1.add(historyButton);
 
-		settingsButton = new JButton("\n");
-		settingsButton.setOpaque(true);
-		settingsButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				selectedButtonIndex = 2;
-				refreshButtons();
-			}
-		});
-		settingsButton.setIcon(new ImageIcon("/Users/admin/Desktop/SettingsIcon.png"));
-		settingsButton.setBorder(new EmptyBorder(0, 0, 0, 0));
-		settingsButton.setBackground(new Color(0, 204, 153));
-		settingsButton.setBounds(391, 0, 66, 64);
-		panel_1.add(settingsButton);
-
 		helpButton = new JButton("\n");
 		helpButton.setOpaque(true);
 		helpButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				selectedButtonIndex = 3;
+				selectedButtonIndex = 2;
 				refreshButtons();
 			}
 		});
 		helpButton.setIcon(new ImageIcon("/Users/admin/Desktop/InfoImage.png"));
 		helpButton.setBorder(new EmptyBorder(0, 0, 0, 0));
 		helpButton.setBackground(new Color(0, 204, 153));
-		helpButton.setBounds(470, 0, 66, 64);
+		helpButton.setBounds(391, 0, 66, 64);
 		panel_1.add(helpButton);
 
 		JPanel panel = new JPanel();
@@ -182,13 +173,13 @@ public class ApplicationWindow {
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 
-		JPanel panel_2 = new JPanel();
-		panel_2.setEnabled(false);
-		panel_2.setBorder(null);
-		panel_2.setBackground(new Color(255, 165, 0));
-		panel_2.setBounds(0, 20, 252, 29);
-		panel.add(panel_2);
-		panel_2.setLayout(null);
+		warningBackground = new JPanel();
+		warningBackground.setEnabled(false);
+		warningBackground.setBorder(null);
+		warningBackground.setBackground(new Color(255, 165, 0));
+		warningBackground.setBounds(0, 20, 252, 29);
+		panel.add(warningBackground);
+		warningBackground.setLayout(null);
 
 		txtLabelStatus = new JTextPane();
 		txtLabelStatus.setDisabledTextColor(SystemColor.text);
@@ -198,7 +189,7 @@ public class ApplicationWindow {
 		txtLabelStatus.setFont(new Font("Open Sans", Font.PLAIN, 20));
 		txtLabelStatus.setForeground(new Color(255, 255, 255));
 		txtLabelStatus.setBackground(new Color(255, 165, 0));
-		panel_2.add(txtLabelStatus);
+		warningBackground.add(txtLabelStatus);
 
 		txtAreaDescription = new JTextPane();
 		txtAreaDescription.setFont(new Font("Open Sans", Font.PLAIN, 14));
@@ -213,6 +204,13 @@ public class ApplicationWindow {
 		txtAreaTaskDetails.setBounds(10, 61, 233, 231);
 		txtAreaTaskDetails.setEnabled(false);
 		panel.add(txtAreaTaskDetails);
+		
+		txtAreaHelp = new JTextPane();
+		txtAreaHelp.setForeground(new Color(102, 205, 170));
+		txtAreaHelp.setFont(new Font("Open Sans", Font.PLAIN, 13));
+		txtAreaHelp.setBounds(30, 100, 499, 372);
+		frame.getContentPane().add(txtAreaHelp);
+		txtAreaHelp.setText("add [NAME] || [DD/MM/YYYY] [HH:MM] [H:M]\nadd [NAME] || [DD/MM/YYYY] [HH:MM]\nadd [NAME] || [DD/MM/YYYY]\nadd [NAME]\ndelete [INDEX]\ndone [INDEX]\nedit [INDEX] name [STRING]\nedit [INDEX] duration [STRING]\nedit [INDEX] datetime [STRING]\nedit [INDEX] all [NAME] [DATE] [TIME] [DURATION]\nclear\ndisplay [INDEX]\nsearch name [STRING]\nsearch date [DD/MM/YYYY]\nundo\nhome\nhistory\nhelp\nsort [NAME/DATE/START/END/DURATION/DEFAULT]\nfilter [INCOMPLETE/COMPLETE/SHORT/MEDIUM/LONG/SOON/ALL]\n");
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new LineBorder(SystemColor.textHighlight));
@@ -250,7 +248,7 @@ public class ApplicationWindow {
 		taskList.setBounds(11, 44, 496, 368);
 		panel_3.add(taskList);
 
-		final JComboBox filterDropdown = new JComboBox();
+		filterDropdown = new JComboBox();
 		filterDropdown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String filterString;
@@ -296,7 +294,7 @@ public class ApplicationWindow {
 		filterDropdown.setBounds(6, 6, 258, 36);
 		panel_3.add(filterDropdown);
 
-		final JComboBox sortDropdown = new JComboBox();
+		sortDropdown = new JComboBox();
 		sortDropdown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String sortString;
@@ -338,6 +336,22 @@ public class ApplicationWindow {
 		sortDropdown.setBackground(Color.WHITE);
 		sortDropdown.setBounds(261, 6, 249, 36);
 		panel_3.add(sortDropdown);
+		
+		historyList = new JList();
+		historyList.setEnabled(false);
+		historyList.setForeground(new Color(60, 179, 113));
+		historyList.setFont(new Font("Open Sans", Font.PLAIN, 13));
+		historyList.setBounds(6, 6, 501, 406);
+		historyList.setModel(new AbstractListModel() {
+			List<String> history = taskManager.getHistoryList();
+			public int getSize() {
+				return history.size();
+			}
+			public Object getElementAt(int index) {
+				return history.get(index);
+			}
+		});
+		panel_3.add(historyList);
 
 
 		JPanel taskManageLine = new JPanel();
@@ -391,20 +405,42 @@ public class ApplicationWindow {
 	private void refreshButtons() {
 		homeButton.setBackground(new Color(0, 204, 153));
 		historyButton.setBackground(new Color(0, 204, 153));
-		settingsButton.setBackground(new Color(0, 204, 153));
 		helpButton.setBackground(new Color(0, 204, 153));
 		switch (selectedButtonIndex) {
 		case 0:
 			homeButton.setBackground(new Color(68, 220, 168));
+			txtLabelStatus.setVisible(true);
+			txtAreaTaskDetails.setVisible(true);
+			filterDropdown.setVisible(true);
+			sortDropdown.setVisible(true);
+			warningBackground.setVisible(true);
+			taskList.setVisible(true);
+			txtAreaHelp.setVisible(false);
+			historyList.setVisible(false);
 			break;
 		case 1:
 			historyButton.setBackground(new Color(68, 220, 168));
+			txtLabelStatus.setVisible(false);
+			txtAreaTaskDetails.setVisible(false);
+			filterDropdown.setVisible(false);
+			sortDropdown.setVisible(false);
+			warningBackground.setVisible(false);
+			taskList.setVisible(false);
+			txtAreaHelp.setVisible(false);
+			historyList.setVisible(true);
 			break;
 		case 2:
-			settingsButton.setBackground(new Color(68, 220, 168));
+			helpButton.setBackground(new Color(68, 220, 168));
+			txtLabelStatus.setVisible(false);
+			txtAreaTaskDetails.setVisible(false);
+			filterDropdown.setVisible(false);
+			sortDropdown.setVisible(false);
+			warningBackground.setVisible(false);
+			taskList.setVisible(false);
+			txtAreaHelp.setVisible(true);
+			historyList.setVisible(false);
 			break;
 		default:
-			helpButton.setBackground(new Color(68, 220, 168));
 			break;
 		}
 	}
@@ -425,6 +461,14 @@ public class ApplicationWindow {
 				return values[index];
 			}
 		});
+		historyList.setModel(new AbstractListModel() {
+			List<String> history = taskManager.getHistoryList();
+			public int getSize() {
+				return history.size();
+			}
+			public Object getElementAt(int index) {
+				return history.get(index);
+			}
+		});
 	}
-	
 }

@@ -133,8 +133,6 @@ public class Parser {
 			return Command.HELP;
 		} else if (command.toLowerCase().equals("history")) {
 			return Command.HISTORY;
-		} else if (command.toLowerCase().equals("settings")) {
-			return Command.SETTINGS;
 		} else if (command.toLowerCase().equals("filter")) {
 			return Command.FILTER;
 		} else if (command.toLowerCase().equals("sort")) {

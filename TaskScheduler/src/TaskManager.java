@@ -46,6 +46,7 @@ public class TaskManager implements Serializable {
 	private static Storage storage;
 	private static Stack<Task> undo = new Stack<Task>();
 	private static Stack<Command> operand = new Stack<Command>();
+	private static List<String> history = new ArrayList<String>();
 	public boolean filtered = false;
 	private static String dueTask = null;
 	private static final Logger logger = Logger.getLogger(TaskManager.class.getName());
@@ -98,6 +99,10 @@ public class TaskManager implements Serializable {
 		} else {
 			return tasks.size();
 		}
+	}
+	
+	public List<String> getHistoryList() {
+		return history;
 	}
 
 	private void removeTask(int index) {
@@ -186,7 +191,7 @@ public class TaskManager implements Serializable {
 		switch (commandType) {
 		case ADD :
 			if (filtered) {
-				window.warnInvalid("You cannot perform this operation when applying a filter. Please filter by all. ");
+				window.warnInvalid("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
 				filtered = false;
 				window.refreshWindow();
 			} else {
@@ -205,7 +210,7 @@ public class TaskManager implements Serializable {
 			break;
 		case DELETE :
 			if (filtered) {
-				window.warnInvalid("You cannot perform this operation when applying a filter. Please filter by all. ");
+				window.warnInvalid("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
 				filtered = false;
 				window.refreshWindow();
 			} else {
@@ -228,7 +233,7 @@ public class TaskManager implements Serializable {
 			break;
 		case EDIT :
 			if (filtered) {
-				window.warnInvalid("You cannot perform this operation when applying a filter. Please filter by all. ");
+				window.warnInvalid("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
 				filtered = false;
 				window.refreshWindow();
 			} else {
@@ -240,7 +245,7 @@ public class TaskManager implements Serializable {
 			break;
 		case CLEAR :
 			if (filtered) {
-				window.warnInvalid("You cannot perform this operation when applying a filter. Please filter by all. ");
+				window.warnInvalid("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
 				filtered = false;
 				window.refreshWindow();
 			} else {
@@ -249,16 +254,16 @@ public class TaskManager implements Serializable {
 			break;
 		case SEARCH :
 			if (filtered) {
-				window.warnInvalid("You cannot perform this operation when applying a filter. Please filter by all. ");
+				window.warnInvalid("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
 				filtered = false;
 				window.refreshWindow();
 			} else {
-				searchTask(input);
+				searchTask(input, window);
 			}
 			break;
 		case DONE :
 			if (filtered) {
-				window.warnInvalid("You cannot perform this operation when applying a filter. Please filter by all. ");
+				window.warnInvalid("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
 				filtered = false;
 				window.refreshWindow();
 			} else {
@@ -283,12 +288,8 @@ public class TaskManager implements Serializable {
 			window.selectedButtonIndex = 0;
 			window.refreshWindow();
 			break;
-		case SETTINGS :
-			window.selectedButtonIndex = 2;
-			window.refreshWindow();
-			break;
 		case HELP :
-			window.selectedButtonIndex = 3;
+			window.selectedButtonIndex = 2;
 			window.refreshWindow();
 			break;
 		case FILTER :
@@ -578,6 +579,10 @@ public class TaskManager implements Serializable {
 	private void addOnUndoStack(Command commandType, Task task) {
 		undo.push(task);
 		operand.push(commandType);
+		Date now = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm aa, dd MMMM yyyy");
+		String time = dateFormat.format(now);
+		history.add(commandType + " on task " + task.getName() + " at " + time);
 	}
 
 	private void undo() {
@@ -662,23 +667,27 @@ public class TaskManager implements Serializable {
 		}
 	}
 
-	private void searchTask(String input) throws KeywordNotEnteredException,
+	private void searchTask(String input, ApplicationWindow window) throws KeywordNotEnteredException,
 	SearchTypeNotEnteredException, SearchNotInPairException {
 		assert (input != null);
 		String nameToSearchFor = parser.getSearchingParser().getNameForSearch(input);
 		boolean contains = false;
 		int occurance = 0;
+		temporaryTasks.clear();
+		filtered = true;
 		for (Task currentTasks : tasks) {
 			contains = currentTasks.getName().toLowerCase()
 					.contains(nameToSearchFor.toLowerCase());
 			if (contains) {
-				System.out.println(currentTasks.getName());
+				temporaryTasks.add(currentTasks);
 				occurance++;
 			}
 		}
-		logger.log(Level.FINE, "A search with keyword {0} has been made",
-				nameToSearchFor);
-		System.out.println("total occurance for haha string is " + occurance);
+		window.refreshWindow();
+		window.warnInvalid("A total of: " + occurance + " occurences were found.");
+//		logger.log(Level.FINE, "A search with keyword {0} has been made",
+//				nameToSearchFor);
+//		System.out.println("total occurance for haha string is " + occurance);
 	}
 
 	private void addTask(Task task) {
