@@ -35,68 +35,39 @@ public class Storage {
 			UnsupportedEncodingException {
 		
 		String tasksSavePath = getFilePath();
-		
-		// Default Values
-		fileName = "tasks";
-		filePath = tasksSavePath;
-		
-		readPrevFileAndPath(tasksSavePath); 
-		
-		writeCurrFileAndPathToFile(tasksSavePath);
-	}
-
-	private void writeCurrFileAndPathToFile(String tasksSavePath)
-			throws FileNotFoundException, UnsupportedEncodingException {
-		PrintWriter writer = new PrintWriter(STORE_FILE, "UTF-8");
-		writer.println(fileName);
-		filePath = tasksSavePath;
-		
-		writer.println(tasksSavePath);
-		writer.close();
-	}
-
-	private void readPrevFileAndPath(String tasksSavePath)
-			throws FileNotFoundException {
-		// File for storing the filename and path to where tasks is sored
 		File f = new File(tasksSavePath + STORE_FILE);
 		
 		if(f.exists() && !f.isDirectory()) { 
 			Scanner scan = new Scanner(new File(STORE_FILE));
-						
-			String tmpFilePath = scan.nextLine();
-			if( isStringNameDir(tmpFilePath) ) {
-				filePath = tmpFilePath;
-			} 
 			
-			String tmpFileName = scan.nextLine();
-			if( isFile(tmpFileName) ) {
-				filePath = tmpFilePath;
-			} 			
-		}
-	}
-	
-	public void setPath(String filePath) throws FileNotFoundException, UnsupportedEncodingException {		
-		
-		if( isStringNameDir(filePath) ) {
-			new File(this.filePath + fileName + ".con").delete();
-			
-			this.filePath = filePath;
+			fileName = scan.nextLine();
+			filePath = scan.nextLine();
 		} else {
-			System.out.println("not directory");
+			PrintWriter writer = new PrintWriter(STORE_FILE, "UTF-8");
+			
+			fileName = "tasks";
+			writer.println(fileName);
+			filePath = tasksSavePath;
+			
+			writer.println(tasksSavePath);
+			writer.close();
 		}
-		savePathAndFilenameToFile();
-	}
-
-	private boolean isStringNameDir(String filePath) {
-		return new File(filePath).isDirectory();
 	}
 	
-	private boolean isFile(String file) {
-		return new File(file).isDirectory();
+	public void setPath(String filePath) throws FileNotFoundException, UnsupportedEncodingException {
+		this.filePath = filePath;
+		
+		savePathAndFilenameToFile();
 	}
 	
 	public String getPath() {
 		return filePath;
+	}
+	
+	public void setfileStoreName(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
+		this.fileName = fileName;
+		
+		savePathAndFilenameToFile();
 	}
 	
 	public String getFileName() {
@@ -113,17 +84,16 @@ public class Storage {
 	}
 	
 	public void setFileName(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
-		boolean deleted= new File(filePath + this.fileName +".con").delete();
-
 		this.fileName = fileName;
 		savePathAndFilenameToFile();
+		saveTasks(tasks);
 	}
 
 
 	private String getFilePath() {
 		Path currentRelativePath = Paths.get("");
 		String stringifiedPath = currentRelativePath.toAbsolutePath().toString();
-		String tasksSavePath = stringifiedPath;
+		String tasksSavePath = stringifiedPath + "/";
 		return tasksSavePath;
 	}
 
