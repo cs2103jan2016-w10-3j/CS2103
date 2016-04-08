@@ -22,6 +22,7 @@ import Exceptions.ParserExceptions.FileTypeInvalidException;
 import Exceptions.ParserExceptions.InvalidDateTimeFormatException;
 import Exceptions.ParserExceptions.InvalidInputException;
 import Exceptions.ParserExceptions.InvalidTaskDateException;
+import Exceptions.ParserExceptions.InvalidTaskDurationException;
 import Exceptions.ParserExceptions.InvalidTaskTimeException;
 import Exceptions.ParserExceptions.KeywordNotEnteredException;
 import Exceptions.ParserExceptions.NoInputException;
@@ -189,7 +190,7 @@ public class TaskManager implements Serializable {
 			InvalidDateTimeFormatException, KeywordNotEnteredException,
 			SearchTypeNotEnteredException, SearchNotInPairException,
 			FileNotFoundException, UnsupportedEncodingException,
-			FileTypeInvalidException {
+			FileTypeInvalidException, InvalidTaskDurationException {
 		Command commandType = parser.getCommand(input);
 		assert (commandType != null);
 		System.out.println(commandType.toString());
@@ -666,7 +667,7 @@ public class TaskManager implements Serializable {
 	private void editTask(String input) throws InvalidTaskTimeException,
 	TaskTimeOutOfBoundException, InvalidInputException,
 	TaskDateAlreadyPassedException, InvalidTaskDateException,
-	ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
+	ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException, InvalidTaskDurationException {
 		assert (input != null);
 		int index = parser.getEditingParser().findTokenIndex(input);
 		EditType editType = parser.getEditingParser().findEditTaskType(input);
@@ -682,8 +683,8 @@ public class TaskManager implements Serializable {
 			logger.log(Level.FINE, "Name of the task {0} has been changed to {1}.",
 					new Object[] {index, name});
 		} else {
-			String duration = parser.getEditingParser().getArgumentForEditing(input);
-			getTask(index).setDuration(Integer.parseInt(duration));
+			int duration = parser.getEditingParser().getEditDurationArgument(input);
+			getTask(index).setDuration(duration);
 			logger.log(Level.FINE, "Duration of the task {0} has been changed to {1}",
 					new Object[] {index, duration});
 		}

@@ -43,13 +43,16 @@ public class ParserTest {
 	
 	//@@author Jared
 	@Test
-	public void editTest() throws ArgumentForEditingNotEnteredException, TaskDateAlreadyPassedException, InvalidTaskDateException, InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidDateTimeFormatException {
-		String first = "edit 1 duration 5";
+	// Test method to check EditingParser
+	public void editTest() throws ArgumentForEditingNotEnteredException, TaskDateAlreadyPassedException, InvalidTaskDateException, InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidDateTimeFormatException, InvalidTaskDurationException {
+		String first = "edit 1 duration 2.5";
 		String second = "edit 3 name Doing Work";
 		String third = "edit 5 datetime 05/05/2016 5:5";
-		assertEquals(parser.getEditingParser().getArgumentForEditing(first), "5");
+		// Checking the validity of the different types of editing (getting the correct arguments)
+		assertEquals(parser.getEditingParser().getEditDurationArgument(first), 125);
 		assertEquals(parser.getEditingParser().getArgumentForEditing(second), "Doing Work");
 		assertEquals(parser.getEditingParser().getArgumentForEditing(third), "05/05/2016 5:5");
+		// Checking if the date tokens are correct
 		Date date = parser.getEditingParser().extractDateTokens(third);
 		assertEquals(df.format(date),"05/05/2016 05:05:00 AM");
 	}
@@ -107,6 +110,7 @@ public class ParserTest {
 		String second = "add work || 1:1 2.2 05/05/2016";
 		String third = "add work || 2.2 05/05/2016 1:1";
 		String fourth = "add work || today";
+		// Testing 3 different flexible input formats (date, time, duration; time, duration, date; duration, date, time)
 		e = parser.getAddingParser().getTaskForAdding(first);
 		assertEquals(e.getName(), "sd sd ds");
 		assertEquals(df.format(e.getTimeStart()), "31/05/2016 01:01:00 AM");
@@ -119,8 +123,9 @@ public class ParserTest {
 		assertEquals(e.getName(), "work");
 		assertEquals(df.format(e.getTimeStart()), "05/05/2016 01:01:00 AM");
 		assertEquals(e.getDuration(), 122);
+		// Testing the 'today' keyword to get the current date and time
 		e = parser.getAddingParser().getTaskForAdding(fourth);
-		System.out.println(df.format(e.getTimeStart()));
+		assertEquals(df.format(e.getTimeStart()), df.format(new java.util.Date()));
 	}
 	
 	//@@author JunWei
@@ -136,10 +141,12 @@ public class ParserTest {
 		Throwable e = null;
 		
 		String first = "file changepath C:\\";
-		String second = "file changepath aoieh";
+		String second = "file changepath hello??";
 		String third = "file changename Hello.xml";
 		String fourth = "file readpath C:\\";
+		// Testing changepath type storage file command
 		assertEquals(parser.getStorageParser().findStorageParserType(first), StorageParserType.CHANGEPATH);
+		// Testing invalid path (throwing a FilePathInvalidException)
 		assertEquals(parser.getStorageParser().getPath(first), "C:\\");
 		try {
 			parser.getStorageParser().getPath(second);
@@ -147,8 +154,10 @@ public class ParserTest {
 			e = ex;
 		}
 		assertTrue(e instanceof FilePathInvalidException);
+		// Testing the changename type storage file command
 		assertEquals(parser.getStorageParser().findStorageParserType(third), StorageParserType.CHANGENAME);
 		assertEquals(parser.getStorageParser().getName(third), "Hello.xml");
+		// Testing the readpath type storage file command
 		assertEquals(parser.getStorageParser().findStorageParserType(fourth), StorageParserType.READPATH);
 		assertEquals(parser.getStorageParser().getPath(fourth), "C:\\");
 	}

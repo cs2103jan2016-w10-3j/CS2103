@@ -194,7 +194,7 @@ public class DateTime {
 				int day = categorizeDay(dateString);
 				date = getDateInThisWeek(day);
 				DateFormat dateOnly = new SimpleDateFormat("dd/MM/yyyy");
-				System.out.println("A: "+dateOnly.format(date));
+				//System.out.println("A: "+dateOnly.format(date));
 				date = DateTime.getDatePlusDays(date, numOfWeekToAdd * 7);
 				}
 		}

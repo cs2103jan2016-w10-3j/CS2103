@@ -6,6 +6,7 @@ import Exceptions.ParserExceptions.ArgumentForEditingNotEnteredException;
 import Exceptions.ParserExceptions.InvalidDateTimeFormatException;
 import Exceptions.ParserExceptions.InvalidInputException;
 import Exceptions.ParserExceptions.InvalidTaskDateException;
+import Exceptions.ParserExceptions.InvalidTaskDurationException;
 import Exceptions.ParserExceptions.InvalidTaskTimeException;
 import Exceptions.ParserExceptions.TaskDateAlreadyPassedException;
 import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
@@ -78,5 +79,9 @@ public class EditingParser {
 			throw new ArgumentForEditingNotEnteredException();
 		}
 		
+	}
+	
+	public int getEditDurationArgument(String input) throws InvalidTaskTimeException, InvalidTaskDurationException {
+		return DateTime.getTotalMin(Parser.divideTokens(input)[3]);
 	}
 }

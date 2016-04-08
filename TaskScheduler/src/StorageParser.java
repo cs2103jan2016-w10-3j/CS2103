@@ -42,7 +42,6 @@ public class StorageParser {
 		String[] tokens = Parser.divideTokens(input);
 		boolean test = canWrite(tokens[2]);
 		if (test == false) {
-			System.out.println(tokens[2]);
 			throw new FilePathInvalidException();
 		}
 		else {
