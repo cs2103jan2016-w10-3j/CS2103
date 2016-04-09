@@ -151,7 +151,7 @@ public class TaskManager implements Serializable {
 				}
 			}
 		}
-		long delay = smallestTime.getTime() - currentDate.getTime(); // milliseconds
+		
 		ActionListener taskPerformer = new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				System.out.println(
@@ -161,7 +161,9 @@ public class TaskManager implements Serializable {
 				setAlertForComingTasks(window);
 			}
 		};
-        if (hasDueTask) { // sets the timer only if there is a upcoming task
+		if (smallestTime != null && hasDueTask){
+	        long delay = smallestTime.getTime() - currentDate.getTime(); // milliseconds
+	        // sets the timer only if there is a upcoming task
             Timer timer = new Timer((int) delay + 1, taskPerformer);
             timer.start();
             timer.setRepeats(false);
