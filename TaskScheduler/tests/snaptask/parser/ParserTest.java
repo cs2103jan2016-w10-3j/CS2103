@@ -17,6 +17,7 @@ import snaptask.logic.Task;
 import snaptask.parser.Parser;
 import snaptask.parser.children.SearchType;
 import snaptask.parser.children.StorageParserType;
+import snaptask.storage.StorageReadSave;
 
 
 
@@ -48,6 +49,23 @@ public class ParserTest {
 //		System.out.println(df.format(t.getTimeStart()));
 //		System.out.println(t.getDuration());
 	}
+	
+//	//@@author Jared
+//	@Test
+//	public void todayTest() throws InvalidTaskTimeException, TaskTimeOutOfBoundException, InvalidInputException, NoArgumentException, TaskNameNotEnteredException, TaskTimeOrSeparatorNotEnteredException, TaskDateNotEnteredException, InvalidTaskDurationException, TaskDateAlreadyPassedException, InvalidTaskDateException, AddingInputTooLongException {
+//		DateFormat dateOnly = new SimpleDateFormat("dd/MM/yyyy");
+//		String first = "add work work || today 19:12 2.4";
+//		
+//		DateTime dateTime = new DateTime(new Date());
+//		dateTime.parseAndAddTimeToDate("19:12");
+//		Task t = new Task("work work", dateTime.getDatePlusTime(), true, 124);
+//		
+//		StorageReadSave s = StorageReadSave.getInstance();
+//		System.out.println(s.toStringFromTask(parser.getAddingParser().getTaskForAdding(first)));
+//		System.out.println(s.toStringFromTask(t));
+//		
+//		assertTrue(parser.getAddingParser().getTaskForAdding(first).equals(t));
+//	}
 	
 	//@@author Jared
 	@Test

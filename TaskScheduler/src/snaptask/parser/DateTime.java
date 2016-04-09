@@ -52,7 +52,7 @@ public class DateTime {
 	public Date getDatePlusTime() {
 		assert(date!=null);
 		calendar.setTime(date);
-		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.add(Calendar.HOUR_OF_DAY, hr);
 		calendar.add(Calendar.MINUTE, min);
@@ -236,6 +236,9 @@ public class DateTime {
     	int dayOfWeek = getDayOfTheWeek();
     	int daysInterval;
     	Date result;
+    	//calendar.set(Calendar.HOUR_OF_DAY,0);
+    	//calendar.set(Calendar.MINUTE, 0);
+    	//calendar.set(Calendar.SECOND, 0);
     	
     	if (day == DAY_TODAY) {
     		return calendar.getTime();
