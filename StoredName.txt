@@ -1,2 +1,2 @@
 tasks
-C:\Users\ASUS\workspace\testGit\main/
+C:\Users\ASUS\workspace\testGit\main

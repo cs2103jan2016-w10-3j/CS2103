@@ -147,4 +147,23 @@ public class Task implements Serializable {
 			return "Incomplete";
 		}
 	}
+	
+	public Boolean equals(Task other) {
+		Boolean nameMatch = this.name.equals(other.getName());
+		Boolean timeMatch;
+		if(this.timeStart != null) {
+			timeMatch = this.timeStart.equals(other.getTimeStart());
+		}
+		else {
+			timeMatch = this.timeStart == other.getTimeStart();
+		}
+		Boolean durationMatch = this.duration == other.getDuration();
+		Boolean doneMatch = this.done == other.getDoneStatus();
+		if (nameMatch && timeMatch && durationMatch && doneMatch) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }

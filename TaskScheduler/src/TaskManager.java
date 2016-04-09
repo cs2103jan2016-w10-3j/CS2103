@@ -66,7 +66,7 @@ public class TaskManager implements Serializable {
 		return instance;
 	}
 
-	public static void loadTasks() {
+	public static void loadTasks() throws IOException {
 		tasks = storage.readTasks();
 	}
 

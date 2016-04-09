@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,5 +118,24 @@ public class StorageTest {
 
 		File file = new File(oldPath + oldFile + ".con");
 		assertEquals(file.exists(), false);
+	}
+	
+	@Test
+	public void storageReadSave() throws ParseException {
+		StorageReadSave s = StorageReadSave.getInstance();
+		DateFormat dateTime = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		DateFormat dateOnly = new SimpleDateFormat("dd/MM/yyyy");
+		
+		// Testing instances of fully defined tasks
+		String first = "work work || true || 19/12/2016 19:30:15 || 145 || false";
+		Task t1 = new Task("work work", dateTime.parse("19/12/2016 19:30:15"), true, 145);		
+		assertEquals(s.toStringFromTask(t1), first);
+		assertTrue(s.toTaskFromString(first).equals(t1));
+		
+		// Testing instances of ill defined tasks
+		String second = "work work || false || null || 0 || false";
+		Task t2 = new Task("work work", null, false, 0);
+		assertEquals(s.toStringFromTask(t2), second);
+		assertTrue(s.toTaskFromString(second).equals(t2));
 	}
 }

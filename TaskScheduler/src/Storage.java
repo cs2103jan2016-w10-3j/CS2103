@@ -57,7 +57,7 @@ public class Storage {
 
 	private void readPrevFileAndPath(String tasksSavePath)
 			throws FileNotFoundException {
-		// File for storing the filename and path to where tasks is sored
+		// File for storing the filename and path to where tasks is stored
 		File f = new File(tasksSavePath + STORE_FILE);
 		
 		if(f.exists() && !f.isDirectory()) { 
