@@ -27,58 +27,76 @@ import snaptask.logic.Task;
 
 public class Storage {
 	private ArrayList<Task> tasks;
+	
+	
 	private String fileName;
 	private String filePath;
+	
 	private StorageReadSave storageReadSave = null;
-	private final String STORE_FILE = "StoredName.txt";
+	private final String STORE_FILENAME_AND_PATH = "StoredFilenameAndPath.txt";
 
 	public Storage() throws FileNotFoundException, IOException {
 		tasks = new ArrayList<Task>();
 		storageReadSave = StorageReadSave.getInstance();
-		getStoredFileName();
+		setupFilenameAndPathToStoredTasks();
 	}
 
-	private void getStoredFileName() throws FileNotFoundException,
+	private void setupFilenameAndPathToStoredTasks() throws FileNotFoundException,
 			UnsupportedEncodingException {
 		
+		// Load path to current directory
 		String tasksSavePath = getFilePath();
 		
-		// Default Values
+		// Default values for filename and path
 		fileName = "tasks";
 		filePath = tasksSavePath;
 		
-		readPrevFileAndPath(tasksSavePath); 
+		// Read the filename and the path that was used when the user ran the program last time
+		// if there is no previous run the defualt values are used
+		readPrevFileAndPath(); 
 		
+		// Update the file that is holding information about current filename and current path
 		writeCurrFileAndPathToFile(tasksSavePath);
 	}
 
+	// Updates "StoredFilenameAndPath.txt" to hold new path and filename
 	private void writeCurrFileAndPathToFile(String tasksSavePath)
 			throws FileNotFoundException, UnsupportedEncodingException {
-		PrintWriter writer = new PrintWriter(STORE_FILE, "UTF-8");
-		writer.println(fileName);
-		filePath = tasksSavePath;
+		PrintWriter writer = new PrintWriter(STORE_FILENAME_AND_PATH, "UTF-8");
 		
-		writer.println(tasksSavePath);
+		writer.println(filePath);		
+		writer.println(fileName);
+
 		writer.close();
 	}
 
-	private void readPrevFileAndPath(String tasksSavePath)
+	private void readPrevFileAndPath()
 			throws FileNotFoundException {
+		
+		// Load path to current directory
+		String tasksSavePath = getFilePath();
+		
+		// Default values for filename and path
+		fileName = "tasks";
+		filePath = tasksSavePath;		
+		
 		// File for storing the filename and path to where tasks is stored
-		File f = new File(tasksSavePath + STORE_FILE);
+		File f = new File(tasksSavePath + STORE_FILENAME_AND_PATH);
 		
 		if(f.exists() && !f.isDirectory()) { 
-			Scanner scan = new Scanner(new File(STORE_FILE));
-						
+			Scanner scan = new Scanner(new File(STORE_FILENAME_AND_PATH));
+			
 			String tmpFilePath = scan.nextLine();
+			
 			if( isStringNameDir(tmpFilePath) ) {
 				filePath = tmpFilePath;
 			} 
 			
 			String tmpFileName = scan.nextLine();
 			if( isFile(tmpFileName) ) {
-				filePath = tmpFilePath;
-			} 			
+				fileName = tmpFileName;
+			} 
+
 		}
 	}
 	
@@ -87,9 +105,13 @@ public class Storage {
 		if( isStringNameDir(filePath) ) {
 			new File(this.filePath + fileName + ".con").delete();
 			
+			String lastCaracter = filePath.substring(filePath.length() - 1); 
+			
+			if(!(lastCaracter.equals("/") || lastCaracter.equals("\\"))) {
+				filePath += "/";
+			}
+				
 			this.filePath = filePath;
-		} else {
-			System.out.println("not directory");
 		}
 		savePathAndFilenameToFile();
 	}
@@ -99,7 +121,7 @@ public class Storage {
 	}
 	
 	private boolean isFile(String file) {
-		return new File(file).isDirectory();
+		return new File(filePath, file + ".con").exists();
 	}
 	
 	public String getPath() {
@@ -113,9 +135,9 @@ public class Storage {
 	private void savePathAndFilenameToFile()
 			throws FileNotFoundException, UnsupportedEncodingException {
 		
-		PrintWriter writer = new PrintWriter(STORE_FILE, "UTF-8");
-		writer.println(fileName);
+		PrintWriter writer = new PrintWriter(STORE_FILENAME_AND_PATH, "UTF-8");
 		writer.println(filePath);
+		writer.println(fileName);
 		writer.close();
 	}
 	
@@ -131,32 +153,9 @@ public class Storage {
 		Path currentRelativePath = Paths.get("");
 		String stringifiedPath = currentRelativePath.toAbsolutePath().toString();
 		String tasksSavePath = stringifiedPath;
-		return tasksSavePath;
+		return tasksSavePath + "/";
 	}
 
-	
-	
-//	//Function to save tasks that are currently in task manager
-//	@SuppressWarnings("unchecked")
-//	public ArrayList<Task> readTasks() {
-//		this.tasks = new ArrayList<Task>();
-//
-//		File tasksSaveFile = new File(filePath + fileName + ".con");
-//		if(tasksSaveFile.exists()) {
-//			try {
-//				FileInputStream fout = new FileInputStream(tasksSaveFile);
-//				ObjectInputStream oos = new ObjectInputStream(fout);
-//				this.tasks = (ArrayList<Task>) oos.readObject();
-//				oos.close();
-//
-//			} catch (Exception ex) {
-//				JOptionPane.showMessageDialog(null,
-//						"Unable to save the current configuration: " + ex.getMessage());
-//				ex.printStackTrace();
-//			}
-//		}
-//		return this.tasks;
-//	}
 
     // Function to read tasks from the file, called when the program initalise
     public ArrayList<Task> readTasks() {
@@ -198,22 +197,5 @@ public class Storage {
             ex.printStackTrace();
         }
     }
-	
-//	//Function to save tasks 
-//	public void saveTasks(Object taskManager) {
-//		File tasksSaveFile = new File(filePath + fileName + ".con");
-//		
-//		try {
-//			FileOutputStream fout = new FileOutputStream(tasksSaveFile);
-//			ObjectOutputStream oos = new ObjectOutputStream(fout);
-//			oos.writeObject(taskManager);
-//			oos.close();
-//
-//		} catch (Exception ex) {
-//			JOptionPane.showMessageDialog(null,
-//					"Unable to read the current configuration: " + ex.getMessage());
-//			ex.printStackTrace();
-//		}
-//	}
 
 }

@@ -1,2 +1,0 @@
-tasks
-C:\Users\ASUS\workspace\testGit\main
