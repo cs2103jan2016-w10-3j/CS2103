@@ -10,8 +10,10 @@ import snaptask.parser.Parser;
 //@@author JunWei
 public class DeletingParser {
 	
+	// Parser instance
 	private static DeletingParser instance = null;
 	
+	// Logger for logging
 	private static final Logger logger = Logger.getLogger(DeletingParser.class.getName());
 	
 	public static DeletingParser getInstance() {

@@ -7,7 +7,11 @@ import Exceptions.ParserExceptions.IndexEmptyException;
 
 //@@author JunWei
 public class DisplayParser {
+	
+	// Parser instance
 	private static DisplayParser instance = null;
+	
+	// Logger for logging
 	private static final Logger logger = Logger.getLogger(DisplayParser.class.getName());
 	
 	public static DisplayParser getInstance() {
@@ -17,6 +21,13 @@ public class DisplayParser {
 		return instance;
 	}
 	
+	/**
+	 * Get the index for display.
+	 * @param input Input entered.
+	 * @return Index number.
+	 * @throws IndexEmptyException Index is not entered.
+	 * @throws IndexInvalidException Index format is invalid.
+	 */
 	public int getIndexForDisplay(String input) throws IndexEmptyException, IndexInvalidException {
 		assert(input!=null);
 		try {

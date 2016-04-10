@@ -23,12 +23,22 @@ import snaptask.parser.Parser;
 //@@author JunWei
 public class AddingParser {
 	
+	// Separator used to separate task name and other properties
 	private final String SEPARATOR = "||";
+	
+	// Parser instance
 	private static AddingParser instance = null;
+	
+	// Max number of flexible tokens can be entered
 	private final Integer maxFlexibleTokens = 4;
+	
+	// Flexible tokens string array
 	private String flexibleTokens[];
 	
+	// Logger for logging
 	private static final Logger logger = Logger.getLogger(AddingParser.class.getName());
+	
+	// Date formatter to format date for logging
     DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
     DateFormat dfDateOnly = new SimpleDateFormat("MM/dd/yyyy");
 	

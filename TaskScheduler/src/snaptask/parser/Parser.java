@@ -11,7 +11,7 @@ import snaptask.parser.children.StorageParser;
 
 //@@author JunWei
 /**
- * Parser class used to give return a task or command
+ * Parser class used to give return a task or command.
  *
  */
 public class Parser {

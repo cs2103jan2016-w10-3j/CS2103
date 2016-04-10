@@ -12,30 +12,60 @@ import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 
 //@@author JunWei
 public class DateTime {
+	// Separator used to separate hour and minute in time representation
 	private final static String TIME_SEPARATOR = ":";
+	
+	// Separator used to separate hour and minute in duration representation 
 	private final static String DURATION_SEPARATOR = "\\.";
+	
+	// Number of minutes in an hour
 	private final static int ONE_HOUR_IN_MINUTE = 60;
+	
+	// Integer defined to represent tomorrow
 	private final static int DAY_TOMORROW = 0;
+	
+	// Integer defined to represent today
 	private final static int DAY_TODAY = 8;
+	
+	// Integer defined to represent invalid day
 	private final static int DAY_INVALID = -1;
 	
-	private static Calendar calendar = Calendar.getInstance();	
+	// Calendar object used create Date object
+	private static Calendar calendar = Calendar.getInstance();
+	
+	// Date object, only the date part is used 
 	private Date date = new Date();
+	
+	// Hour and minute
 	private int hr;
 	private int min;
 	
+	/**
+	 * Create DateTime object with date equal to today, hour and minute equal to 0.
+	 */
 	public DateTime() {
 		this.date = new Date();
 		this.hr = 0;
 		this.min = 0;
 	}
 	
+	/**
+	 * Create DateTime object with given date, hour and minute equal to 0.
+	 * @param date Date to add.
+	 */
 	public DateTime (Date date) {
 		this.date = date;
 		this.hr = 0;
 		this.min = 0;
 	}
 	
+	/**
+	 * Create DateTime object with given date, hour and minute.
+	 * @param date Date to add.
+	 * @param hr Hour to add.
+	 * @param min Minute to add.
+	 * @throws TaskTimeOutOfBoundException Time out of bound is entered.
+	 */
 	public DateTime(Date date, int hr, int min) throws TaskTimeOutOfBoundException {
 		this.date = date;
 		this.hr = hr;
@@ -45,10 +75,18 @@ public class DateTime {
 		}
 	}
 	
+	/**
+	 * Getter to get date of the object.
+	 * @return Date of the object.
+	 */
 	public Date getDate() {
 		return this.date;
 	}
 	
+	/**
+	 * Get the Date object that both date and time parts can be used.
+	 * @return A Date object.
+	 */
 	public Date getDatePlusTime() {
 		assert(date!=null);
 		calendar.setTime(date);
@@ -59,6 +97,12 @@ public class DateTime {
 		return calendar.getTime();
 	}
 	
+	/**
+	 * Get a Date object with given number of days more than original Date object.
+	 * @param date Date to add.
+	 * @param day Day to add.
+	 * @return A Date object.
+	 */
 	public static Date getDatePlusDays(Date date, int day) {
 		assert(date!=null);
 		calendar.setTime(date);
@@ -66,7 +110,12 @@ public class DateTime {
 		return calendar.getTime();
 	}
 	
-	
+	/**
+	 * Parse and add time input to the object.
+	 * @param token Input string.
+	 * @throws InvalidTaskTimeException Time with invalid time format is entered.
+	 * @throws TaskTimeOutOfBoundException Time out of bound is entered.
+	 */
 	public void parseAndAddTimeToDate(String token) throws InvalidTaskTimeException, TaskTimeOutOfBoundException {
 		String timeTokens[] = getTimeStringToken(token);
 		assert (timeTokens.length==2);
@@ -165,7 +214,7 @@ public class DateTime {
 	 * Parse a string to integer for processing as time element (hour or minute).
 	 * @param time Time string.
 	 * @return Integer representing hour or minute.
-	 * @throws InvalidTaskTimeException Time input is invalid.
+	 * @throws InvalidTaskTimeException Time with invalid time format is entered.
 	 */
 	public static int getTimeElement(String time) throws InvalidTaskTimeException {
 		try {
@@ -180,7 +229,7 @@ public class DateTime {
 	 * @param dateString Date string.
 	 * @param numOfWeekToAdd Number of weeks to add on original date.
 	 * @return A date object.
-	 * @throws InvalidTaskDateException Task date entered is invalid.
+	 * @throws InvalidTaskDateException Time with invalid time format is entered.
 	 */
 	public static Date getExactDate(String dateString, int numOfWeekToAdd) throws  InvalidTaskDateException {
 		Date date;
@@ -194,8 +243,6 @@ public class DateTime {
 				// Exact day not entered by day entered e.g. Monday
 				int day = categorizeDay(dateString);
 				date = getDateInThisWeek(day);
-				DateFormat dateOnly = new SimpleDateFormat("dd/MM/yyyy");
-				//System.out.println("A: "+dateOnly.format(date));
 				date = DateTime.getDatePlusDays(date, numOfWeekToAdd * 7);
 				}
 		}
@@ -236,9 +283,6 @@ public class DateTime {
     	int dayOfWeek = getDayOfTheWeek();
     	int daysInterval;
     	Date result;
-    	//calendar.set(Calendar.HOUR_OF_DAY,0);
-    	//calendar.set(Calendar.MINUTE, 0);
-    	//calendar.set(Calendar.SECOND, 0);
     	
     	if (day == DAY_TODAY) {
     		return calendar.getTime();
