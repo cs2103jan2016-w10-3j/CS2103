@@ -92,7 +92,7 @@ public class ApplicationWindow {
 	public JTable table;
 	
 	private JPanel warningBackground;
-	private JScrollPane scrollPane;
+	private JScrollPane scrollPane2;
 
 
 	/**
@@ -206,11 +206,11 @@ public class ApplicationWindow {
 		 * The table is added to a scroll pane so that the headers are visible and when overflow occurs, the user can 
 		 * scroll down to see more entries.
 		 */
-		scrollPane = new JScrollPane(table);
+		scrollPane2 = new JScrollPane(table);
 		table.setFillsViewportHeight(true); 
-		scrollPane.setBounds(11, 44, 496, 368);
-		scrollPane.setViewportView(table);
-		middlePanel.add(scrollPane);
+		scrollPane2.setBounds(11, 44, 496, 368);
+		scrollPane2.setViewportView(table);
+		middlePanel.add(scrollPane2);
 
 		filterDropdown = new JComboBox<String>();
 
@@ -572,7 +572,7 @@ public class ApplicationWindow {
 			table.setVisible(true);
 			txtAreaHelp.setVisible(false);
 			historyList.setVisible(false);
-			scrollPane.setVisible(true);
+			scrollPane2.setVisible(true);
 			break;
 		case 1:
 			historyButton.setBackground(new Color(68, 220, 168));
@@ -584,7 +584,7 @@ public class ApplicationWindow {
 			table.setVisible(false);
 			txtAreaHelp.setVisible(false);
 			historyList.setVisible(true);
-			scrollPane.setVisible(false);
+			scrollPane2.setVisible(false);
 			break;
 		case 2:
 			helpButton.setBackground(new Color(68, 220, 168));
@@ -596,7 +596,7 @@ public class ApplicationWindow {
 			table.setVisible(false);
 			txtAreaHelp.setVisible(true);
 			historyList.setVisible(false);
-			scrollPane.setVisible(false);
+			scrollPane2.setVisible(false);
 			break;
 		default:
 			break;
