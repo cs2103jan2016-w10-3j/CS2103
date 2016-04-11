@@ -11790,3 +11790,2387 @@ Caused by: java.io.FileNotFoundException: /Users/admin/Desktop/main/.metadata/.p
 	at org.apache.lucene.index.IndexReader.open(IndexReader.java:308)
 	at org.eclipse.recommenders.internal.types.rcp.ProjectTypesIndex.createReader(ProjectTypesIndex.java:301)
 	... 25 more
+
+!ENTRY org.eclipse.wb.core 4 4 2016-04-11 10:29:45.655
+!MESSAGE Designer [1.8.0.r45x201506110820.201604111029]: Execution flow problem. {
+  EventQueue.invokeLater(new Runnable(){
+    public void run(){
+      try {
+        taskManager=TaskManager.getInstance();
+        ApplicationWindow window=new ApplicationWindow();
+        window.frame.setVisible(true);
+        window.frame.setResizable(false);
+      }
+ catch (      Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+);
+}
+ expected, but {
+  frame=new JFrame();
+  frame.setBounds(100,100,828,580);
+  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  frame.getContentPane().setLayout(null);
+  txtAreaHelp=new JTextPane();
+  txtAreaHelp.setForeground(new Color(102,205,170));
+  txtAreaHelp.setFont(new Font("Open Sans",Font.PLAIN,13));
+  txtAreaHelp.setBounds(30,100,499,372);
+  frame.getContentPane().add(txtAreaHelp);
+  txtAreaHelp.setText("add [NAME] || [DD/MM/YYYY] [HH:MM] [H:M]\nadd [NAME] || [DD/MM/YYYY] [HH:MM]\nadd [NAME] || [DD/MM/YYYY]\nadd [NAME]\ndelete [INDEX]\ndone [INDEX]\nedit [INDEX] name [STRING]\nedit [INDEX] duration [STRING]\nedit [INDEX] datetime [STRING]\nedit [INDEX] all [NAME] [DATE] [TIME] [DURATION]\nclear\ndisplay [INDEX]\nsearch name [STRING]\nsearch date [DD/MM/YYYY]\nundo\nhome\nhistory\nhelp\nsort [NAME/DATE/START/END/DURATION/DEFAULT]\nfilter [INCOMPLETE/COMPLETE/SHORT/MEDIUM/LONG/SOON/ALL]\n");
+  JPanel panel_3=new JPanel();
+  panel_3.setBorder(new LineBorder(SystemColor.textHighlight));
+  panel_3.setBackground(new Color(255,255,255));
+  panel_3.setBounds(20,80,516,422);
+  frame.getContentPane().add(panel_3);
+  panel_3.setLayout(null);
+  columns=new String[]{"Number","Task Name","Task Duration","Task Date and Time","Task Completion"};
+  data=new ArrayList<Object[]>();
+  Object[][] dataArray=toArray(data);
+  table=new JTable(dataArray,columns){
+    private static final long serialVersionUID=1L;
+    public boolean isCellEditable(    int row,    int column){
+      return false;
+    }
+  }
+;
+  table.addMouseListener(new MouseAdapter(){
+    @Override public void mousePressed(    MouseEvent e){
+      selectedListIndex=table.getSelectedRow();
+      setTaskDetailView();
+    }
+    @Override public void mouseClicked(    MouseEvent e){
+      selectedListIndex=table.getSelectedRow();
+      setTaskDetailView();
+    }
+  }
+);
+  refreshTableValues();
+  selectedListIndex=0;
+  table.setRowHeight(25);
+  table.setSelectionBackground(new Color(102,205,170));
+  table.setForeground(Color.GRAY);
+  table.setFont(new Font("Open Sans",Font.PLAIN,13));
+  table.setSize(496,368);
+  table.setLocation(11,44);
+  table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  scrollPane2=new JScrollPane(table);
+  table.setFillsViewportHeight(true);
+  scrollPane2.setBounds(11,44,496,368);
+  scrollPane2.setViewportView(table);
+  panel_3.add(scrollPane2);
+  filterDropdown=new JComboBox<String>();
+  filterDropdown.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      String filterString;
+switch (filterDropdown.getSelectedIndex()) {
+case 0:
+        filterString="filter all";
+      break;
+case 1:
+    filterString="filter incomplete";
+  break;
+case 2:
+filterString="filter complete";
+break;
+case 3:
+filterString="filter short";
+break;
+case 4:
+filterString="filter medium";
+break;
+case 5:
+filterString="filter long";
+break;
+case 6:
+filterString="filter soon";
+break;
+default :
+filterString="";
+break;
+}
+try {
+taskManager.executeCommand(filterString,window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+refreshWindow();
+}
+}
+);
+filterDropdown.setBackground(new Color(255,255,255));
+filterDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+filterDropdown.setForeground(new Color(60,179,113));
+filterDropdown.setModel(new DefaultComboBoxModel<String>(new String[]{"Filter by...","Incomplete Tasks","Complete Tasks","Short Tasks (<1 hour)","Medium Tasks (1 - 3 hours)","Long Tasks (3+ hours)","Tasks Ending Soon"}));
+filterDropdown.setFont(new Font("Open Sans",Font.PLAIN,15));
+filterDropdown.setBounds(6,6,258,36);
+panel_3.add(filterDropdown);
+sortDropdown=new JComboBox<String>();
+sortDropdown.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+String sortString;
+switch (sortDropdown.getSelectedIndex()) {
+case 0:
+sortString="sort default";
+break;
+case 1:
+sortString="sort name";
+break;
+case 2:
+sortString="sort date";
+break;
+case 3:
+sortString="sort start";
+break;
+case 4:
+sortString="sort end";
+break;
+case 5:
+sortString="sort duration";
+break;
+default :
+sortString="";
+break;
+}
+try {
+taskManager.executeCommand(sortString,window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+}
+}
+);
+sortDropdown.setOpaque(true);
+sortDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+sortDropdown.setModel(new DefaultComboBoxModel<String>(new String[]{"Sort By...","Name","Date","Starting Time","Ending Time","Duration"}));
+sortDropdown.setForeground(new Color(60,179,113));
+sortDropdown.setFont(new Font("Open Sans",Font.PLAIN,15));
+sortDropdown.setBackground(Color.WHITE);
+sortDropdown.setBounds(261,6,249,36);
+panel_3.add(sortDropdown);
+historyList=new JList<String>();
+historyList.setEnabled(false);
+historyList.setForeground(new Color(60,179,113));
+historyList.setFont(new Font("Open Sans",Font.PLAIN,13));
+historyList.setBounds(6,6,501,406);
+historyList.setModel(new AbstractListModel<String>(){
+private static final long serialVersionUID=1L;
+List<String> history=taskManager.getHistoryList();
+public int getSize(){
+return history.size();
+}
+public String getElementAt(int index){
+return history.get(index);
+}
+}
+);
+panel_3.add(historyList);
+JPanel panel_1=new JPanel();
+panel_1.setBackground(new Color(51,204,153));
+panel_1.setBounds(0,0,828,64);
+frame.getContentPane().add(panel_1);
+panel_1.setLayout(null);
+JLabel lblSnaptask=new JLabel("snaptask");
+lblSnaptask.setFont(new Font("Open Sans",Font.PLAIN,48));
+lblSnaptask.setForeground(new Color(255,255,255));
+lblSnaptask.setBounds(16,0,216,58);
+panel_1.add(lblSnaptask);
+JPanel searchLine=new JPanel();
+searchLine.setBackground(new Color(255,165,0));
+searchLine.setBorder(null);
+searchLine.setBounds(556,44,251,6);
+searchLine.setEnabled(false);
+panel_1.add(searchLine);
+searchField=new JTextField();
+searchField.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+String searchString=searchField.getText();
+try {
+taskManager.executeCommand(searchString,window);
+}
+ catch (FileNotFoundException e1) {
+warnInvalid("Search unable to be performed");
+e1.printStackTrace();
+}
+}
+}
+);
+searchField.addFocusListener(new FocusAdapter(){
+@Override public void focusGained(FocusEvent e){
+if (firstFocusSearchText) {
+searchField.setText("");
+firstFocusSearchText=false;
+}
+}
+}
+);
+searchField.setFont(new Font("Open Sans",Font.PLAIN,15));
+searchField.setForeground(new Color(169,169,169));
+searchField.setToolTipText("Search for tasks!");
+searchField.setText("Search for tasks!");
+searchField.setBounds(552,15,258,36);
+panel_1.add(searchField);
+searchField.setColumns(10);
+homeButton=new JButton("\n");
+homeButton.setOpaque(true);
+homeButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=0;
+refreshButtons();
+}
+}
+);
+homeButton.setIcon(new ImageIcon("/Users/admin/Desktop/ListIcon.png"));
+homeButton.setBorder(new EmptyBorder(0,0,0,0));
+homeButton.setBackground(new Color(0,204,153));
+homeButton.setBounds(237,0,66,64);
+panel_1.add(homeButton);
+historyButton=new JButton("\n");
+historyButton.setOpaque(true);
+historyButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=1;
+refreshButtons();
+}
+}
+);
+historyButton.setIcon(new ImageIcon("/Users/admin/Desktop/HistoryIcon.png"));
+historyButton.setBorder(new EmptyBorder(0,0,0,0));
+historyButton.setBackground(new Color(0,204,153));
+historyButton.setBounds(312,0,66,64);
+panel_1.add(historyButton);
+helpButton=new JButton("\n");
+helpButton.setOpaque(true);
+helpButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=2;
+refreshButtons();
+}
+}
+);
+helpButton.setIcon(new ImageIcon("/Users/admin/Desktop/InfoImage.png"));
+helpButton.setBorder(new EmptyBorder(0,0,0,0));
+helpButton.setBackground(new Color(0,204,153));
+helpButton.setBounds(391,0,66,64);
+panel_1.add(helpButton);
+JPanel panel=new JPanel();
+panel.setBorder(new LineBorder(SystemColor.textHighlight));
+panel.setBackground(new Color(255,255,255));
+panel.setBounds(557,80,251,422);
+frame.getContentPane().add(panel);
+panel.setLayout(null);
+warningBackground=new JPanel();
+warningBackground.setEnabled(false);
+warningBackground.setBorder(null);
+warningBackground.setBackground(new Color(255,165,0));
+warningBackground.setBounds(0,20,252,29);
+panel.add(warningBackground);
+warningBackground.setLayout(null);
+txtLabelStatus=new JTextPane();
+txtLabelStatus.setDisabledTextColor(SystemColor.text);
+txtLabelStatus.setSelectionColor(SystemColor.activeCaption);
+txtLabelStatus.setEnabled(false);
+txtLabelStatus.setBounds(72,0,105,28);
+txtLabelStatus.setFont(new Font("Open Sans",Font.PLAIN,20));
+txtLabelStatus.setForeground(new Color(255,255,255));
+txtLabelStatus.setBackground(new Color(255,165,0));
+warningBackground.add(txtLabelStatus);
+txtAreaDescription=new JTextPane();
+txtAreaDescription.setFont(new Font("Open Sans",Font.PLAIN,14));
+txtAreaDescription.setForeground(new Color(60,179,113));
+txtAreaDescription.setBounds(10,232,208,159);
+txtAreaDescription.setEnabled(false);
+panel.add(txtAreaDescription);
+txtAreaTaskDetails=new JTextArea();
+txtAreaTaskDetails.setFont(new Font("Open Sans",Font.PLAIN,17));
+txtAreaTaskDetails.setForeground(SystemColor.scrollbar);
+txtAreaTaskDetails.setBounds(10,61,233,231);
+txtAreaTaskDetails.setEnabled(false);
+panel.add(txtAreaTaskDetails);
+setTaskDetailView();
+JPanel taskManageLine=new JPanel();
+taskManageLine.setEnabled(false);
+taskManageLine.setBorder(null);
+taskManageLine.setBackground(new Color(255,165,0));
+taskManageLine.setBounds(21,540,786,6);
+taskManageLine.setEnabled(false);
+frame.getContentPane().add(taskManageLine);
+textFieldTaskManage=new JTextField();
+textFieldTaskManage.addFocusListener(new FocusAdapter(){
+@Override public void focusGained(FocusEvent e){
+if (firstFocusManageText) {
+textFieldTaskManage.setText("");
+firstFocusManageText=false;
+}
+}
+}
+);
+textFieldTaskManage.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+try {
+taskManager.executeCommand(textFieldTaskManage.getText(),window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+refreshWindow();
+textFieldTaskManage.setText("");
+}
+}
+);
+textFieldTaskManage.setDisabledTextColor(new Color(128,128,128));
+textFieldTaskManage.setForeground(new Color(169,169,169));
+textFieldTaskManage.setFont(new Font("Open Sans",Font.PLAIN,15));
+textFieldTaskManage.setToolTipText("Manage your tasks here!");
+textFieldTaskManage.setColumns(10);
+textFieldTaskManage.setBounds(18,510,792,36);
+textFieldTaskManage.setText("Manage your tasks here!");
+frame.getContentPane().add(textFieldTaskManage);
+refreshButtons();
+}
+ found.
+!STACK 0
+org.eclipse.wb.internal.core.utils.check.AssertionFailedException: Execution flow problem. {
+  EventQueue.invokeLater(new Runnable(){
+    public void run(){
+      try {
+        taskManager=TaskManager.getInstance();
+        ApplicationWindow window=new ApplicationWindow();
+        window.frame.setVisible(true);
+        window.frame.setResizable(false);
+      }
+ catch (      Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+);
+}
+ expected, but {
+  frame=new JFrame();
+  frame.setBounds(100,100,828,580);
+  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  frame.getContentPane().setLayout(null);
+  txtAreaHelp=new JTextPane();
+  txtAreaHelp.setForeground(new Color(102,205,170));
+  txtAreaHelp.setFont(new Font("Open Sans",Font.PLAIN,13));
+  txtAreaHelp.setBounds(30,100,499,372);
+  frame.getContentPane().add(txtAreaHelp);
+  txtAreaHelp.setText("add [NAME] || [DD/MM/YYYY] [HH:MM] [H:M]\nadd [NAME] || [DD/MM/YYYY] [HH:MM]\nadd [NAME] || [DD/MM/YYYY]\nadd [NAME]\ndelete [INDEX]\ndone [INDEX]\nedit [INDEX] name [STRING]\nedit [INDEX] duration [STRING]\nedit [INDEX] datetime [STRING]\nedit [INDEX] all [NAME] [DATE] [TIME] [DURATION]\nclear\ndisplay [INDEX]\nsearch name [STRING]\nsearch date [DD/MM/YYYY]\nundo\nhome\nhistory\nhelp\nsort [NAME/DATE/START/END/DURATION/DEFAULT]\nfilter [INCOMPLETE/COMPLETE/SHORT/MEDIUM/LONG/SOON/ALL]\n");
+  JPanel panel_3=new JPanel();
+  panel_3.setBorder(new LineBorder(SystemColor.textHighlight));
+  panel_3.setBackground(new Color(255,255,255));
+  panel_3.setBounds(20,80,516,422);
+  frame.getContentPane().add(panel_3);
+  panel_3.setLayout(null);
+  columns=new String[]{"Number","Task Name","Task Duration","Task Date and Time","Task Completion"};
+  data=new ArrayList<Object[]>();
+  Object[][] dataArray=toArray(data);
+  table=new JTable(dataArray,columns){
+    private static final long serialVersionUID=1L;
+    public boolean isCellEditable(    int row,    int column){
+      return false;
+    }
+  }
+;
+  table.addMouseListener(new MouseAdapter(){
+    @Override public void mousePressed(    MouseEvent e){
+      selectedListIndex=table.getSelectedRow();
+      setTaskDetailView();
+    }
+    @Override public void mouseClicked(    MouseEvent e){
+      selectedListIndex=table.getSelectedRow();
+      setTaskDetailView();
+    }
+  }
+);
+  refreshTableValues();
+  selectedListIndex=0;
+  table.setRowHeight(25);
+  table.setSelectionBackground(new Color(102,205,170));
+  table.setForeground(Color.GRAY);
+  table.setFont(new Font("Open Sans",Font.PLAIN,13));
+  table.setSize(496,368);
+  table.setLocation(11,44);
+  table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  scrollPane2=new JScrollPane(table);
+  table.setFillsViewportHeight(true);
+  scrollPane2.setBounds(11,44,496,368);
+  scrollPane2.setViewportView(table);
+  panel_3.add(scrollPane2);
+  filterDropdown=new JComboBox<String>();
+  filterDropdown.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      String filterString;
+switch (filterDropdown.getSelectedIndex()) {
+case 0:
+        filterString="filter all";
+      break;
+case 1:
+    filterString="filter incomplete";
+  break;
+case 2:
+filterString="filter complete";
+break;
+case 3:
+filterString="filter short";
+break;
+case 4:
+filterString="filter medium";
+break;
+case 5:
+filterString="filter long";
+break;
+case 6:
+filterString="filter soon";
+break;
+default :
+filterString="";
+break;
+}
+try {
+taskManager.executeCommand(filterString,window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+refreshWindow();
+}
+}
+);
+filterDropdown.setBackground(new Color(255,255,255));
+filterDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+filterDropdown.setForeground(new Color(60,179,113));
+filterDropdown.setModel(new DefaultComboBoxModel<String>(new String[]{"Filter by...","Incomplete Tasks","Complete Tasks","Short Tasks (<1 hour)","Medium Tasks (1 - 3 hours)","Long Tasks (3+ hours)","Tasks Ending Soon"}));
+filterDropdown.setFont(new Font("Open Sans",Font.PLAIN,15));
+filterDropdown.setBounds(6,6,258,36);
+panel_3.add(filterDropdown);
+sortDropdown=new JComboBox<String>();
+sortDropdown.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+String sortString;
+switch (sortDropdown.getSelectedIndex()) {
+case 0:
+sortString="sort default";
+break;
+case 1:
+sortString="sort name";
+break;
+case 2:
+sortString="sort date";
+break;
+case 3:
+sortString="sort start";
+break;
+case 4:
+sortString="sort end";
+break;
+case 5:
+sortString="sort duration";
+break;
+default :
+sortString="";
+break;
+}
+try {
+taskManager.executeCommand(sortString,window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+}
+}
+);
+sortDropdown.setOpaque(true);
+sortDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+sortDropdown.setModel(new DefaultComboBoxModel<String>(new String[]{"Sort By...","Name","Date","Starting Time","Ending Time","Duration"}));
+sortDropdown.setForeground(new Color(60,179,113));
+sortDropdown.setFont(new Font("Open Sans",Font.PLAIN,15));
+sortDropdown.setBackground(Color.WHITE);
+sortDropdown.setBounds(261,6,249,36);
+panel_3.add(sortDropdown);
+historyList=new JList<String>();
+historyList.setEnabled(false);
+historyList.setForeground(new Color(60,179,113));
+historyList.setFont(new Font("Open Sans",Font.PLAIN,13));
+historyList.setBounds(6,6,501,406);
+historyList.setModel(new AbstractListModel<String>(){
+private static final long serialVersionUID=1L;
+List<String> history=taskManager.getHistoryList();
+public int getSize(){
+return history.size();
+}
+public String getElementAt(int index){
+return history.get(index);
+}
+}
+);
+panel_3.add(historyList);
+JPanel panel_1=new JPanel();
+panel_1.setBackground(new Color(51,204,153));
+panel_1.setBounds(0,0,828,64);
+frame.getContentPane().add(panel_1);
+panel_1.setLayout(null);
+JLabel lblSnaptask=new JLabel("snaptask");
+lblSnaptask.setFont(new Font("Open Sans",Font.PLAIN,48));
+lblSnaptask.setForeground(new Color(255,255,255));
+lblSnaptask.setBounds(16,0,216,58);
+panel_1.add(lblSnaptask);
+JPanel searchLine=new JPanel();
+searchLine.setBackground(new Color(255,165,0));
+searchLine.setBorder(null);
+searchLine.setBounds(556,44,251,6);
+searchLine.setEnabled(false);
+panel_1.add(searchLine);
+searchField=new JTextField();
+searchField.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+String searchString=searchField.getText();
+try {
+taskManager.executeCommand(searchString,window);
+}
+ catch (FileNotFoundException e1) {
+warnInvalid("Search unable to be performed");
+e1.printStackTrace();
+}
+}
+}
+);
+searchField.addFocusListener(new FocusAdapter(){
+@Override public void focusGained(FocusEvent e){
+if (firstFocusSearchText) {
+searchField.setText("");
+firstFocusSearchText=false;
+}
+}
+}
+);
+searchField.setFont(new Font("Open Sans",Font.PLAIN,15));
+searchField.setForeground(new Color(169,169,169));
+searchField.setToolTipText("Search for tasks!");
+searchField.setText("Search for tasks!");
+searchField.setBounds(552,15,258,36);
+panel_1.add(searchField);
+searchField.setColumns(10);
+homeButton=new JButton("\n");
+homeButton.setOpaque(true);
+homeButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=0;
+refreshButtons();
+}
+}
+);
+homeButton.setIcon(new ImageIcon("/Users/admin/Desktop/ListIcon.png"));
+homeButton.setBorder(new EmptyBorder(0,0,0,0));
+homeButton.setBackground(new Color(0,204,153));
+homeButton.setBounds(237,0,66,64);
+panel_1.add(homeButton);
+historyButton=new JButton("\n");
+historyButton.setOpaque(true);
+historyButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=1;
+refreshButtons();
+}
+}
+);
+historyButton.setIcon(new ImageIcon("/Users/admin/Desktop/HistoryIcon.png"));
+historyButton.setBorder(new EmptyBorder(0,0,0,0));
+historyButton.setBackground(new Color(0,204,153));
+historyButton.setBounds(312,0,66,64);
+panel_1.add(historyButton);
+helpButton=new JButton("\n");
+helpButton.setOpaque(true);
+helpButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=2;
+refreshButtons();
+}
+}
+);
+helpButton.setIcon(new ImageIcon("/Users/admin/Desktop/InfoImage.png"));
+helpButton.setBorder(new EmptyBorder(0,0,0,0));
+helpButton.setBackground(new Color(0,204,153));
+helpButton.setBounds(391,0,66,64);
+panel_1.add(helpButton);
+JPanel panel=new JPanel();
+panel.setBorder(new LineBorder(SystemColor.textHighlight));
+panel.setBackground(new Color(255,255,255));
+panel.setBounds(557,80,251,422);
+frame.getContentPane().add(panel);
+panel.setLayout(null);
+warningBackground=new JPanel();
+warningBackground.setEnabled(false);
+warningBackground.setBorder(null);
+warningBackground.setBackground(new Color(255,165,0));
+warningBackground.setBounds(0,20,252,29);
+panel.add(warningBackground);
+warningBackground.setLayout(null);
+txtLabelStatus=new JTextPane();
+txtLabelStatus.setDisabledTextColor(SystemColor.text);
+txtLabelStatus.setSelectionColor(SystemColor.activeCaption);
+txtLabelStatus.setEnabled(false);
+txtLabelStatus.setBounds(72,0,105,28);
+txtLabelStatus.setFont(new Font("Open Sans",Font.PLAIN,20));
+txtLabelStatus.setForeground(new Color(255,255,255));
+txtLabelStatus.setBackground(new Color(255,165,0));
+warningBackground.add(txtLabelStatus);
+txtAreaDescription=new JTextPane();
+txtAreaDescription.setFont(new Font("Open Sans",Font.PLAIN,14));
+txtAreaDescription.setForeground(new Color(60,179,113));
+txtAreaDescription.setBounds(10,232,208,159);
+txtAreaDescription.setEnabled(false);
+panel.add(txtAreaDescription);
+txtAreaTaskDetails=new JTextArea();
+txtAreaTaskDetails.setFont(new Font("Open Sans",Font.PLAIN,17));
+txtAreaTaskDetails.setForeground(SystemColor.scrollbar);
+txtAreaTaskDetails.setBounds(10,61,233,231);
+txtAreaTaskDetails.setEnabled(false);
+panel.add(txtAreaTaskDetails);
+setTaskDetailView();
+JPanel taskManageLine=new JPanel();
+taskManageLine.setEnabled(false);
+taskManageLine.setBorder(null);
+taskManageLine.setBackground(new Color(255,165,0));
+taskManageLine.setBounds(21,540,786,6);
+taskManageLine.setEnabled(false);
+frame.getContentPane().add(taskManageLine);
+textFieldTaskManage=new JTextField();
+textFieldTaskManage.addFocusListener(new FocusAdapter(){
+@Override public void focusGained(FocusEvent e){
+if (firstFocusManageText) {
+textFieldTaskManage.setText("");
+firstFocusManageText=false;
+}
+}
+}
+);
+textFieldTaskManage.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+try {
+taskManager.executeCommand(textFieldTaskManage.getText(),window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+refreshWindow();
+textFieldTaskManage.setText("");
+}
+}
+);
+textFieldTaskManage.setDisabledTextColor(new Color(128,128,128));
+textFieldTaskManage.setForeground(new Color(169,169,169));
+textFieldTaskManage.setFont(new Font("Open Sans",Font.PLAIN,15));
+textFieldTaskManage.setToolTipText("Manage your tasks here!");
+textFieldTaskManage.setColumns(10);
+textFieldTaskManage.setBounds(18,510,792,36);
+textFieldTaskManage.setText("Manage your tasks here!");
+frame.getContentPane().add(textFieldTaskManage);
+refreshButtons();
+}
+ found.
+	at org.eclipse.wb.internal.core.utils.check.Assert.fail(Assert.java:225)
+	at org.eclipse.wb.internal.core.utils.check.Assert.isTrue(Assert.java:291)
+	at org.eclipse.wb.core.eval.ExecutionFlowDescription.leaveStatement(ExecutionFlowDescription.java:152)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visitStatement(ExecutionFlowUtils.java:317)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visit(ExecutionFlowUtils.java:247)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visit(ExecutionFlowUtils.java:228)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visit(ExecutionFlowUtils.java:191)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.prepareAssignmentInformation(ExecutionFlowUtils.java:784)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.getVariableCachedValue(ExecutionFlowUtils.java:753)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.getVariableCachedList_notNull(ExecutionFlowUtils.java:707)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.getReferences(ExecutionFlowUtils.java:669)
+	at org.eclipse.wb.internal.core.model.variable.AbstractNamedVariableSupport.getReferences(AbstractNamedVariableSupport.java:184)
+	at org.eclipse.wb.internal.core.model.variable.FieldUniqueVariableSupport.canConvertFieldToLocal(FieldUniqueVariableSupport.java:97)
+	at org.eclipse.wb.internal.core.editor.structure.property.JavaPropertiesToolBarContributor.addVariableConvertAction(JavaPropertiesToolBarContributor.java:101)
+	at org.eclipse.wb.internal.core.editor.structure.property.JavaPropertiesToolBarContributor.contributeToolBar(JavaPropertiesToolBarContributor.java:54)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage$2$1.run(ComponentsPropertiesPage.java:186)
+	at org.eclipse.wb.internal.core.utils.execution.ExecutionUtils.runLog(ExecutionUtils.java:106)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage$2.run(ComponentsPropertiesPage.java:184)
+	at org.eclipse.wb.internal.core.utils.execution.ExecutionUtils.runLog(ExecutionUtils.java:106)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage.updateActions(ComponentsPropertiesPage.java:160)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage.access$22(ComponentsPropertiesPage.java:159)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage$12.run(ComponentsPropertiesPage.java:538)
+	at org.eclipse.wb.internal.core.utils.execution.ExecutionUtils.runLog(ExecutionUtils.java:106)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage.refreshProperties(ComponentsPropertiesPage.java:530)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage.setSelection(ComponentsPropertiesPage.java:321)
+	at org.eclipse.wb.internal.core.editor.structure.DesignComponentsComposite$1.selectionChanged(DesignComponentsComposite.java:72)
+	at org.eclipse.wb.internal.core.utils.gef.EditPartsSelectionProvider.fireSelectionChanged(EditPartsSelectionProvider.java:111)
+	at org.eclipse.wb.internal.core.utils.gef.EditPartsSelectionProvider.access$0(EditPartsSelectionProvider.java:102)
+	at org.eclipse.wb.internal.core.utils.gef.EditPartsSelectionProvider$1.selectionChanged(EditPartsSelectionProvider.java:40)
+	at org.eclipse.wb.internal.gef.core.AbstractEditPartViewer.fireSelectionChanged(AbstractEditPartViewer.java:202)
+	at org.eclipse.wb.internal.gef.core.AbstractEditPartViewer.setSelection(AbstractEditPartViewer.java:262)
+	at org.eclipse.wb.internal.gef.core.AbstractEditPartViewer.setSelection(AbstractEditPartViewer.java:193)
+	at org.eclipse.wb.internal.gef.tree.TreeViewer$1.widgetSelected(TreeViewer.java:180)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(TypedListener.java:248)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:84)
+	at org.eclipse.swt.widgets.Display.sendEvent(Display.java:4230)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1491)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1514)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1499)
+	at org.eclipse.swt.widgets.Widget.notifyListeners(Widget.java:1299)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Display.java:4072)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3698)
+	at org.eclipse.wb.internal.core.utils.execution.ExecutionUtils.waitEventLoop(ExecutionUtils.java:71)
+	at org.eclipse.wb.internal.swing.utils.SwingUtils.invokeLaterAndWait(SwingUtils.java:168)
+	at org.eclipse.wb.internal.swing.utils.SwingUtils.runLaterAndWait(SwingUtils.java:73)
+	at org.eclipse.wb.internal.swing.model.component.ComponentInfo.execRefreshOperation(ComponentInfo.java:119)
+	at org.eclipse.wb.core.model.ObjectInfo.refresh(ObjectInfo.java:482)
+	at org.eclipse.wb.core.model.ObjectInfo.endEdit(ObjectInfo.java:446)
+	at org.eclipse.wb.internal.core.utils.execution.ExecutionUtils.run(ExecutionUtils.java:325)
+	at org.eclipse.wb.core.gef.command.EditCommand.execute(EditCommand.java:50)
+	at org.eclipse.wb.internal.gef.core.EditDomain.executeCommand(EditDomain.java:59)
+	at org.eclipse.wb.internal.gef.tree.dnd.TreeDropListener.executeCommand(TreeDropListener.java:265)
+	at org.eclipse.wb.internal.gef.tree.dnd.TreeDropListener.drop(TreeDropListener.java:103)
+	at org.eclipse.swt.dnd.DNDListener.handleEvent(DNDListener.java:91)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:84)
+	at org.eclipse.swt.widgets.Display.sendEvent(Display.java:4230)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1491)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1514)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1499)
+	at org.eclipse.swt.widgets.Widget.notifyListeners(Widget.java:1299)
+	at org.eclipse.swt.dnd.DropTarget.drop(DropTarget.java:728)
+	at org.eclipse.swt.dnd.DropTarget.outlineView_acceptDrop_item_childIndex(DropTarget.java:746)
+	at org.eclipse.swt.dnd.DropTarget.dropTargetProc(DropTarget.java:471)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSendSuper(Native Method)
+	at org.eclipse.swt.dnd.DropTarget.dndCallSuper(DropTarget.java:210)
+	at org.eclipse.swt.dnd.DropTarget.performDragOperation(DropTarget.java:739)
+	at org.eclipse.swt.dnd.DropTarget.dropTargetProc(DropTarget.java:456)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSendSuper(Native Method)
+	at org.eclipse.swt.widgets.Widget.callSuper(Widget.java:227)
+	at org.eclipse.swt.widgets.Widget.mouseDownSuper(Widget.java:1121)
+	at org.eclipse.swt.widgets.Tree.mouseDownSuper(Tree.java:2047)
+	at org.eclipse.swt.widgets.Widget.mouseDown(Widget.java:1113)
+	at org.eclipse.swt.widgets.Control.mouseDown(Control.java:2569)
+	at org.eclipse.swt.widgets.Tree.mouseDown(Tree.java:2015)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:5692)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSendSuper(Native Method)
+	at org.eclipse.swt.widgets.Widget.callSuper(Widget.java:227)
+	at org.eclipse.swt.widgets.Widget.windowSendEvent(Widget.java:2130)
+	at org.eclipse.swt.widgets.Shell.windowSendEvent(Shell.java:2337)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:5756)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSendSuper(Native Method)
+	at org.eclipse.swt.widgets.Display.applicationSendEvent(Display.java:5193)
+	at org.eclipse.swt.widgets.Display.applicationProc(Display.java:5342)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSend(Native Method)
+	at org.eclipse.swt.internal.cocoa.NSApplication.sendEvent(NSApplication.java:128)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3695)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:1127)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:337)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1018)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:156)
+	at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:654)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:337)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:598)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:150)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:139)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:134)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:380)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:235)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:669)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:608)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1515)
+
+!ENTRY org.eclipse.wb.core 4 4 2016-04-11 10:29:57.901
+!MESSAGE Designer [1.8.0.r45x201506110820.201604111029]: Execution flow problem. {
+  EventQueue.invokeLater(new Runnable(){
+    public void run(){
+      try {
+        taskManager=TaskManager.getInstance();
+        ApplicationWindow window=new ApplicationWindow();
+        window.frame.setVisible(true);
+        window.frame.setResizable(false);
+      }
+ catch (      Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+);
+}
+ expected, but {
+  frame=new JFrame();
+  frame.setBounds(100,100,828,580);
+  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  frame.getContentPane().setLayout(null);
+  txtAreaHelp=new JTextPane();
+  txtAreaHelp.setForeground(new Color(102,205,170));
+  txtAreaHelp.setFont(new Font("Open Sans",Font.PLAIN,13));
+  txtAreaHelp.setBounds(30,100,499,372);
+  frame.getContentPane().add(txtAreaHelp);
+  txtAreaHelp.setText("add [NAME] || [DD/MM/YYYY] [HH:MM] [H:M]\nadd [NAME] || [DD/MM/YYYY] [HH:MM]\nadd [NAME] || [DD/MM/YYYY]\nadd [NAME]\ndelete [INDEX]\ndone [INDEX]\nedit [INDEX] name [STRING]\nedit [INDEX] duration [STRING]\nedit [INDEX] datetime [STRING]\nedit [INDEX] all [NAME] [DATE] [TIME] [DURATION]\nclear\ndisplay [INDEX]\nsearch name [STRING]\nsearch date [DD/MM/YYYY]\nundo\nhome\nhistory\nhelp\nsort [NAME/DATE/START/END/DURATION/DEFAULT]\nfilter [INCOMPLETE/COMPLETE/SHORT/MEDIUM/LONG/SOON/ALL]\n");
+  JPanel panel_3=new JPanel();
+  panel_3.setBorder(new LineBorder(SystemColor.textHighlight));
+  panel_3.setBackground(new Color(255,255,255));
+  panel_3.setBounds(20,80,516,422);
+  frame.getContentPane().add(panel_3);
+  panel_3.setLayout(null);
+  columns=new String[]{"Number","Task Name","Task Duration","Task Date and Time","Task Completion"};
+  data=new ArrayList<Object[]>();
+  Object[][] dataArray=toArray(data);
+  table=new JTable(dataArray,columns){
+    private static final long serialVersionUID=1L;
+    public boolean isCellEditable(    int row,    int column){
+      return false;
+    }
+  }
+;
+  table.addMouseListener(new MouseAdapter(){
+    @Override public void mousePressed(    MouseEvent e){
+      selectedListIndex=table.getSelectedRow();
+      setTaskDetailView();
+    }
+    @Override public void mouseClicked(    MouseEvent e){
+      selectedListIndex=table.getSelectedRow();
+      setTaskDetailView();
+    }
+  }
+);
+  refreshTableValues();
+  selectedListIndex=0;
+  table.setRowHeight(25);
+  table.setSelectionBackground(new Color(102,205,170));
+  table.setForeground(Color.GRAY);
+  table.setFont(new Font("Open Sans",Font.PLAIN,13));
+  table.setSize(496,368);
+  table.setLocation(11,44);
+  table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  scrollPane2=new JScrollPane(table);
+  table.setFillsViewportHeight(true);
+  scrollPane2.setBounds(11,44,496,368);
+  scrollPane2.setViewportView(table);
+  panel_3.add(scrollPane2);
+  filterDropdown=new JComboBox<String>();
+  filterDropdown.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      String filterString;
+switch (filterDropdown.getSelectedIndex()) {
+case 0:
+        filterString="filter all";
+      break;
+case 1:
+    filterString="filter incomplete";
+  break;
+case 2:
+filterString="filter complete";
+break;
+case 3:
+filterString="filter short";
+break;
+case 4:
+filterString="filter medium";
+break;
+case 5:
+filterString="filter long";
+break;
+case 6:
+filterString="filter soon";
+break;
+default :
+filterString="";
+break;
+}
+try {
+taskManager.executeCommand(filterString,window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+refreshWindow();
+}
+}
+);
+filterDropdown.setBackground(new Color(255,255,255));
+filterDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+filterDropdown.setForeground(new Color(60,179,113));
+filterDropdown.setModel(new DefaultComboBoxModel<String>(new String[]{"Filter by...","Incomplete Tasks","Complete Tasks","Short Tasks (<1 hour)","Medium Tasks (1 - 3 hours)","Long Tasks (3+ hours)","Tasks Ending Soon"}));
+filterDropdown.setFont(new Font("Open Sans",Font.PLAIN,15));
+filterDropdown.setBounds(6,6,258,36);
+panel_3.add(filterDropdown);
+sortDropdown=new JComboBox<String>();
+sortDropdown.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+String sortString;
+switch (sortDropdown.getSelectedIndex()) {
+case 0:
+sortString="sort default";
+break;
+case 1:
+sortString="sort name";
+break;
+case 2:
+sortString="sort date";
+break;
+case 3:
+sortString="sort start";
+break;
+case 4:
+sortString="sort end";
+break;
+case 5:
+sortString="sort duration";
+break;
+default :
+sortString="";
+break;
+}
+try {
+taskManager.executeCommand(sortString,window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+}
+}
+);
+sortDropdown.setOpaque(true);
+sortDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+sortDropdown.setModel(new DefaultComboBoxModel<String>(new String[]{"Sort By...","Name","Date","Starting Time","Ending Time","Duration"}));
+sortDropdown.setForeground(new Color(60,179,113));
+sortDropdown.setFont(new Font("Open Sans",Font.PLAIN,15));
+sortDropdown.setBackground(Color.WHITE);
+sortDropdown.setBounds(261,6,249,36);
+panel_3.add(sortDropdown);
+historyList=new JList<String>();
+historyList.setBounds(0,0,501,406);
+frame.getContentPane().add(historyList);
+historyList.setEnabled(false);
+historyList.setForeground(new Color(60,179,113));
+historyList.setFont(new Font("Open Sans",Font.PLAIN,13));
+historyList.setModel(new AbstractListModel<String>(){
+private static final long serialVersionUID=1L;
+List<String> history=taskManager.getHistoryList();
+public int getSize(){
+return history.size();
+}
+public String getElementAt(int index){
+return history.get(index);
+}
+}
+);
+JPanel panel_1=new JPanel();
+panel_1.setBackground(new Color(51,204,153));
+panel_1.setBounds(0,0,828,64);
+frame.getContentPane().add(panel_1);
+panel_1.setLayout(null);
+JLabel lblSnaptask=new JLabel("snaptask");
+lblSnaptask.setFont(new Font("Open Sans",Font.PLAIN,48));
+lblSnaptask.setForeground(new Color(255,255,255));
+lblSnaptask.setBounds(16,0,216,58);
+panel_1.add(lblSnaptask);
+JPanel searchLine=new JPanel();
+searchLine.setBackground(new Color(255,165,0));
+searchLine.setBorder(null);
+searchLine.setBounds(556,44,251,6);
+searchLine.setEnabled(false);
+panel_1.add(searchLine);
+searchField=new JTextField();
+searchField.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+String searchString=searchField.getText();
+try {
+taskManager.executeCommand(searchString,window);
+}
+ catch (FileNotFoundException e1) {
+warnInvalid("Search unable to be performed");
+e1.printStackTrace();
+}
+}
+}
+);
+searchField.addFocusListener(new FocusAdapter(){
+@Override public void focusGained(FocusEvent e){
+if (firstFocusSearchText) {
+searchField.setText("");
+firstFocusSearchText=false;
+}
+}
+}
+);
+searchField.setFont(new Font("Open Sans",Font.PLAIN,15));
+searchField.setForeground(new Color(169,169,169));
+searchField.setToolTipText("Search for tasks!");
+searchField.setText("Search for tasks!");
+searchField.setBounds(552,15,258,36);
+panel_1.add(searchField);
+searchField.setColumns(10);
+homeButton=new JButton("\n");
+homeButton.setOpaque(true);
+homeButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=0;
+refreshButtons();
+}
+}
+);
+homeButton.setIcon(new ImageIcon("/Users/admin/Desktop/ListIcon.png"));
+homeButton.setBorder(new EmptyBorder(0,0,0,0));
+homeButton.setBackground(new Color(0,204,153));
+homeButton.setBounds(237,0,66,64);
+panel_1.add(homeButton);
+historyButton=new JButton("\n");
+historyButton.setOpaque(true);
+historyButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=1;
+refreshButtons();
+}
+}
+);
+historyButton.setIcon(new ImageIcon("/Users/admin/Desktop/HistoryIcon.png"));
+historyButton.setBorder(new EmptyBorder(0,0,0,0));
+historyButton.setBackground(new Color(0,204,153));
+historyButton.setBounds(312,0,66,64);
+panel_1.add(historyButton);
+helpButton=new JButton("\n");
+helpButton.setOpaque(true);
+helpButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=2;
+refreshButtons();
+}
+}
+);
+helpButton.setIcon(new ImageIcon("/Users/admin/Desktop/InfoImage.png"));
+helpButton.setBorder(new EmptyBorder(0,0,0,0));
+helpButton.setBackground(new Color(0,204,153));
+helpButton.setBounds(391,0,66,64);
+panel_1.add(helpButton);
+JPanel panel=new JPanel();
+panel.setBorder(new LineBorder(SystemColor.textHighlight));
+panel.setBackground(new Color(255,255,255));
+panel.setBounds(557,80,251,422);
+frame.getContentPane().add(panel);
+panel.setLayout(null);
+warningBackground=new JPanel();
+warningBackground.setEnabled(false);
+warningBackground.setBorder(null);
+warningBackground.setBackground(new Color(255,165,0));
+warningBackground.setBounds(0,20,252,29);
+panel.add(warningBackground);
+warningBackground.setLayout(null);
+txtLabelStatus=new JTextPane();
+txtLabelStatus.setDisabledTextColor(SystemColor.text);
+txtLabelStatus.setSelectionColor(SystemColor.activeCaption);
+txtLabelStatus.setEnabled(false);
+txtLabelStatus.setBounds(72,0,105,28);
+txtLabelStatus.setFont(new Font("Open Sans",Font.PLAIN,20));
+txtLabelStatus.setForeground(new Color(255,255,255));
+txtLabelStatus.setBackground(new Color(255,165,0));
+warningBackground.add(txtLabelStatus);
+txtAreaDescription=new JTextPane();
+txtAreaDescription.setFont(new Font("Open Sans",Font.PLAIN,14));
+txtAreaDescription.setForeground(new Color(60,179,113));
+txtAreaDescription.setBounds(10,232,208,159);
+txtAreaDescription.setEnabled(false);
+panel.add(txtAreaDescription);
+txtAreaTaskDetails=new JTextArea();
+txtAreaTaskDetails.setFont(new Font("Open Sans",Font.PLAIN,17));
+txtAreaTaskDetails.setForeground(SystemColor.scrollbar);
+txtAreaTaskDetails.setBounds(10,61,233,231);
+txtAreaTaskDetails.setEnabled(false);
+panel.add(txtAreaTaskDetails);
+setTaskDetailView();
+JPanel taskManageLine=new JPanel();
+taskManageLine.setEnabled(false);
+taskManageLine.setBorder(null);
+taskManageLine.setBackground(new Color(255,165,0));
+taskManageLine.setBounds(21,540,786,6);
+taskManageLine.setEnabled(false);
+frame.getContentPane().add(taskManageLine);
+textFieldTaskManage=new JTextField();
+textFieldTaskManage.addFocusListener(new FocusAdapter(){
+@Override public void focusGained(FocusEvent e){
+if (firstFocusManageText) {
+textFieldTaskManage.setText("");
+firstFocusManageText=false;
+}
+}
+}
+);
+textFieldTaskManage.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+try {
+taskManager.executeCommand(textFieldTaskManage.getText(),window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+refreshWindow();
+textFieldTaskManage.setText("");
+}
+}
+);
+textFieldTaskManage.setDisabledTextColor(new Color(128,128,128));
+textFieldTaskManage.setForeground(new Color(169,169,169));
+textFieldTaskManage.setFont(new Font("Open Sans",Font.PLAIN,15));
+textFieldTaskManage.setToolTipText("Manage your tasks here!");
+textFieldTaskManage.setColumns(10);
+textFieldTaskManage.setBounds(18,510,792,36);
+textFieldTaskManage.setText("Manage your tasks here!");
+frame.getContentPane().add(textFieldTaskManage);
+refreshButtons();
+}
+ found.
+!STACK 0
+org.eclipse.wb.internal.core.utils.check.AssertionFailedException: Execution flow problem. {
+  EventQueue.invokeLater(new Runnable(){
+    public void run(){
+      try {
+        taskManager=TaskManager.getInstance();
+        ApplicationWindow window=new ApplicationWindow();
+        window.frame.setVisible(true);
+        window.frame.setResizable(false);
+      }
+ catch (      Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+);
+}
+ expected, but {
+  frame=new JFrame();
+  frame.setBounds(100,100,828,580);
+  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  frame.getContentPane().setLayout(null);
+  txtAreaHelp=new JTextPane();
+  txtAreaHelp.setForeground(new Color(102,205,170));
+  txtAreaHelp.setFont(new Font("Open Sans",Font.PLAIN,13));
+  txtAreaHelp.setBounds(30,100,499,372);
+  frame.getContentPane().add(txtAreaHelp);
+  txtAreaHelp.setText("add [NAME] || [DD/MM/YYYY] [HH:MM] [H:M]\nadd [NAME] || [DD/MM/YYYY] [HH:MM]\nadd [NAME] || [DD/MM/YYYY]\nadd [NAME]\ndelete [INDEX]\ndone [INDEX]\nedit [INDEX] name [STRING]\nedit [INDEX] duration [STRING]\nedit [INDEX] datetime [STRING]\nedit [INDEX] all [NAME] [DATE] [TIME] [DURATION]\nclear\ndisplay [INDEX]\nsearch name [STRING]\nsearch date [DD/MM/YYYY]\nundo\nhome\nhistory\nhelp\nsort [NAME/DATE/START/END/DURATION/DEFAULT]\nfilter [INCOMPLETE/COMPLETE/SHORT/MEDIUM/LONG/SOON/ALL]\n");
+  JPanel panel_3=new JPanel();
+  panel_3.setBorder(new LineBorder(SystemColor.textHighlight));
+  panel_3.setBackground(new Color(255,255,255));
+  panel_3.setBounds(20,80,516,422);
+  frame.getContentPane().add(panel_3);
+  panel_3.setLayout(null);
+  columns=new String[]{"Number","Task Name","Task Duration","Task Date and Time","Task Completion"};
+  data=new ArrayList<Object[]>();
+  Object[][] dataArray=toArray(data);
+  table=new JTable(dataArray,columns){
+    private static final long serialVersionUID=1L;
+    public boolean isCellEditable(    int row,    int column){
+      return false;
+    }
+  }
+;
+  table.addMouseListener(new MouseAdapter(){
+    @Override public void mousePressed(    MouseEvent e){
+      selectedListIndex=table.getSelectedRow();
+      setTaskDetailView();
+    }
+    @Override public void mouseClicked(    MouseEvent e){
+      selectedListIndex=table.getSelectedRow();
+      setTaskDetailView();
+    }
+  }
+);
+  refreshTableValues();
+  selectedListIndex=0;
+  table.setRowHeight(25);
+  table.setSelectionBackground(new Color(102,205,170));
+  table.setForeground(Color.GRAY);
+  table.setFont(new Font("Open Sans",Font.PLAIN,13));
+  table.setSize(496,368);
+  table.setLocation(11,44);
+  table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  scrollPane2=new JScrollPane(table);
+  table.setFillsViewportHeight(true);
+  scrollPane2.setBounds(11,44,496,368);
+  scrollPane2.setViewportView(table);
+  panel_3.add(scrollPane2);
+  filterDropdown=new JComboBox<String>();
+  filterDropdown.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      String filterString;
+switch (filterDropdown.getSelectedIndex()) {
+case 0:
+        filterString="filter all";
+      break;
+case 1:
+    filterString="filter incomplete";
+  break;
+case 2:
+filterString="filter complete";
+break;
+case 3:
+filterString="filter short";
+break;
+case 4:
+filterString="filter medium";
+break;
+case 5:
+filterString="filter long";
+break;
+case 6:
+filterString="filter soon";
+break;
+default :
+filterString="";
+break;
+}
+try {
+taskManager.executeCommand(filterString,window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+refreshWindow();
+}
+}
+);
+filterDropdown.setBackground(new Color(255,255,255));
+filterDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+filterDropdown.setForeground(new Color(60,179,113));
+filterDropdown.setModel(new DefaultComboBoxModel<String>(new String[]{"Filter by...","Incomplete Tasks","Complete Tasks","Short Tasks (<1 hour)","Medium Tasks (1 - 3 hours)","Long Tasks (3+ hours)","Tasks Ending Soon"}));
+filterDropdown.setFont(new Font("Open Sans",Font.PLAIN,15));
+filterDropdown.setBounds(6,6,258,36);
+panel_3.add(filterDropdown);
+sortDropdown=new JComboBox<String>();
+sortDropdown.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+String sortString;
+switch (sortDropdown.getSelectedIndex()) {
+case 0:
+sortString="sort default";
+break;
+case 1:
+sortString="sort name";
+break;
+case 2:
+sortString="sort date";
+break;
+case 3:
+sortString="sort start";
+break;
+case 4:
+sortString="sort end";
+break;
+case 5:
+sortString="sort duration";
+break;
+default :
+sortString="";
+break;
+}
+try {
+taskManager.executeCommand(sortString,window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+}
+}
+);
+sortDropdown.setOpaque(true);
+sortDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+sortDropdown.setModel(new DefaultComboBoxModel<String>(new String[]{"Sort By...","Name","Date","Starting Time","Ending Time","Duration"}));
+sortDropdown.setForeground(new Color(60,179,113));
+sortDropdown.setFont(new Font("Open Sans",Font.PLAIN,15));
+sortDropdown.setBackground(Color.WHITE);
+sortDropdown.setBounds(261,6,249,36);
+panel_3.add(sortDropdown);
+historyList=new JList<String>();
+historyList.setBounds(0,0,501,406);
+frame.getContentPane().add(historyList);
+historyList.setEnabled(false);
+historyList.setForeground(new Color(60,179,113));
+historyList.setFont(new Font("Open Sans",Font.PLAIN,13));
+historyList.setModel(new AbstractListModel<String>(){
+private static final long serialVersionUID=1L;
+List<String> history=taskManager.getHistoryList();
+public int getSize(){
+return history.size();
+}
+public String getElementAt(int index){
+return history.get(index);
+}
+}
+);
+JPanel panel_1=new JPanel();
+panel_1.setBackground(new Color(51,204,153));
+panel_1.setBounds(0,0,828,64);
+frame.getContentPane().add(panel_1);
+panel_1.setLayout(null);
+JLabel lblSnaptask=new JLabel("snaptask");
+lblSnaptask.setFont(new Font("Open Sans",Font.PLAIN,48));
+lblSnaptask.setForeground(new Color(255,255,255));
+lblSnaptask.setBounds(16,0,216,58);
+panel_1.add(lblSnaptask);
+JPanel searchLine=new JPanel();
+searchLine.setBackground(new Color(255,165,0));
+searchLine.setBorder(null);
+searchLine.setBounds(556,44,251,6);
+searchLine.setEnabled(false);
+panel_1.add(searchLine);
+searchField=new JTextField();
+searchField.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+String searchString=searchField.getText();
+try {
+taskManager.executeCommand(searchString,window);
+}
+ catch (FileNotFoundException e1) {
+warnInvalid("Search unable to be performed");
+e1.printStackTrace();
+}
+}
+}
+);
+searchField.addFocusListener(new FocusAdapter(){
+@Override public void focusGained(FocusEvent e){
+if (firstFocusSearchText) {
+searchField.setText("");
+firstFocusSearchText=false;
+}
+}
+}
+);
+searchField.setFont(new Font("Open Sans",Font.PLAIN,15));
+searchField.setForeground(new Color(169,169,169));
+searchField.setToolTipText("Search for tasks!");
+searchField.setText("Search for tasks!");
+searchField.setBounds(552,15,258,36);
+panel_1.add(searchField);
+searchField.setColumns(10);
+homeButton=new JButton("\n");
+homeButton.setOpaque(true);
+homeButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=0;
+refreshButtons();
+}
+}
+);
+homeButton.setIcon(new ImageIcon("/Users/admin/Desktop/ListIcon.png"));
+homeButton.setBorder(new EmptyBorder(0,0,0,0));
+homeButton.setBackground(new Color(0,204,153));
+homeButton.setBounds(237,0,66,64);
+panel_1.add(homeButton);
+historyButton=new JButton("\n");
+historyButton.setOpaque(true);
+historyButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=1;
+refreshButtons();
+}
+}
+);
+historyButton.setIcon(new ImageIcon("/Users/admin/Desktop/HistoryIcon.png"));
+historyButton.setBorder(new EmptyBorder(0,0,0,0));
+historyButton.setBackground(new Color(0,204,153));
+historyButton.setBounds(312,0,66,64);
+panel_1.add(historyButton);
+helpButton=new JButton("\n");
+helpButton.setOpaque(true);
+helpButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=2;
+refreshButtons();
+}
+}
+);
+helpButton.setIcon(new ImageIcon("/Users/admin/Desktop/InfoImage.png"));
+helpButton.setBorder(new EmptyBorder(0,0,0,0));
+helpButton.setBackground(new Color(0,204,153));
+helpButton.setBounds(391,0,66,64);
+panel_1.add(helpButton);
+JPanel panel=new JPanel();
+panel.setBorder(new LineBorder(SystemColor.textHighlight));
+panel.setBackground(new Color(255,255,255));
+panel.setBounds(557,80,251,422);
+frame.getContentPane().add(panel);
+panel.setLayout(null);
+warningBackground=new JPanel();
+warningBackground.setEnabled(false);
+warningBackground.setBorder(null);
+warningBackground.setBackground(new Color(255,165,0));
+warningBackground.setBounds(0,20,252,29);
+panel.add(warningBackground);
+warningBackground.setLayout(null);
+txtLabelStatus=new JTextPane();
+txtLabelStatus.setDisabledTextColor(SystemColor.text);
+txtLabelStatus.setSelectionColor(SystemColor.activeCaption);
+txtLabelStatus.setEnabled(false);
+txtLabelStatus.setBounds(72,0,105,28);
+txtLabelStatus.setFont(new Font("Open Sans",Font.PLAIN,20));
+txtLabelStatus.setForeground(new Color(255,255,255));
+txtLabelStatus.setBackground(new Color(255,165,0));
+warningBackground.add(txtLabelStatus);
+txtAreaDescription=new JTextPane();
+txtAreaDescription.setFont(new Font("Open Sans",Font.PLAIN,14));
+txtAreaDescription.setForeground(new Color(60,179,113));
+txtAreaDescription.setBounds(10,232,208,159);
+txtAreaDescription.setEnabled(false);
+panel.add(txtAreaDescription);
+txtAreaTaskDetails=new JTextArea();
+txtAreaTaskDetails.setFont(new Font("Open Sans",Font.PLAIN,17));
+txtAreaTaskDetails.setForeground(SystemColor.scrollbar);
+txtAreaTaskDetails.setBounds(10,61,233,231);
+txtAreaTaskDetails.setEnabled(false);
+panel.add(txtAreaTaskDetails);
+setTaskDetailView();
+JPanel taskManageLine=new JPanel();
+taskManageLine.setEnabled(false);
+taskManageLine.setBorder(null);
+taskManageLine.setBackground(new Color(255,165,0));
+taskManageLine.setBounds(21,540,786,6);
+taskManageLine.setEnabled(false);
+frame.getContentPane().add(taskManageLine);
+textFieldTaskManage=new JTextField();
+textFieldTaskManage.addFocusListener(new FocusAdapter(){
+@Override public void focusGained(FocusEvent e){
+if (firstFocusManageText) {
+textFieldTaskManage.setText("");
+firstFocusManageText=false;
+}
+}
+}
+);
+textFieldTaskManage.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+try {
+taskManager.executeCommand(textFieldTaskManage.getText(),window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+refreshWindow();
+textFieldTaskManage.setText("");
+}
+}
+);
+textFieldTaskManage.setDisabledTextColor(new Color(128,128,128));
+textFieldTaskManage.setForeground(new Color(169,169,169));
+textFieldTaskManage.setFont(new Font("Open Sans",Font.PLAIN,15));
+textFieldTaskManage.setToolTipText("Manage your tasks here!");
+textFieldTaskManage.setColumns(10);
+textFieldTaskManage.setBounds(18,510,792,36);
+textFieldTaskManage.setText("Manage your tasks here!");
+frame.getContentPane().add(textFieldTaskManage);
+refreshButtons();
+}
+ found.
+	at org.eclipse.wb.internal.core.utils.check.Assert.fail(Assert.java:225)
+	at org.eclipse.wb.internal.core.utils.check.Assert.isTrue(Assert.java:291)
+	at org.eclipse.wb.core.eval.ExecutionFlowDescription.leaveStatement(ExecutionFlowDescription.java:152)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visitStatement(ExecutionFlowUtils.java:317)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visit(ExecutionFlowUtils.java:247)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visit(ExecutionFlowUtils.java:228)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visit(ExecutionFlowUtils.java:191)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.prepareAssignmentInformation(ExecutionFlowUtils.java:784)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.getVariableCachedValue(ExecutionFlowUtils.java:753)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.getVariableCachedList_notNull(ExecutionFlowUtils.java:707)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.getReferences(ExecutionFlowUtils.java:669)
+	at org.eclipse.wb.internal.core.model.variable.AbstractNamedVariableSupport.getReferences(AbstractNamedVariableSupport.java:184)
+	at org.eclipse.wb.internal.core.model.variable.FieldUniqueVariableSupport.canConvertFieldToLocal(FieldUniqueVariableSupport.java:97)
+	at org.eclipse.wb.internal.core.editor.structure.property.JavaPropertiesToolBarContributor.addVariableConvertAction(JavaPropertiesToolBarContributor.java:101)
+	at org.eclipse.wb.internal.core.editor.structure.property.JavaPropertiesToolBarContributor.contributeToolBar(JavaPropertiesToolBarContributor.java:54)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage$2$1.run(ComponentsPropertiesPage.java:186)
+	at org.eclipse.wb.internal.core.utils.execution.ExecutionUtils.runLog(ExecutionUtils.java:106)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage$2.run(ComponentsPropertiesPage.java:184)
+	at org.eclipse.wb.internal.core.utils.execution.ExecutionUtils.runLog(ExecutionUtils.java:106)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage.updateActions(ComponentsPropertiesPage.java:160)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage.access$22(ComponentsPropertiesPage.java:159)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage$12.run(ComponentsPropertiesPage.java:538)
+	at org.eclipse.wb.internal.core.utils.execution.ExecutionUtils.runLog(ExecutionUtils.java:106)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage.refreshProperties(ComponentsPropertiesPage.java:530)
+	at org.eclipse.wb.internal.core.editor.structure.property.ComponentsPropertiesPage.setSelection(ComponentsPropertiesPage.java:321)
+	at org.eclipse.wb.internal.core.editor.structure.DesignComponentsComposite$1.selectionChanged(DesignComponentsComposite.java:72)
+	at org.eclipse.wb.internal.core.utils.gef.EditPartsSelectionProvider.fireSelectionChanged(EditPartsSelectionProvider.java:111)
+	at org.eclipse.wb.internal.core.utils.gef.EditPartsSelectionProvider.access$0(EditPartsSelectionProvider.java:102)
+	at org.eclipse.wb.internal.core.utils.gef.EditPartsSelectionProvider$1.selectionChanged(EditPartsSelectionProvider.java:40)
+	at org.eclipse.wb.internal.gef.core.AbstractEditPartViewer.fireSelectionChanged(AbstractEditPartViewer.java:202)
+	at org.eclipse.wb.internal.gef.core.AbstractEditPartViewer.setSelection(AbstractEditPartViewer.java:262)
+	at org.eclipse.wb.internal.gef.core.AbstractEditPartViewer.setSelection(AbstractEditPartViewer.java:193)
+	at org.eclipse.wb.internal.gef.tree.TreeViewer$1.widgetSelected(TreeViewer.java:180)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(TypedListener.java:248)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:84)
+	at org.eclipse.swt.widgets.Display.sendEvent(Display.java:4230)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1491)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1514)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1499)
+	at org.eclipse.swt.widgets.Widget.notifyListeners(Widget.java:1299)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Display.java:4072)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3698)
+	at org.eclipse.wb.internal.core.utils.execution.ExecutionUtils.waitEventLoop(ExecutionUtils.java:71)
+	at org.eclipse.wb.internal.swing.utils.SwingUtils.invokeLaterAndWait(SwingUtils.java:168)
+	at org.eclipse.wb.internal.swing.utils.SwingUtils.runLaterAndWait(SwingUtils.java:73)
+	at org.eclipse.wb.internal.swing.model.component.ComponentInfo.execRefreshOperation(ComponentInfo.java:119)
+	at org.eclipse.wb.core.model.ObjectInfo.refresh(ObjectInfo.java:482)
+	at org.eclipse.wb.core.model.ObjectInfo.endEdit(ObjectInfo.java:446)
+	at org.eclipse.wb.internal.core.utils.execution.ExecutionUtils.run(ExecutionUtils.java:325)
+	at org.eclipse.wb.core.gef.command.EditCommand.execute(EditCommand.java:50)
+	at org.eclipse.wb.internal.gef.core.EditDomain.executeCommand(EditDomain.java:59)
+	at org.eclipse.wb.internal.gef.tree.dnd.TreeDropListener.executeCommand(TreeDropListener.java:265)
+	at org.eclipse.wb.internal.gef.tree.dnd.TreeDropListener.drop(TreeDropListener.java:103)
+	at org.eclipse.swt.dnd.DNDListener.handleEvent(DNDListener.java:91)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:84)
+	at org.eclipse.swt.widgets.Display.sendEvent(Display.java:4230)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1491)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1514)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1499)
+	at org.eclipse.swt.widgets.Widget.notifyListeners(Widget.java:1299)
+	at org.eclipse.swt.dnd.DropTarget.drop(DropTarget.java:728)
+	at org.eclipse.swt.dnd.DropTarget.outlineView_acceptDrop_item_childIndex(DropTarget.java:746)
+	at org.eclipse.swt.dnd.DropTarget.dropTargetProc(DropTarget.java:471)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSendSuper(Native Method)
+	at org.eclipse.swt.dnd.DropTarget.dndCallSuper(DropTarget.java:210)
+	at org.eclipse.swt.dnd.DropTarget.performDragOperation(DropTarget.java:739)
+	at org.eclipse.swt.dnd.DropTarget.dropTargetProc(DropTarget.java:456)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSendSuper(Native Method)
+	at org.eclipse.swt.widgets.Widget.callSuper(Widget.java:227)
+	at org.eclipse.swt.widgets.Widget.mouseDownSuper(Widget.java:1121)
+	at org.eclipse.swt.widgets.Tree.mouseDownSuper(Tree.java:2047)
+	at org.eclipse.swt.widgets.Widget.mouseDown(Widget.java:1113)
+	at org.eclipse.swt.widgets.Control.mouseDown(Control.java:2569)
+	at org.eclipse.swt.widgets.Tree.mouseDown(Tree.java:2015)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:5692)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSendSuper(Native Method)
+	at org.eclipse.swt.widgets.Widget.callSuper(Widget.java:227)
+	at org.eclipse.swt.widgets.Widget.windowSendEvent(Widget.java:2130)
+	at org.eclipse.swt.widgets.Shell.windowSendEvent(Shell.java:2337)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:5756)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSendSuper(Native Method)
+	at org.eclipse.swt.widgets.Display.applicationSendEvent(Display.java:5193)
+	at org.eclipse.swt.widgets.Display.applicationProc(Display.java:5342)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSend(Native Method)
+	at org.eclipse.swt.internal.cocoa.NSApplication.sendEvent(NSApplication.java:128)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3695)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:1127)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:337)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1018)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:156)
+	at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:654)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:337)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:598)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:150)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:139)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:134)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:380)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:235)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:669)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:608)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1515)
+
+!ENTRY org.eclipse.wb.core 4 4 2016-04-11 10:29:58.622
+!MESSAGE Designer [1.8.0.r45x201506110820.201604111029]: Execution flow problem. {
+  frame=new JFrame();
+  frame.setBounds(100,100,828,580);
+  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  frame.getContentPane().setLayout(null);
+  txtAreaHelp=new JTextPane();
+  txtAreaHelp.setForeground(new Color(102,205,170));
+  txtAreaHelp.setFont(new Font("Open Sans",Font.PLAIN,13));
+  txtAreaHelp.setBounds(30,100,499,372);
+  frame.getContentPane().add(txtAreaHelp);
+  txtAreaHelp.setText("add [NAME] || [DD/MM/YYYY] [HH:MM] [H:M]\nadd [NAME] || [DD/MM/YYYY] [HH:MM]\nadd [NAME] || [DD/MM/YYYY]\nadd [NAME]\ndelete [INDEX]\ndone [INDEX]\nedit [INDEX] name [STRING]\nedit [INDEX] duration [STRING]\nedit [INDEX] datetime [STRING]\nedit [INDEX] all [NAME] [DATE] [TIME] [DURATION]\nclear\ndisplay [INDEX]\nsearch name [STRING]\nsearch date [DD/MM/YYYY]\nundo\nhome\nhistory\nhelp\nsort [NAME/DATE/START/END/DURATION/DEFAULT]\nfilter [INCOMPLETE/COMPLETE/SHORT/MEDIUM/LONG/SOON/ALL]\n");
+  JPanel panel_3=new JPanel();
+  panel_3.setBorder(new LineBorder(SystemColor.textHighlight));
+  panel_3.setBackground(new Color(255,255,255));
+  panel_3.setBounds(20,80,516,422);
+  frame.getContentPane().add(panel_3);
+  panel_3.setLayout(null);
+  columns=new String[]{"Number","Task Name","Task Duration","Task Date and Time","Task Completion"};
+  data=new ArrayList<Object[]>();
+  Object[][] dataArray=toArray(data);
+  table=new JTable(dataArray,columns){
+    private static final long serialVersionUID=1L;
+    public boolean isCellEditable(    int row,    int column){
+      return false;
+    }
+  }
+;
+  table.addMouseListener(new MouseAdapter(){
+    @Override public void mousePressed(    MouseEvent e){
+      selectedListIndex=table.getSelectedRow();
+      setTaskDetailView();
+    }
+    @Override public void mouseClicked(    MouseEvent e){
+      selectedListIndex=table.getSelectedRow();
+      setTaskDetailView();
+    }
+  }
+);
+  refreshTableValues();
+  selectedListIndex=0;
+  table.setRowHeight(25);
+  table.setSelectionBackground(new Color(102,205,170));
+  table.setForeground(Color.GRAY);
+  table.setFont(new Font("Open Sans",Font.PLAIN,13));
+  table.setSize(496,368);
+  table.setLocation(11,44);
+  table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  scrollPane2=new JScrollPane(table);
+  table.setFillsViewportHeight(true);
+  scrollPane2.setBounds(11,44,496,368);
+  scrollPane2.setViewportView(table);
+  panel_3.add(scrollPane2);
+  filterDropdown=new JComboBox<String>();
+  filterDropdown.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      String filterString;
+switch (filterDropdown.getSelectedIndex()) {
+case 0:
+        filterString="filter all";
+      break;
+case 1:
+    filterString="filter incomplete";
+  break;
+case 2:
+filterString="filter complete";
+break;
+case 3:
+filterString="filter short";
+break;
+case 4:
+filterString="filter medium";
+break;
+case 5:
+filterString="filter long";
+break;
+case 6:
+filterString="filter soon";
+break;
+default :
+filterString="";
+break;
+}
+try {
+taskManager.executeCommand(filterString,window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+refreshWindow();
+}
+}
+);
+filterDropdown.setBackground(new Color(255,255,255));
+filterDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+filterDropdown.setForeground(new Color(60,179,113));
+filterDropdown.setModel(new DefaultComboBoxModel<String>(new String[]{"Filter by...","Incomplete Tasks","Complete Tasks","Short Tasks (<1 hour)","Medium Tasks (1 - 3 hours)","Long Tasks (3+ hours)","Tasks Ending Soon"}));
+filterDropdown.setFont(new Font("Open Sans",Font.PLAIN,15));
+filterDropdown.setBounds(6,6,258,36);
+panel_3.add(filterDropdown);
+sortDropdown=new JComboBox<String>();
+sortDropdown.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+String sortString;
+switch (sortDropdown.getSelectedIndex()) {
+case 0:
+sortString="sort default";
+break;
+case 1:
+sortString="sort name";
+break;
+case 2:
+sortString="sort date";
+break;
+case 3:
+sortString="sort start";
+break;
+case 4:
+sortString="sort end";
+break;
+case 5:
+sortString="sort duration";
+break;
+default :
+sortString="";
+break;
+}
+try {
+taskManager.executeCommand(sortString,window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+}
+}
+);
+sortDropdown.setOpaque(true);
+sortDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+sortDropdown.setModel(new DefaultComboBoxModel<String>(new String[]{"Sort By...","Name","Date","Starting Time","Ending Time","Duration"}));
+sortDropdown.setForeground(new Color(60,179,113));
+sortDropdown.setFont(new Font("Open Sans",Font.PLAIN,15));
+sortDropdown.setBackground(Color.WHITE);
+sortDropdown.setBounds(261,6,249,36);
+panel_3.add(sortDropdown);
+historyList=new JList<String>();
+historyList.setBounds(0,0,501,406);
+frame.getContentPane().add(historyList);
+historyList.setEnabled(false);
+historyList.setForeground(new Color(60,179,113));
+historyList.setFont(new Font("Open Sans",Font.PLAIN,13));
+historyList.setModel(new AbstractListModel<String>(){
+private static final long serialVersionUID=1L;
+List<String> history=taskManager.getHistoryList();
+public int getSize(){
+return history.size();
+}
+public String getElementAt(int index){
+return history.get(index);
+}
+}
+);
+JPanel panel_1=new JPanel();
+panel_1.setBackground(new Color(51,204,153));
+panel_1.setBounds(0,0,828,64);
+frame.getContentPane().add(panel_1);
+panel_1.setLayout(null);
+JLabel lblSnaptask=new JLabel("snaptask");
+lblSnaptask.setFont(new Font("Open Sans",Font.PLAIN,48));
+lblSnaptask.setForeground(new Color(255,255,255));
+lblSnaptask.setBounds(16,0,216,58);
+panel_1.add(lblSnaptask);
+JPanel searchLine=new JPanel();
+searchLine.setBackground(new Color(255,165,0));
+searchLine.setBorder(null);
+searchLine.setBounds(556,44,251,6);
+searchLine.setEnabled(false);
+panel_1.add(searchLine);
+searchField=new JTextField();
+searchField.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+String searchString=searchField.getText();
+try {
+taskManager.executeCommand(searchString,window);
+}
+ catch (FileNotFoundException e1) {
+warnInvalid("Search unable to be performed");
+e1.printStackTrace();
+}
+}
+}
+);
+searchField.addFocusListener(new FocusAdapter(){
+@Override public void focusGained(FocusEvent e){
+if (firstFocusSearchText) {
+searchField.setText("");
+firstFocusSearchText=false;
+}
+}
+}
+);
+searchField.setFont(new Font("Open Sans",Font.PLAIN,15));
+searchField.setForeground(new Color(169,169,169));
+searchField.setToolTipText("Search for tasks!");
+searchField.setText("Search for tasks!");
+searchField.setBounds(552,15,258,36);
+panel_1.add(searchField);
+searchField.setColumns(10);
+homeButton=new JButton("\n");
+homeButton.setOpaque(true);
+homeButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=0;
+refreshButtons();
+}
+}
+);
+homeButton.setIcon(new ImageIcon("/Users/admin/Desktop/ListIcon.png"));
+homeButton.setBorder(new EmptyBorder(0,0,0,0));
+homeButton.setBackground(new Color(0,204,153));
+homeButton.setBounds(237,0,66,64);
+panel_1.add(homeButton);
+historyButton=new JButton("\n");
+historyButton.setOpaque(true);
+historyButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=1;
+refreshButtons();
+}
+}
+);
+historyButton.setIcon(new ImageIcon("/Users/admin/Desktop/HistoryIcon.png"));
+historyButton.setBorder(new EmptyBorder(0,0,0,0));
+historyButton.setBackground(new Color(0,204,153));
+historyButton.setBounds(312,0,66,64);
+panel_1.add(historyButton);
+helpButton=new JButton("\n");
+helpButton.setOpaque(true);
+helpButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=2;
+refreshButtons();
+}
+}
+);
+helpButton.setIcon(new ImageIcon("/Users/admin/Desktop/InfoImage.png"));
+helpButton.setBorder(new EmptyBorder(0,0,0,0));
+helpButton.setBackground(new Color(0,204,153));
+helpButton.setBounds(391,0,66,64);
+panel_1.add(helpButton);
+JPanel panel=new JPanel();
+panel.setBorder(new LineBorder(SystemColor.textHighlight));
+panel.setBackground(new Color(255,255,255));
+panel.setBounds(557,80,251,422);
+frame.getContentPane().add(panel);
+panel.setLayout(null);
+warningBackground=new JPanel();
+warningBackground.setEnabled(false);
+warningBackground.setBorder(null);
+warningBackground.setBackground(new Color(255,165,0));
+warningBackground.setBounds(0,20,252,29);
+panel.add(warningBackground);
+warningBackground.setLayout(null);
+txtLabelStatus=new JTextPane();
+txtLabelStatus.setDisabledTextColor(SystemColor.text);
+txtLabelStatus.setSelectionColor(SystemColor.activeCaption);
+txtLabelStatus.setEnabled(false);
+txtLabelStatus.setBounds(72,0,105,28);
+txtLabelStatus.setFont(new Font("Open Sans",Font.PLAIN,20));
+txtLabelStatus.setForeground(new Color(255,255,255));
+txtLabelStatus.setBackground(new Color(255,165,0));
+warningBackground.add(txtLabelStatus);
+txtAreaDescription=new JTextPane();
+txtAreaDescription.setFont(new Font("Open Sans",Font.PLAIN,14));
+txtAreaDescription.setForeground(new Color(60,179,113));
+txtAreaDescription.setBounds(10,232,208,159);
+txtAreaDescription.setEnabled(false);
+panel.add(txtAreaDescription);
+txtAreaTaskDetails=new JTextArea();
+txtAreaTaskDetails.setFont(new Font("Open Sans",Font.PLAIN,17));
+txtAreaTaskDetails.setForeground(SystemColor.scrollbar);
+txtAreaTaskDetails.setBounds(10,61,233,231);
+txtAreaTaskDetails.setEnabled(false);
+panel.add(txtAreaTaskDetails);
+setTaskDetailView();
+JPanel taskManageLine=new JPanel();
+taskManageLine.setEnabled(false);
+taskManageLine.setBorder(null);
+taskManageLine.setBackground(new Color(255,165,0));
+taskManageLine.setBounds(21,540,786,6);
+taskManageLine.setEnabled(false);
+frame.getContentPane().add(taskManageLine);
+textFieldTaskManage=new JTextField();
+textFieldTaskManage.addFocusListener(new FocusAdapter(){
+@Override public void focusGained(FocusEvent e){
+if (firstFocusManageText) {
+textFieldTaskManage.setText("");
+firstFocusManageText=false;
+}
+}
+}
+);
+textFieldTaskManage.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+try {
+taskManager.executeCommand(textFieldTaskManage.getText(),window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+refreshWindow();
+textFieldTaskManage.setText("");
+}
+}
+);
+textFieldTaskManage.setDisabledTextColor(new Color(128,128,128));
+textFieldTaskManage.setForeground(new Color(169,169,169));
+textFieldTaskManage.setFont(new Font("Open Sans",Font.PLAIN,15));
+textFieldTaskManage.setToolTipText("Manage your tasks here!");
+textFieldTaskManage.setColumns(10);
+textFieldTaskManage.setBounds(18,510,792,36);
+textFieldTaskManage.setText("Manage your tasks here!");
+frame.getContentPane().add(textFieldTaskManage);
+refreshButtons();
+}
+ expected, but {
+  initialize();
+}
+ found.
+!STACK 0
+org.eclipse.wb.internal.core.utils.check.AssertionFailedException: Execution flow problem. {
+  frame=new JFrame();
+  frame.setBounds(100,100,828,580);
+  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  frame.getContentPane().setLayout(null);
+  txtAreaHelp=new JTextPane();
+  txtAreaHelp.setForeground(new Color(102,205,170));
+  txtAreaHelp.setFont(new Font("Open Sans",Font.PLAIN,13));
+  txtAreaHelp.setBounds(30,100,499,372);
+  frame.getContentPane().add(txtAreaHelp);
+  txtAreaHelp.setText("add [NAME] || [DD/MM/YYYY] [HH:MM] [H:M]\nadd [NAME] || [DD/MM/YYYY] [HH:MM]\nadd [NAME] || [DD/MM/YYYY]\nadd [NAME]\ndelete [INDEX]\ndone [INDEX]\nedit [INDEX] name [STRING]\nedit [INDEX] duration [STRING]\nedit [INDEX] datetime [STRING]\nedit [INDEX] all [NAME] [DATE] [TIME] [DURATION]\nclear\ndisplay [INDEX]\nsearch name [STRING]\nsearch date [DD/MM/YYYY]\nundo\nhome\nhistory\nhelp\nsort [NAME/DATE/START/END/DURATION/DEFAULT]\nfilter [INCOMPLETE/COMPLETE/SHORT/MEDIUM/LONG/SOON/ALL]\n");
+  JPanel panel_3=new JPanel();
+  panel_3.setBorder(new LineBorder(SystemColor.textHighlight));
+  panel_3.setBackground(new Color(255,255,255));
+  panel_3.setBounds(20,80,516,422);
+  frame.getContentPane().add(panel_3);
+  panel_3.setLayout(null);
+  columns=new String[]{"Number","Task Name","Task Duration","Task Date and Time","Task Completion"};
+  data=new ArrayList<Object[]>();
+  Object[][] dataArray=toArray(data);
+  table=new JTable(dataArray,columns){
+    private static final long serialVersionUID=1L;
+    public boolean isCellEditable(    int row,    int column){
+      return false;
+    }
+  }
+;
+  table.addMouseListener(new MouseAdapter(){
+    @Override public void mousePressed(    MouseEvent e){
+      selectedListIndex=table.getSelectedRow();
+      setTaskDetailView();
+    }
+    @Override public void mouseClicked(    MouseEvent e){
+      selectedListIndex=table.getSelectedRow();
+      setTaskDetailView();
+    }
+  }
+);
+  refreshTableValues();
+  selectedListIndex=0;
+  table.setRowHeight(25);
+  table.setSelectionBackground(new Color(102,205,170));
+  table.setForeground(Color.GRAY);
+  table.setFont(new Font("Open Sans",Font.PLAIN,13));
+  table.setSize(496,368);
+  table.setLocation(11,44);
+  table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  scrollPane2=new JScrollPane(table);
+  table.setFillsViewportHeight(true);
+  scrollPane2.setBounds(11,44,496,368);
+  scrollPane2.setViewportView(table);
+  panel_3.add(scrollPane2);
+  filterDropdown=new JComboBox<String>();
+  filterDropdown.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      String filterString;
+switch (filterDropdown.getSelectedIndex()) {
+case 0:
+        filterString="filter all";
+      break;
+case 1:
+    filterString="filter incomplete";
+  break;
+case 2:
+filterString="filter complete";
+break;
+case 3:
+filterString="filter short";
+break;
+case 4:
+filterString="filter medium";
+break;
+case 5:
+filterString="filter long";
+break;
+case 6:
+filterString="filter soon";
+break;
+default :
+filterString="";
+break;
+}
+try {
+taskManager.executeCommand(filterString,window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+refreshWindow();
+}
+}
+);
+filterDropdown.setBackground(new Color(255,255,255));
+filterDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+filterDropdown.setForeground(new Color(60,179,113));
+filterDropdown.setModel(new DefaultComboBoxModel<String>(new String[]{"Filter by...","Incomplete Tasks","Complete Tasks","Short Tasks (<1 hour)","Medium Tasks (1 - 3 hours)","Long Tasks (3+ hours)","Tasks Ending Soon"}));
+filterDropdown.setFont(new Font("Open Sans",Font.PLAIN,15));
+filterDropdown.setBounds(6,6,258,36);
+panel_3.add(filterDropdown);
+sortDropdown=new JComboBox<String>();
+sortDropdown.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+String sortString;
+switch (sortDropdown.getSelectedIndex()) {
+case 0:
+sortString="sort default";
+break;
+case 1:
+sortString="sort name";
+break;
+case 2:
+sortString="sort date";
+break;
+case 3:
+sortString="sort start";
+break;
+case 4:
+sortString="sort end";
+break;
+case 5:
+sortString="sort duration";
+break;
+default :
+sortString="";
+break;
+}
+try {
+taskManager.executeCommand(sortString,window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+}
+}
+);
+sortDropdown.setOpaque(true);
+sortDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+sortDropdown.setModel(new DefaultComboBoxModel<String>(new String[]{"Sort By...","Name","Date","Starting Time","Ending Time","Duration"}));
+sortDropdown.setForeground(new Color(60,179,113));
+sortDropdown.setFont(new Font("Open Sans",Font.PLAIN,15));
+sortDropdown.setBackground(Color.WHITE);
+sortDropdown.setBounds(261,6,249,36);
+panel_3.add(sortDropdown);
+historyList=new JList<String>();
+historyList.setBounds(0,0,501,406);
+frame.getContentPane().add(historyList);
+historyList.setEnabled(false);
+historyList.setForeground(new Color(60,179,113));
+historyList.setFont(new Font("Open Sans",Font.PLAIN,13));
+historyList.setModel(new AbstractListModel<String>(){
+private static final long serialVersionUID=1L;
+List<String> history=taskManager.getHistoryList();
+public int getSize(){
+return history.size();
+}
+public String getElementAt(int index){
+return history.get(index);
+}
+}
+);
+JPanel panel_1=new JPanel();
+panel_1.setBackground(new Color(51,204,153));
+panel_1.setBounds(0,0,828,64);
+frame.getContentPane().add(panel_1);
+panel_1.setLayout(null);
+JLabel lblSnaptask=new JLabel("snaptask");
+lblSnaptask.setFont(new Font("Open Sans",Font.PLAIN,48));
+lblSnaptask.setForeground(new Color(255,255,255));
+lblSnaptask.setBounds(16,0,216,58);
+panel_1.add(lblSnaptask);
+JPanel searchLine=new JPanel();
+searchLine.setBackground(new Color(255,165,0));
+searchLine.setBorder(null);
+searchLine.setBounds(556,44,251,6);
+searchLine.setEnabled(false);
+panel_1.add(searchLine);
+searchField=new JTextField();
+searchField.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+String searchString=searchField.getText();
+try {
+taskManager.executeCommand(searchString,window);
+}
+ catch (FileNotFoundException e1) {
+warnInvalid("Search unable to be performed");
+e1.printStackTrace();
+}
+}
+}
+);
+searchField.addFocusListener(new FocusAdapter(){
+@Override public void focusGained(FocusEvent e){
+if (firstFocusSearchText) {
+searchField.setText("");
+firstFocusSearchText=false;
+}
+}
+}
+);
+searchField.setFont(new Font("Open Sans",Font.PLAIN,15));
+searchField.setForeground(new Color(169,169,169));
+searchField.setToolTipText("Search for tasks!");
+searchField.setText("Search for tasks!");
+searchField.setBounds(552,15,258,36);
+panel_1.add(searchField);
+searchField.setColumns(10);
+homeButton=new JButton("\n");
+homeButton.setOpaque(true);
+homeButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=0;
+refreshButtons();
+}
+}
+);
+homeButton.setIcon(new ImageIcon("/Users/admin/Desktop/ListIcon.png"));
+homeButton.setBorder(new EmptyBorder(0,0,0,0));
+homeButton.setBackground(new Color(0,204,153));
+homeButton.setBounds(237,0,66,64);
+panel_1.add(homeButton);
+historyButton=new JButton("\n");
+historyButton.setOpaque(true);
+historyButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=1;
+refreshButtons();
+}
+}
+);
+historyButton.setIcon(new ImageIcon("/Users/admin/Desktop/HistoryIcon.png"));
+historyButton.setBorder(new EmptyBorder(0,0,0,0));
+historyButton.setBackground(new Color(0,204,153));
+historyButton.setBounds(312,0,66,64);
+panel_1.add(historyButton);
+helpButton=new JButton("\n");
+helpButton.setOpaque(true);
+helpButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+selectedButtonIndex=2;
+refreshButtons();
+}
+}
+);
+helpButton.setIcon(new ImageIcon("/Users/admin/Desktop/InfoImage.png"));
+helpButton.setBorder(new EmptyBorder(0,0,0,0));
+helpButton.setBackground(new Color(0,204,153));
+helpButton.setBounds(391,0,66,64);
+panel_1.add(helpButton);
+JPanel panel=new JPanel();
+panel.setBorder(new LineBorder(SystemColor.textHighlight));
+panel.setBackground(new Color(255,255,255));
+panel.setBounds(557,80,251,422);
+frame.getContentPane().add(panel);
+panel.setLayout(null);
+warningBackground=new JPanel();
+warningBackground.setEnabled(false);
+warningBackground.setBorder(null);
+warningBackground.setBackground(new Color(255,165,0));
+warningBackground.setBounds(0,20,252,29);
+panel.add(warningBackground);
+warningBackground.setLayout(null);
+txtLabelStatus=new JTextPane();
+txtLabelStatus.setDisabledTextColor(SystemColor.text);
+txtLabelStatus.setSelectionColor(SystemColor.activeCaption);
+txtLabelStatus.setEnabled(false);
+txtLabelStatus.setBounds(72,0,105,28);
+txtLabelStatus.setFont(new Font("Open Sans",Font.PLAIN,20));
+txtLabelStatus.setForeground(new Color(255,255,255));
+txtLabelStatus.setBackground(new Color(255,165,0));
+warningBackground.add(txtLabelStatus);
+txtAreaDescription=new JTextPane();
+txtAreaDescription.setFont(new Font("Open Sans",Font.PLAIN,14));
+txtAreaDescription.setForeground(new Color(60,179,113));
+txtAreaDescription.setBounds(10,232,208,159);
+txtAreaDescription.setEnabled(false);
+panel.add(txtAreaDescription);
+txtAreaTaskDetails=new JTextArea();
+txtAreaTaskDetails.setFont(new Font("Open Sans",Font.PLAIN,17));
+txtAreaTaskDetails.setForeground(SystemColor.scrollbar);
+txtAreaTaskDetails.setBounds(10,61,233,231);
+txtAreaTaskDetails.setEnabled(false);
+panel.add(txtAreaTaskDetails);
+setTaskDetailView();
+JPanel taskManageLine=new JPanel();
+taskManageLine.setEnabled(false);
+taskManageLine.setBorder(null);
+taskManageLine.setBackground(new Color(255,165,0));
+taskManageLine.setBounds(21,540,786,6);
+taskManageLine.setEnabled(false);
+frame.getContentPane().add(taskManageLine);
+textFieldTaskManage=new JTextField();
+textFieldTaskManage.addFocusListener(new FocusAdapter(){
+@Override public void focusGained(FocusEvent e){
+if (firstFocusManageText) {
+textFieldTaskManage.setText("");
+firstFocusManageText=false;
+}
+}
+}
+);
+textFieldTaskManage.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+try {
+taskManager.executeCommand(textFieldTaskManage.getText(),window);
+}
+ catch (Exception e1) {
+JOptionPane.showMessageDialog(frame,e1.getMessage());
+}
+refreshWindow();
+textFieldTaskManage.setText("");
+}
+}
+);
+textFieldTaskManage.setDisabledTextColor(new Color(128,128,128));
+textFieldTaskManage.setForeground(new Color(169,169,169));
+textFieldTaskManage.setFont(new Font("Open Sans",Font.PLAIN,15));
+textFieldTaskManage.setToolTipText("Manage your tasks here!");
+textFieldTaskManage.setColumns(10);
+textFieldTaskManage.setBounds(18,510,792,36);
+textFieldTaskManage.setText("Manage your tasks here!");
+frame.getContentPane().add(textFieldTaskManage);
+refreshButtons();
+}
+ expected, but {
+  initialize();
+}
+ found.
+	at org.eclipse.wb.internal.core.utils.check.Assert.fail(Assert.java:225)
+	at org.eclipse.wb.internal.core.utils.check.Assert.isTrue(Assert.java:291)
+	at org.eclipse.wb.core.eval.ExecutionFlowDescription.leaveStatement(ExecutionFlowDescription.java:152)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visitStatement(ExecutionFlowUtils.java:317)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visit(ExecutionFlowUtils.java:247)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.access$1(ExecutionFlowUtils.java:235)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils$1.endVisit(ExecutionFlowUtils.java:442)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils$1.intercept(ExecutionFlowUtils.java:391)
+	at org.eclipse.jdt.core.dom.ASTVisitor$$EnhancerByCGLIB$$f1c6d1a8.endVisit(<generated>)
+	at org.eclipse.jdt.core.dom.MethodInvocation.accept0(MethodInvocation.java:241)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2711)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChild(ASTNode.java:2759)
+	at org.eclipse.jdt.core.dom.ExpressionStatement.accept0(ExpressionStatement.java:145)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2711)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visitStatement0(ExecutionFlowUtils.java:354)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visitStatement(ExecutionFlowUtils.java:315)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visitStatement0(ExecutionFlowUtils.java:336)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visitStatement(ExecutionFlowUtils.java:315)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visit(ExecutionFlowUtils.java:247)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visit(ExecutionFlowUtils.java:228)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils$1.endVisit(ExecutionFlowUtils.java:421)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils$1.intercept(ExecutionFlowUtils.java:389)
+	at org.eclipse.jdt.core.dom.ASTVisitor$$EnhancerByCGLIB$$f1c6d1a8.endVisit(<generated>)
+	at org.eclipse.jdt.core.dom.ClassInstanceCreation.accept0(ClassInstanceCreation.java:316)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2711)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChild(ASTNode.java:2759)
+	at org.eclipse.jdt.core.dom.VariableDeclarationFragment.accept0(VariableDeclarationFragment.java:263)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2711)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChildren(ASTNode.java:2782)
+	at org.eclipse.jdt.core.dom.VariableDeclarationStatement.accept0(VariableDeclarationStatement.java:267)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2711)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChildren(ASTNode.java:2782)
+	at org.eclipse.jdt.core.dom.Block.accept0(Block.java:137)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2711)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChild(ASTNode.java:2759)
+	at org.eclipse.jdt.core.dom.TryStatement.accept0(TryStatement.java:250)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2711)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChildren(ASTNode.java:2782)
+	at org.eclipse.jdt.core.dom.Block.accept0(Block.java:137)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2711)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChild(ASTNode.java:2759)
+	at org.eclipse.jdt.core.dom.MethodDeclaration.accept0(MethodDeclaration.java:635)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2711)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChildren(ASTNode.java:2782)
+	at org.eclipse.jdt.core.dom.AnonymousClassDeclaration.accept0(AnonymousClassDeclaration.java:144)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2711)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChild(ASTNode.java:2759)
+	at org.eclipse.jdt.core.dom.ClassInstanceCreation.accept0(ClassInstanceCreation.java:314)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2711)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChildren(ASTNode.java:2782)
+	at org.eclipse.jdt.core.dom.MethodInvocation.accept0(MethodInvocation.java:239)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2711)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChild(ASTNode.java:2759)
+	at org.eclipse.jdt.core.dom.ExpressionStatement.accept0(ExpressionStatement.java:145)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2711)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visitStatement0(ExecutionFlowUtils.java:354)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visitStatement(ExecutionFlowUtils.java:315)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visitStatement0(ExecutionFlowUtils.java:336)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visitStatement(ExecutionFlowUtils.java:315)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visit(ExecutionFlowUtils.java:247)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visit(ExecutionFlowUtils.java:228)
+	at org.eclipse.wb.core.eval.ExecutionFlowUtils.visit(ExecutionFlowUtils.java:191)
+	at org.eclipse.wb.core.model.JavaInfo.refresh_create(JavaInfo.java:1199)
+	at org.eclipse.wb.core.model.ObjectInfo.refreshCreate0(ObjectInfo.java:550)
+	at org.eclipse.wb.core.model.ObjectInfo.access$0(ObjectInfo.java:546)
+	at org.eclipse.wb.core.model.ObjectInfo$5$1.run(ObjectInfo.java:486)
+	at org.eclipse.wb.internal.core.utils.execution.ExecutionUtils.runDesignTime(ExecutionUtils.java:145)
+	at org.eclipse.wb.core.model.ObjectInfo$5.run(ObjectInfo.java:484)
+	at org.eclipse.wb.internal.swing.utils.SwingUtils$2.run(SwingUtils.java:76)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:312)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:745)
+	at java.awt.EventQueue.access$300(EventQueue.java:103)
+	at java.awt.EventQueue$3.run(EventQueue.java:706)
+	at java.awt.EventQueue$3.run(EventQueue.java:704)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$1.doIntersectionPrivilege(ProtectionDomain.java:76)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:715)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:242)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:161)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:150)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:146)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:138)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:91)
+
+!ENTRY org.eclipse.ui 4 0 2016-04-11 10:29:58.996
+!MESSAGE Unhandled event loop exception
+!STACK 0
+org.eclipse.core.runtime.AssertionFailedException: null argument:
+	at org.eclipse.core.runtime.Assert.isNotNull(Assert.java:85)
+	at org.eclipse.core.runtime.Assert.isNotNull(Assert.java:73)
+	at org.eclipse.wb.internal.gef.core.AbstractEditPartViewer.setSelection(AbstractEditPartViewer.java:249)
+	at org.eclipse.wb.internal.gef.tree.dnd.TreeDropListener.resetSelectionFromModels(TreeDropListener.java:141)
+	at org.eclipse.wb.internal.gef.tree.dnd.TreeDropListener.drop(TreeDropListener.java:107)
+	at org.eclipse.swt.dnd.DNDListener.handleEvent(DNDListener.java:91)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:84)
+	at org.eclipse.swt.widgets.Display.sendEvent(Display.java:4230)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1491)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1514)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1499)
+	at org.eclipse.swt.widgets.Widget.notifyListeners(Widget.java:1299)
+	at org.eclipse.swt.dnd.DropTarget.drop(DropTarget.java:728)
+	at org.eclipse.swt.dnd.DropTarget.outlineView_acceptDrop_item_childIndex(DropTarget.java:746)
+	at org.eclipse.swt.dnd.DropTarget.dropTargetProc(DropTarget.java:471)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSendSuper(Native Method)
+	at org.eclipse.swt.dnd.DropTarget.dndCallSuper(DropTarget.java:210)
+	at org.eclipse.swt.dnd.DropTarget.performDragOperation(DropTarget.java:739)
+	at org.eclipse.swt.dnd.DropTarget.dropTargetProc(DropTarget.java:456)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSendSuper(Native Method)
+	at org.eclipse.swt.widgets.Widget.callSuper(Widget.java:227)
+	at org.eclipse.swt.widgets.Widget.mouseDownSuper(Widget.java:1121)
+	at org.eclipse.swt.widgets.Tree.mouseDownSuper(Tree.java:2047)
+	at org.eclipse.swt.widgets.Widget.mouseDown(Widget.java:1113)
+	at org.eclipse.swt.widgets.Control.mouseDown(Control.java:2569)
+	at org.eclipse.swt.widgets.Tree.mouseDown(Tree.java:2015)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:5692)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSendSuper(Native Method)
+	at org.eclipse.swt.widgets.Widget.callSuper(Widget.java:227)
+	at org.eclipse.swt.widgets.Widget.windowSendEvent(Widget.java:2130)
+	at org.eclipse.swt.widgets.Shell.windowSendEvent(Shell.java:2337)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:5756)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSendSuper(Native Method)
+	at org.eclipse.swt.widgets.Display.applicationSendEvent(Display.java:5193)
+	at org.eclipse.swt.widgets.Display.applicationProc(Display.java:5342)
+	at org.eclipse.swt.internal.cocoa.OS.objc_msgSend(Native Method)
+	at org.eclipse.swt.internal.cocoa.NSApplication.sendEvent(NSApplication.java:128)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3695)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:1127)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:337)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1018)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:156)
+	at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:654)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:337)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:598)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:150)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:139)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:134)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:380)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:235)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:669)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:608)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1515)

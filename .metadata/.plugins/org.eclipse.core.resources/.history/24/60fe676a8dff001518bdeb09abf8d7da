@@ -135,25 +135,6 @@ public class ApplicationWindow {
 		/*
 		 * Initialising table with the data obtained from task manager and the columns title above.
 		 */
-		
-		historyList = new JList<String>();
-		historyList.setBounds(11, 14, 501, 406);
-		panel_3.add(historyList);
-		historyList.setEnabled(false);
-		historyList.setForeground(new Color(60, 179, 113));
-		historyList.setFont(new Font("Open Sans", Font.PLAIN, 13));
-		historyList.setModel(new AbstractListModel<String>() {
-			private static final long serialVersionUID = 1L;
-			List<String> history = taskManager.getHistoryList();
-			public int getSize() {
-				return history.size();
-			}
-			public String getElementAt(int index) {
-				return history.get(index);
-			}
-		});
-		
-		
 		table = new JTable(dataArray, columns) {
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row, int column) {                
@@ -297,6 +278,23 @@ public class ApplicationWindow {
 		sortDropdown.setBackground(Color.WHITE);
 		sortDropdown.setBounds(261, 6, 249, 36);
 		panel_3.add(sortDropdown);
+		
+				historyList = new JList<String>();
+				historyList.setBounds(0, 0, 501, 406);
+				frame.getContentPane().add(historyList);
+				historyList.setEnabled(false);
+				historyList.setForeground(new Color(60, 179, 113));
+				historyList.setFont(new Font("Open Sans", Font.PLAIN, 13));
+				historyList.setModel(new AbstractListModel<String>() {
+					private static final long serialVersionUID = 1L;
+					List<String> history = taskManager.getHistoryList();
+					public int getSize() {
+						return history.size();
+					}
+					public String getElementAt(int index) {
+						return history.get(index);
+					}
+				});
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(51, 204, 153));
