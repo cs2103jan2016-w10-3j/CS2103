@@ -1,0 +1,43 @@
+package snaptask;
+
+import javax.swing.table.DefaultTableModel;
+
+public class GroupedTableModel {
+	private DefaultTableModel model;
+    private String[] columns;
+    private Object[][] rows;
+    private boolean defaultFilter;
+
+    public GroupedTableModel(String[] columns, Object[][] data, boolean defaultFilter) {
+    	this.columns = columns;
+    	this.defaultFilter = defaultFilter;
+    	this.rows = data;
+        this.model = new DefaultTableModel();
+        this.model.setColumnIdentifiers(this.columns);
+        setModelRows();
+    }
+
+    private void setModelRows() {
+    	if (defaultFilter) {
+    		for (Object[] row : rows) {
+                this.model.addRow(row);
+            }
+    	} else {
+    		String previousDate = "";
+    		for (Object[] row : rows) {
+    			if (!row[3].equals(previousDate)) {
+    				Object[] fillerRow = new Object[5];
+    				this.model.addRow(fillerRow);
+    				fillerRow[0] = row[3];
+    				this.model.addRow(fillerRow);
+    				previousDate = (String) row[3];
+    			} 
+    			this.model.addRow(row);
+    		}
+    	}
+    }
+
+    public DefaultTableModel getModel() {
+        return model;
+    }
+}

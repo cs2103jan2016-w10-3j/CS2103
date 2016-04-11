@@ -1,0 +1,33 @@
+package snaptask;
+
+import javax.swing.table.DefaultTableModel;
+
+public class GroupedTableModel {
+	private DefaultTableModel model;
+
+    private String[] columns;
+
+    private Object[][] rows;
+
+    public GroupedTableModel() {
+        this.model = new DefaultTableModel();
+        this.model.setColumnIdentifiers(columns);
+        setModelRows();
+    }
+
+    private void setModelRows() {
+        String prevGroup = "";
+        for (String[] row : rows) {
+            if (row[0].equals(prevGroup)) {
+                row[0] = " ";
+            } else {
+                prevGroup = row[0];
+            }
+            this.model.addRow(row);
+        }
+    }
+
+    public DefaultTableModel getModel() {
+        return model;
+    }
+}

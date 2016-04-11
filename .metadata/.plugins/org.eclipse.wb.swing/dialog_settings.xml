@@ -12,6 +12,12 @@
 		<item value="475" key="y"/>
 		<item value="827" key="x"/>
 	</section>
+	<section name="org.eclipse.wb.internal.swing.model.property.editor.icon.IconPropertyEditor$ImageDialog">
+		<item value="588" key="height"/>
+		<item value="865" key="width"/>
+		<item value="256" key="y"/>
+		<item value="481" key="x"/>
+	</section>
 	<section name="org.eclipse.wb.internal.swing.model.property.editor.font.FontDialog">
 		<item value="467" key="height"/>
 		<item value="496" key="width"/>

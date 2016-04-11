@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
+
 import java.awt.SystemColor;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
@@ -22,8 +24,6 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.ImageIcon;
-import javax.swing.table.DefaultTableModel;
-
 import Exceptions.ParserExceptions.ArgumentForEditingNotEnteredException;
 import Exceptions.ParserExceptions.FileTypeInvalidException;
 import Exceptions.ParserExceptions.InvalidDateTimeFormatException;
@@ -114,13 +114,13 @@ public class ApplicationWindow {
 		frame.setBounds(100, 100, 828, 580);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
-				txtAreaHelp = new JTextPane();
-				txtAreaHelp.setForeground(new Color(102, 205, 170));
-				txtAreaHelp.setFont(new Font("Open Sans", Font.PLAIN, 13));
-				txtAreaHelp.setBounds(30, 100, 499, 372);
-				frame.getContentPane().add(txtAreaHelp);
-				txtAreaHelp.setText("add [NAME] || [DD/MM/YYYY] [HH:MM] [H:M]\nadd [NAME] || [DD/MM/YYYY] [HH:MM]\nadd [NAME] || [DD/MM/YYYY]\nadd [NAME]\ndelete [INDEX]\ndone [INDEX]\nedit [INDEX] name [STRING]\nedit [INDEX] duration [STRING]\nedit [INDEX] datetime [STRING]\nedit [INDEX] all [NAME] [DATE] [TIME] [DURATION]\nclear\ndisplay [INDEX]\nsearch name [STRING]\nsearch date [DD/MM/YYYY]\nundo\nhome\nhistory\nhelp\nsort [NAME/DATE/START/END/DURATION/DEFAULT]\nfilter [INCOMPLETE/COMPLETE/SHORT/MEDIUM/LONG/SOON/ALL]\n");
+
+		txtAreaHelp = new JTextPane();
+		txtAreaHelp.setForeground(new Color(102, 205, 170));
+		txtAreaHelp.setFont(new Font("Open Sans", Font.PLAIN, 13));
+		txtAreaHelp.setBounds(30, 100, 499, 372);
+		frame.getContentPane().add(txtAreaHelp);
+		txtAreaHelp.setText("add [NAME] || [DD/MM/YYYY] [HH:MM] [H:M]\nadd [NAME] || [DD/MM/YYYY] [HH:MM]\nadd [NAME] || [DD/MM/YYYY]\nadd [NAME]\ndelete [INDEX]\ndone [INDEX]\nedit [INDEX] name [STRING]\nedit [INDEX] duration [STRING]\nedit [INDEX] datetime [STRING]\nedit [INDEX] all [NAME] [DATE] [TIME] [DURATION]\nclear\ndisplay [INDEX]\nsearch name [STRING]\nsearch date [DD/MM/YYYY]\nundo\nhome\nhistory\nhelp\nsort [NAME/DATE/START/END/DURATION/DEFAULT]\nfilter [INCOMPLETE/COMPLETE/SHORT/MEDIUM/LONG/SOON/ALL]\n");
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new LineBorder(SystemColor.textHighlight));
@@ -128,15 +128,15 @@ public class ApplicationWindow {
 		panel_3.setBounds(20, 80, 516, 422);
 		frame.getContentPane().add(panel_3);
 		panel_3.setLayout(null);
-		
+
 		columns = new String[] {"Number", "Task Name", "Task Time", "Task Date", "Completed"};
 		data = new ArrayList<Object[]>();
 		Object[][] dataArray = toArray(data);
-		
+
 		/*
 		 * Initialising table with the data obtained from task manager and the columns title above.
 		 */
-		
+
 		historyList = new JList<String>();
 		historyList.setBounds(11, 14, 501, 406);
 		panel_3.add(historyList);
@@ -149,16 +149,16 @@ public class ApplicationWindow {
 			public int getSize() {
 				return history.size();
 			}
-			public String getElementAt(int index) {
+			public String getElementAt(final int index) {
 				return history.get(index);
 			}
 		});
-		
-		
+
+
 		table = new JTable(dataArray, columns) {
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row, int column) {                
-                return false;               
+				return false;               
 			}
 		};
 		/**
@@ -178,7 +178,7 @@ public class ApplicationWindow {
 				setTaskDetailView();
 			}
 		});
-		
+
 		refreshTableValues();
 		selectedListIndex = 0;
 		table.setRowHeight(25);
@@ -200,7 +200,7 @@ public class ApplicationWindow {
 		panel_3.add(scrollPane2);
 
 		filterDropdown = new JComboBox<String>();
-		
+
 		/**
 		 * When filterDropdown has a new value that is selected, the window will be refresh by the filter that was selected.
 		 * 
@@ -340,7 +340,7 @@ public class ApplicationWindow {
 				}
 			}
 		});
-		
+
 		/**
 		 * This function clears the search field if it is the user's first time clicking inside of it, as there
 		 * is no placeholder text for JTextFields. 
@@ -444,7 +444,7 @@ public class ApplicationWindow {
 		txtAreaTaskDetails.setBounds(10, 61, 233, 231);
 		txtAreaTaskDetails.setEnabled(false);
 		panel.add(txtAreaTaskDetails);
-		
+
 		setTaskDetailView();
 
 		JPanel taskManageLine = new JPanel();
@@ -489,10 +489,16 @@ public class ApplicationWindow {
 	}
 
 	public void setTaskDetailView() {
-		if (selectedListIndex < taskManager.getNumberOfTasks() && selectedListIndex >= 0) {
-			txtAreaTaskDetails.setText(taskManager.getTask(selectedListIndex).displayString());
-			txtLabelStatus.setText(taskManager.getTask(selectedListIndex).getStatusString());
-		} 
+		try {
+			selectedListIndex =  (int) table.getModel().getValueAt(selectedListIndex, 0) - 1;
+			if (selectedListIndex < taskManager.getNumberOfTasks() && selectedListIndex >= 0) {
+				txtAreaTaskDetails.setText(taskManager.getTask(selectedListIndex).displayString());
+				txtLabelStatus.setText(taskManager.getTask(selectedListIndex).getStatusString());
+			} 
+		} catch (Exception e) {
+			txtAreaTaskDetails.setText("");
+			txtLabelStatus.setText("");
+		}
 	}
 
 	private void refreshButtons() {
@@ -544,13 +550,13 @@ public class ApplicationWindow {
 	public void warnInvalid(String warning) {
 		JOptionPane.showMessageDialog(frame, warning);
 	}
-	
+
 	private void refreshTableValues() {
 		List<Task> tasks = taskManager.getTasks();
 		data.clear();
 		for (int i = 0; i < taskManager.getNumberOfTasks(); i++) {
 			Object[] singleRow = new Object[5];
-			
+
 			for (int j = 0; j < 5; j++) {
 				switch(j) {
 				case 0:
@@ -581,7 +587,11 @@ public class ApplicationWindow {
 			data.add(singleRow);
 		}
 		Object[][] dataArray = toArray(data);
-		table.setModel(new DefaultTableModel(dataArray, columns));
+		table.setModel(new GroupedTableModel(columns, dataArray, taskManager.filtered).getModel());
+		table.getColumnModel().getColumn(0).setPreferredWidth(70);
+		table.getColumnModel().getColumn(1).setPreferredWidth(150);
+		table.getColumnModel().getColumn(4).setPreferredWidth(37);
+		table.getTableHeader().setBorder(new MatteBorder(0,0,1,0, Color.BLACK));
 	}
 
 	public void refreshWindow() {
@@ -597,14 +607,15 @@ public class ApplicationWindow {
 			public String getElementAt(int index) {
 				return history.get(index);
 			}
+
 		});
 	}
-	
+
 	private Object[][] toArray(List<Object[]> list) {
 		Object[][] array = new Object[list.size()][];
 		for (int i = 0; i < list.size(); i++) {
-		    Object[] row = list.get(i);
-		    array[i] = row;
+			Object[] row = list.get(i);
+			array[i] = row;
 		}
 		return array;
 	}
