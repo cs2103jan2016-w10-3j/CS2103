@@ -95,13 +95,13 @@ public class Storage {
 			String tmpFilePath = scan.nextLine();
 			
 			if( isStringNameDir(tmpFilePath) ) {
-				setPath(tmpFilePath);
+				filePath = tmpFilePath;
 			} 
 			
 			String tmpFileName = scan.nextLine();
 			if( isFile(tmpFileName) ) {
 				fileName = tmpFileName;
-			} 
+			}
 		}
 	}
 	
