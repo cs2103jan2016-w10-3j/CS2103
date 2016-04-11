@@ -56,6 +56,8 @@ public class TaskManager implements Serializable {
 	private static List<String> history = new ArrayList<String>();
 	public boolean filtered = false;
 	private static String dueTask = null;
+	private static Timer globalTimer = new Timer(0,null);
+	private static boolean hasAlertTimer = false;
 	private static final Logger logger = Logger.getLogger(TaskManager.class.getName());
 	DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
 
@@ -141,42 +143,79 @@ public class TaskManager implements Serializable {
 		return -1;
 	}
 
-	private static void setAlertForComingTasks(final ApplicationWindow window) {
-		Date currentDate = new Date();
-		Date smallestTime = null;
-		Boolean hasDueTask = false;
-		// search for the latest && undone && have start-time task.
-		for (Task task : tasks) {
-			if (task.getTimeStart() != null // have start-time
-					&& !task.getDoneStatus() // not done
-					&& task.getTimeStart().after(currentDate)) {
-				if (smallestTime == null) {
-					smallestTime = task.getTimeStart();
-				} else if (task.getTimeStart().before(smallestTime)) {
-					smallestTime = task.getTimeStart();
-					dueTask = task.displayString();
-					hasDueTask = true;
-				}
-			}
-		}
-		
-		ActionListener taskPerformer = new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				System.out.println(
-						"TIMES UP!!!! **PUT A WINDOW HERE** for this task\n" + dueTask);
-				window.warnInvalid("TIMES UP!!!!  for this task\n" + dueTask);
-				// once action performed, look for the next task
-				setAlertForComingTasks(window);
-			}
-		};
-		if (smallestTime != null && hasDueTask){
-	        long delay = smallestTime.getTime() - currentDate.getTime(); // milliseconds
-	        // sets the timer only if there is a upcoming task
-            Timer timer = new Timer((int) delay + 1, taskPerformer);
-            timer.start();
-            timer.setRepeats(false);
+
+    private static void setAlertForComingTasks(final ApplicationWindow window) {
+        Date currentDate = new Date();
+        Date smallestTime = null;
+        Boolean hasDueTask = false;
+        // search for the latest && undone && have start-time task.
+        for (Task task : tasks) {
+            if (task.getTimeStart() != null // have start-time
+                    && !task.getDoneStatus() // not done
+                    && task.getTimeStart().after(currentDate)) {
+                if (smallestTime == null) {
+                    smallestTime = task.getTimeStart();
+                    dueTask = task.displayString();
+                    hasDueTask = true;
+                } else if (task.getTimeStart().before(smallestTime)) {
+                    smallestTime = task.getTimeStart();
+                    dueTask = task.displayString();
+                    hasDueTask = true;
+                }
+            }
         }
-	}
+
+        ActionListener taskPerformer = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                window.warnInvalid("TIMES UP!!!!  for this task\n" + dueTask);
+                // hasAlertTimer = false;
+                setAlertForComingTasks(window);
+            }
+        };
+        // sets the timer only if there is a upcoming task
+        System.out.println(smallestTime + " " + hasDueTask.toString());
+        if (smallestTime != null && hasDueTask) {
+            long delay = smallestTime.getTime() - currentDate.getTime(); // milliseconds
+
+            // stops all current alerts
+            if (globalTimer.isRunning()) {
+                globalTimer.stop();
+
+            }
+
+            // removes all existing listeners
+            ActionListener[] existingActions = globalTimer.getActionListeners();
+            for (ActionListener actions : existingActions) {
+                globalTimer.removeActionListener(actions);
+                System.out.println("removed some");
+            }
+            // add new listeners
+            globalTimer.addActionListener(taskPerformer);
+            globalTimer.setInitialDelay((int) delay + 50);
+            globalTimer.setRepeats(false);
+            // add a new alert
+            globalTimer.start();
+            System.out.println(globalTimer.isRunning());
+            hasAlertTimer = true;
+
+        } else {
+            hasAlertTimer = false;
+        }
+    }
+
+    //call this to setAlerts
+    public void setAlerts(final ApplicationWindow window) {
+
+        if (!hasAlertTimer) {
+            // alerts for the first time based on existing tasks
+            setAlertForComingTasks(window);
+            System.out.println("no has timer");
+        } else {
+            setAlertForComingTasks(window);
+            System.out.println("hastimer");
+        }
+    }
+
 
 	public void sortAndRefresh() {// sorts the list so that the most urgent is
 		// at the top
