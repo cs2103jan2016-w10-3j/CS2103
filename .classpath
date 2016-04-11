@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="TaskScheduler/src"/>
+	<classpathentry excluding="res/" kind="src" path="TaskScheduler/src"/>
 	<classpathentry kind="src" path="TaskScheduler/tests"/>
+	<classpathentry kind="src" path="TaskScheduler/src/res"/>
 	<classpathentry kind="lib" path="TaskScheduler/lib/joda-time-2.9.2-javadoc.jar"/>
 	<classpathentry kind="lib" path="TaskScheduler/lib/joda-time-2.9.2-no-tzdb.jar"/>
 	<classpathentry kind="lib" path="TaskScheduler/lib/joda-time-2.9.2-sources.jar"/>

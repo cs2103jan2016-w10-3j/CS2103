@@ -26,52 +26,56 @@ import snaptask.logic.Task;
 
 
 public class Storage {
+	//	Where the tasks are stored during run time
 	private ArrayList<Task> tasks;
 	
-	
+	// Variables for controlling where the file containg tasks are stored
 	private String fileName;
 	private String filePath;
 	
 	private StorageReadSave storageReadSave = null;
+	
+	// File holding fileName and filePath from previous execution
 	private final String STORE_FILENAME_AND_PATH = "StoredFilenameAndPath.txt";
 
+	/**
+	 * 	Initialize storage
+	 *  @throws FileNotFoundException if file is not found
+	 *  @throws UnsupportedEncodingException if an unsupported encoding is given
+	 */
 	public Storage() throws FileNotFoundException, IOException {
 		tasks = new ArrayList<Task>();
 		storageReadSave = StorageReadSave.getInstance();
-		setupFilenameAndPathToStoredTasks();
-	}
-
-	private void setupFilenameAndPathToStoredTasks() throws FileNotFoundException,
-			UnsupportedEncodingException {
-		
-		// Load path to current directory
-		String tasksSavePath = getFilePath();
-		
-		// Default values for filename and path
-		fileName = "tasks";
-		filePath = tasksSavePath;
 		
 		// Read the filename and the path that was used when the user ran the program last time
-		// if there is no previous run the defualt values are used
 		readPrevFileAndPath(); 
 		
 		// Update the file that is holding information about current filename and current path
-		writeCurrFileAndPathToFile(tasksSavePath);
+		savePathAndFilenameToFile();
 	}
-
-	// Updates "StoredFilenameAndPath.txt" to hold new path and filename
-	private void writeCurrFileAndPathToFile(String tasksSavePath)
+	
+	/**
+	 * 	Updates "StoredFilenameAndPath.txt" to hold new path and filename
+	 *  @throws FileNotFoundException if file is not found
+	 *  @throws UnsupportedEncodingException if an unsupported encoding is given
+	 */
+	private void savePathAndFilenameToFile()
 			throws FileNotFoundException, UnsupportedEncodingException {
-		PrintWriter writer = new PrintWriter(STORE_FILENAME_AND_PATH, "UTF-8");
 		
-		writer.println(filePath);		
+		PrintWriter writer = new PrintWriter(STORE_FILENAME_AND_PATH, "UTF-8");
+		writer.println(filePath);
 		writer.println(fileName);
-
 		writer.close();
 	}
 
+	/**
+	 * 	Reads the filename and the path that was used when the user ran the program last time
+	 *  if there is no previous run the defualt values are used	 
+	 *  @throws FileNotFoundException if file is not found
+	 *  @throws UnsupportedEncodingException if an unsupported encoding is given
+	 */
 	private void readPrevFileAndPath()
-			throws FileNotFoundException {
+			throws FileNotFoundException, UnsupportedEncodingException {
 		
 		// Load path to current directory
 		String tasksSavePath = getFilePath();
@@ -83,23 +87,31 @@ public class Storage {
 		// File for storing the filename and path to where tasks is stored
 		File f = new File(tasksSavePath + STORE_FILENAME_AND_PATH);
 		
+		
+		// Checks is old path and name exists. If they do the file and/or the path is changed
 		if(f.exists() && !f.isDirectory()) { 
 			Scanner scan = new Scanner(new File(STORE_FILENAME_AND_PATH));
 			
 			String tmpFilePath = scan.nextLine();
 			
 			if( isStringNameDir(tmpFilePath) ) {
-				filePath = tmpFilePath;
+				setPath(tmpFilePath);
 			} 
 			
 			String tmpFileName = scan.nextLine();
 			if( isFile(tmpFileName) ) {
 				fileName = tmpFileName;
 			} 
-
 		}
 	}
 	
+	/**
+	 * Change the path and make sure that it is the right format
+	 * @param filePath new path name
+	 * @return true if the file exists and false if it does not	 
+	 * @throws FileNotFoundException if file is not found
+	 * @throws UnsupportedEncodingException if an unsupported encoding is given
+	 */
 	public void setPath(String filePath) throws FileNotFoundException, UnsupportedEncodingException {		
 		
 		if( isStringNameDir(filePath) ) {
@@ -116,31 +128,46 @@ public class Storage {
 		savePathAndFilenameToFile();
 	}
 
+	/**
+	 * Checks if a filePath exists 
+	 * @param filePath to be checked
+	 * @return true if the file exists and false if it does not
+	 */
 	private boolean isStringNameDir(String filePath) {
 		return new File(filePath).isDirectory();
 	}
 	
+	/**
+	 * Checks if a file in filePath directory exists
+	 * @param  file to be checked
+	 * @return true if the file exists and false if it does not
+	 */
 	private boolean isFile(String file) {
 		return new File(filePath, file + ".con").exists();
 	}
 	
+	/**
+	 * Called to get filepath
+	 * @return file path
+	 */
 	public String getPath() {
 		return filePath;
 	}
 	
+	/**
+	 * Called to get filename
+	 * @return filename
+	 */
 	public String getFileName() {
 		return fileName;
 	}
 
-	private void savePathAndFilenameToFile()
-			throws FileNotFoundException, UnsupportedEncodingException {
-		
-		PrintWriter writer = new PrintWriter(STORE_FILENAME_AND_PATH, "UTF-8");
-		writer.println(filePath);
-		writer.println(fileName);
-		writer.close();
-	}
-	
+	/**
+	 * Changes file name
+	 * @param fileName containing new filename
+	 * @throws FileNotFoundException if file is not found
+	 * @throws UnsupportedEncodingException if an unsupported encoding is given
+	 */
 	public void setFileName(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
 		boolean deleted= new File(filePath + this.fileName +".con").delete();
 
@@ -149,6 +176,10 @@ public class Storage {
 	}
 
 
+	/**
+	 * Gets the directory where the program is launched
+	 * @return a path to current directory
+	 */
 	private String getFilePath() {
 		Path currentRelativePath = Paths.get("");
 		String stringifiedPath = currentRelativePath.toAbsolutePath().toString();
@@ -156,8 +187,10 @@ public class Storage {
 		return tasksSavePath + "/";
 	}
 
-
-    // Function to read tasks from the file, called when the program initalise
+	/**
+	 * Reads tasks from the file, called when the program initalise
+	 * @return task that is stored in file
+	 */
     public ArrayList<Task> readTasks() {
         this.tasks = new ArrayList<Task>();
 
@@ -180,7 +213,10 @@ public class Storage {
         return this.tasks;
     }
 
-    // Function to save tasks in human form
+	/**
+	 * Saves tasks in human form
+	 * @param tasks holding that that should be saved
+	 */
     public void saveTasks(List<Task> tasks) {
         File tasksSavedFile = new File(filePath + fileName + ".con");
 

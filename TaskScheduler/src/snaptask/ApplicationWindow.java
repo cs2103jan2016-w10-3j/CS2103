@@ -2,6 +2,7 @@ package snaptask;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -9,15 +10,21 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+
 import java.awt.Font;
+
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+
 import java.awt.SystemColor;
+
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.JTextArea;
 import javax.swing.AbstractListModel;
+
 import java.awt.Cursor;
+
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.border.EmptyBorder;
@@ -39,16 +46,20 @@ import Exceptions.ParserExceptions.TaskDateAlreadyPassedException;
 import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 import snaptask.logic.Task;
 import snaptask.logic.TaskManager;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JTable;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 //@@author Erika
@@ -372,6 +383,7 @@ public class ApplicationWindow {
 				refreshButtons();
 			}
 		});
+
 		homeButton.setIcon(new ImageIcon(this.getClass().getResource("/ListIcon.png")));
 		homeButton.setBorder(new EmptyBorder(0, 0, 0, 0));
 		homeButton.setBackground(new Color(0, 204, 153));
