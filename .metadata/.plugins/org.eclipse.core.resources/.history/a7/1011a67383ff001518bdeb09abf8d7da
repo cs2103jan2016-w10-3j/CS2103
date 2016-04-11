@@ -153,6 +153,7 @@ public class ApplicationWindow {
 		});
 		
 		refreshTableValues();
+		table.setRowSelectionInterval(0, 0);
 		selectedListIndex = 0;
 		table.setRowHeight(25);
 		table.setSelectionBackground(new Color(102, 205, 170));
@@ -340,6 +341,7 @@ public class ApplicationWindow {
 		searchField.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
+				//If it is the user's first time clicking inside of the search field, it will clear. 
 				if (firstFocusSearchText) {
 					searchField.setText("");
 					firstFocusSearchText = false;
@@ -443,6 +445,7 @@ public class ApplicationWindow {
 		txtAreaHelp.setBounds(30, 100, 499, 372);
 		frame.getContentPane().add(txtAreaHelp);
 		txtAreaHelp.setText("add [NAME] || [DD/MM/YYYY] [HH:MM] [H:M]\nadd [NAME] || [DD/MM/YYYY] [HH:MM]\nadd [NAME] || [DD/MM/YYYY]\nadd [NAME]\ndelete [INDEX]\ndone [INDEX]\nedit [INDEX] name [STRING]\nedit [INDEX] duration [STRING]\nedit [INDEX] datetime [STRING]\nedit [INDEX] all [NAME] [DATE] [TIME] [DURATION]\nclear\ndisplay [INDEX]\nsearch name [STRING]\nsearch date [DD/MM/YYYY]\nundo\nhome\nhistory\nhelp\nsort [NAME/DATE/START/END/DURATION/DEFAULT]\nfilter [INCOMPLETE/COMPLETE/SHORT/MEDIUM/LONG/SOON/ALL]\n");
+
 
 		JPanel taskManageLine = new JPanel();
 		taskManageLine.setEnabled(false);
