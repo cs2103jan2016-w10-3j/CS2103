@@ -783,12 +783,6 @@ public class TaskManager implements Serializable {
 	}
 
 
-	/**
-	 * This function is responsible for displaying a task on the supplied ApplicationWindow.
-	 * 
-	 * @param input: The input as supplied by the user which contains the index to be displayed.
-	 * @param window: The window which will receive any updates.
-	 */
 	private void displayTask(String input, ApplicationWindow window) {
 		int index = parser.getEditingParser().findTokenIndex(input);
 		if (index <= window.table.getRowCount() && index > 0) {
@@ -798,11 +792,6 @@ public class TaskManager implements Serializable {
 		}
 	}
 
-	/**
-	 * This method is responsible for clearing all tasks from the taskManager's memory.
-	 * 
-	 * @param commandType: The command type which is added on to the undo stack.
-	 */
 	private void removeAllTasks(Command commandType) {
 		int numOfTasks = getNumberOfTasks();
 

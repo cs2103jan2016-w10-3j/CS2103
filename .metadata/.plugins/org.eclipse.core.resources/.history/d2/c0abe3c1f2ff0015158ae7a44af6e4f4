@@ -377,6 +377,7 @@ public class TaskManager implements Serializable {
 							deleteIndex);
 				}
 			}
+
 			break;
 		case EDIT :
 			if (filtered) {
@@ -453,7 +454,6 @@ public class TaskManager implements Serializable {
 		logger.log(Level.FINE, "Tasks saved.");
 	}
 
-	
 	private void changeFileStore(String input) throws FileTypeInvalidException,
 	FileNotFoundException, UnsupportedEncodingException {
 		StorageParserType commandType = parser.getStorageParser()
@@ -471,14 +471,9 @@ public class TaskManager implements Serializable {
 			break;
 		default :
 		}
+
 	}
 
-	/**
-	 * This method filters the tasks according to a selected filter and then updates the temporary storage.
-	 * 
-	 * @param input: The input entered by the user containing the filter type.
-	 * @param window: The window which will receive any updates.
-	 */
 	private void filterTasks(String input, ApplicationWindow window) {
 		String filterType = Parser.divideTokens(input)[1];
 		System.out.println(filterType);
@@ -516,11 +511,6 @@ public class TaskManager implements Serializable {
 		}
 	}
 
-	/**
-	 * This method ensures only tasks that are incomplete are shown.
-	 * 
-	 * @param window: The window which will receive any updates.
-	 */
 	private void filterIncomplete(ApplicationWindow window) {
 		temporaryTasks.clear();
 		for (Task task : tasks) {
@@ -532,11 +522,6 @@ public class TaskManager implements Serializable {
 		window.refreshWindow();
 	}
 
-	/**
-	 * This method ensures only tasks that are complete are shown.
-	 * 
-	 * @param window: The window which will receive any updates.
-	 */
 	private void filterComplete(ApplicationWindow window) {
 		temporaryTasks.clear();
 		for (Task task : tasks) {
@@ -548,11 +533,6 @@ public class TaskManager implements Serializable {
 		window.refreshWindow();
 	}
 
-	/**
-	 * This method filters tasks that are considered short (under one hour).
-	 * 
-	 * @param window: The window which will receive any updates.
-	 */
 	private void filterShort(ApplicationWindow window) {
 		temporaryTasks.clear();
 		for (Task task : tasks) {
@@ -564,11 +544,6 @@ public class TaskManager implements Serializable {
 		window.refreshWindow();
 	}
 
-	/**
-	 * This method filters tasks that are considered medium (between one and three hours).
-	 * 
-	 * @param window: The window which will receive any updates.
-	 */
 	private void filterMedium(ApplicationWindow window) {
 		temporaryTasks.clear();
 		for (Task task : tasks) {
@@ -581,11 +556,6 @@ public class TaskManager implements Serializable {
 		window.refreshWindow();
 	}
 
-	/**
-	 * This method filters tasks that are considered long (over three fours).
-	 * 
-	 * @param window: The window which will receive any updates.
-	 */
 	private void filterLong(ApplicationWindow window) {
 		temporaryTasks.clear();
 		for (Task task : tasks) {
@@ -597,11 +567,6 @@ public class TaskManager implements Serializable {
 		window.refreshWindow();
 	}
 
-	/**
-	 * This method filters tasks that will be happening soon (today or tomorrow).
-	 * 
-	 * @param window: The window which will receive any updates.
-	 */
 	@SuppressWarnings("deprecation")
 	private void filterSoon(ApplicationWindow window) {
 		temporaryTasks.clear();
@@ -619,22 +584,11 @@ public class TaskManager implements Serializable {
 		window.refreshWindow();
 	}
 
-	/**
-	 * This method resets the filter back to the default filter and refreshes the window.
-	 * 
-	 * @param window: The window which will receive any updates.
-	 */
 	private void filterAll(ApplicationWindow window) {
 		filtered = false;
 		window.refreshWindow();
 	}
 
-	/**
-	 * This function sorts tasks according to a given keyword and ensures the dropdown index is properly selected.
-	 * 
-	 * @param input: The input has obtained from the user containing the sort type.
-	 * @param window: The window which will receive any updates.
-	 */
 	private void sortTasks(String input, ApplicationWindow window) {
 		String filterType = Parser.divideTokens(input)[1];
 		System.out.println(filterType);
@@ -672,11 +626,6 @@ public class TaskManager implements Serializable {
 		}
 	}
 
-	/**
-	 * This function is responsible for sorting the tasks alphabetically by name.
-	 * 
-	 * @param window: The window which will receive any updates.
-	 */
 	private void sortName(ApplicationWindow window) {
 		Collections.sort(tasks, new Comparator<Task>() {
 			@Override
@@ -694,11 +643,6 @@ public class TaskManager implements Serializable {
 		window.refreshWindow();
 	}
 
-	/**
-	 * This function is responsible for sorting the tasks by start time.
-	 * 
-	 * @param window: The window which will receive any updates.
-	 */
 	private void sortStart(ApplicationWindow window) {
 		Collections.sort(tasks, new Comparator<Task>() {
 			@SuppressWarnings("deprecation")
@@ -725,11 +669,6 @@ public class TaskManager implements Serializable {
 		});
 	}
 
-	/**
-	 * This function is responsible for sorting the tasks by end time.
-	 * 
-	 * @param window: The window which will receive any updates.
-	 */
 	private void sortEnd(ApplicationWindow window) {
 		Collections.sort(tasks, new Comparator<Task>() {
 			@SuppressWarnings("deprecation")
@@ -756,11 +695,6 @@ public class TaskManager implements Serializable {
 		});
 	}
 
-	/**
-	 * This function is responsible for sorting the tasks by duration (short to long).
-	 * 
-	 * @param window: The window which will receive any updates.
-	 */
 	private void sortDuration(ApplicationWindow window) {
 		Collections.sort(tasks, new Comparator<Task>() {
 			@Override
@@ -783,12 +717,6 @@ public class TaskManager implements Serializable {
 	}
 
 
-	/**
-	 * This function is responsible for displaying a task on the supplied ApplicationWindow.
-	 * 
-	 * @param input: The input as supplied by the user which contains the index to be displayed.
-	 * @param window: The window which will receive any updates.
-	 */
 	private void displayTask(String input, ApplicationWindow window) {
 		int index = parser.getEditingParser().findTokenIndex(input);
 		if (index <= window.table.getRowCount() && index > 0) {
@@ -798,11 +726,6 @@ public class TaskManager implements Serializable {
 		}
 	}
 
-	/**
-	 * This method is responsible for clearing all tasks from the taskManager's memory.
-	 * 
-	 * @param commandType: The command type which is added on to the undo stack.
-	 */
 	private void removeAllTasks(Command commandType) {
 		int numOfTasks = getNumberOfTasks();
 
