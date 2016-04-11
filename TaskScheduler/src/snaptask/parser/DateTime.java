@@ -269,6 +269,13 @@ public class DateTime {
 	 * @return Whether the day has already passed.
 	 */
 	public static boolean dayAlreadyPassed(Date day) {
+		Calendar c1 = Calendar.getInstance();
+		c1.setTime(new Date());
+		Calendar c2 = Calendar.getInstance();
+		c2.setTime(day);
+		if (c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR)) {
+			return false;
+		}
 		return day.before(new Date());
 	}
 	
