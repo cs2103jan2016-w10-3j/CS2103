@@ -39,9 +39,10 @@ import snaptask.storage.Storage;
 import snaptask.storage.StorageReadSave;
 
 
+//@@author Sophie
 public class StorageTest {
 	
-//	public TaskManager tasksToStore;
+
 	Storage store;
 	ArrayList<Task> orginalTasks;
 	String orginalFile;

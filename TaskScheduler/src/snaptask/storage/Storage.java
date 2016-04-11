@@ -24,7 +24,7 @@ import javax.swing.JOptionPane;
 
 import snaptask.logic.Task;
 
-
+//@@author Sophie
 public class Storage {
 	//	Where the tasks are stored during run time
 	private ArrayList<Task> tasks;
