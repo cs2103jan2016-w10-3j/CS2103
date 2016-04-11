@@ -127,10 +127,10 @@ public class Task implements Serializable {
 			sb.append("Name: " + this.name + "\n");
 		}
 		if (this.timeStart != null && isExactTime()) {
-			sb.append("Date: " + getDateString() + "\n");
+			sb.append("Date: " + dateOnly.format(this.timeStart) + "\n");
 		}
 		if (this.timeStart != null && isExactTime()) {
-			sb.append("Starts at: " + getTimeString() + "\n");
+			sb.append("Starts at: " + timeOnly.format(this.timeStart) + "\n");
 		}
 		if (this.timeStart != null && isExactTime() && this.duration != 0) {
 			sb.append("Ends at: " + timeOnly.format(getEndTime()) + "\n");
@@ -139,16 +139,6 @@ public class Task implements Serializable {
 			sb.append("Duration: " + getDurationString() + "\n");
 		}
 		return sb.toString();
-	}
-	
-	public String getTimeString() {
-		DateFormat timeOnly = new SimpleDateFormat("HH:mm aa");
-		return timeOnly.format(this.timeStart);
-	}
-	
-	public String getDateString() {
-		DateFormat dateOnly = new SimpleDateFormat("dd MMMM yyyy");
-		return dateOnly.format(this.timeStart);
 	}
 	
 	public String getStatusString() {

@@ -560,15 +560,15 @@ public class ApplicationWindow {
 					singleRow[j] = tasks.get(i).getName();
 					break;
 				case 2:
-					if (tasks.get(i).getTimeStart() != null) {
-						singleRow[j] = tasks.get(i).getTimeString();
+					if (tasks.get(i).getDuration() != 0) {
+						singleRow[j] = tasks.get(i).getDuration();
 					} else {
 						singleRow[j] = "N/A";
 					}
 					break;
 				case 3:
 					if (tasks.get(i).getTimeStart() != null) {
-						singleRow[j] = tasks.get(i).getDateString();
+						singleRow[j] = tasks.get(i).getTimeStart();
 					} else {
 						singleRow[j] = "N/A";
 					}

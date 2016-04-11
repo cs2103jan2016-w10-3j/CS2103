@@ -117,8 +117,8 @@ public class Task implements Serializable {
 	public String displayString() {
 		StringBuffer sb = new StringBuffer();
 		Calendar cal = Calendar.getInstance();
-		DateFormat timeOnly = new SimpleDateFormat("HH:mm aa");
-		DateFormat dateOnly = new SimpleDateFormat("dd MMMM yyyy");
+		//DateFormat timeOnly = new SimpleDateFormat("HH:mm aa");
+		//DateFormat dateOnly = new SimpleDateFormat("dd MMMM yyyy");
 		if (this.timeStart!= null) {
 			cal.setTime(this.timeStart);
 		}

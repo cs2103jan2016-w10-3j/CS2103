@@ -129,7 +129,7 @@ public class ApplicationWindow {
 		frame.getContentPane().add(panel_3);
 		panel_3.setLayout(null);
 		
-		columns = new String[] {"Number", "Task Name", "Task Date", "Task Time", "Completed"};
+		columns = new String[] {"Number", "Task Name", "Task Date", "Task Time", "Task Completion"};
 		data = new ArrayList<Object[]>();
 		Object[][] dataArray = toArray(data);
 		
@@ -560,15 +560,15 @@ public class ApplicationWindow {
 					singleRow[j] = tasks.get(i).getName();
 					break;
 				case 2:
-					if (tasks.get(i).getTimeStart() != null) {
-						singleRow[j] = tasks.get(i).getTimeString();
+					if (tasks.get(i).getDuration() != 0) {
+						singleRow[j] = tasks.get(i).getDuration();
 					} else {
 						singleRow[j] = "N/A";
 					}
 					break;
 				case 3:
 					if (tasks.get(i).getTimeStart() != null) {
-						singleRow[j] = tasks.get(i).getDateString();
+						singleRow[j] = tasks.get(i).getTimeStart();
 					} else {
 						singleRow[j] = "N/A";
 					}
