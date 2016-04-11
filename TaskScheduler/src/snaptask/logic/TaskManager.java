@@ -34,6 +34,7 @@ import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 import snaptask.ApplicationWindow;
 import snaptask.parser.Parser;
 import snaptask.parser.children.EditType;
+import snaptask.parser.children.StorageParser;
 import snaptask.parser.children.StorageParserType;
 import snaptask.storage.Storage;
 
@@ -454,23 +455,31 @@ public class TaskManager implements Serializable {
 	}
 
 	
+	/**
+	 * Can change filename or filepath of where tasks are saved
+	 * @param input what the user worte on the commandline
+	 * @throws FileTypeInvalidException if the file is invalid
+	 */
 	private void changeFileStore(String input) throws FileTypeInvalidException,
 	FileNotFoundException, UnsupportedEncodingException {
-		StorageParserType commandType = parser.getStorageParser()
-				.findStorageParserType(input);
-
+		StorageParser storageParser = parser.getStorageParser();
+		StorageParserType commandType = storageParser.findStorageParserType(input);
+		String userGivenPath = Parser.divideTokens(input)[2];
+		
 		switch (commandType) {
 		case CHANGEPATH :
-			storage.setPath(Parser.divideTokens(input)[2]);
+			storage.setPath(userGivenPath);
 			break;
 		case CHANGENAME :
-			storage.setFileName(Parser.divideTokens(input)[2]);
+			storage.setFileName(userGivenPath);
 			break;
 		case READPATH :
-			System.out.println(storage.getPath());
+			String currPath = storage.getPath();
+			System.out.println(currPath);
 			break;
 		default :
 		}
+
 	}
 
 	/**
@@ -813,6 +822,9 @@ public class TaskManager implements Serializable {
 
 	}
 
+	/**
+	 * Extracts the tasks belong to the index and then calls addOnUndoStack(Command commandType, Task task)
+	 */
 	private void addOnUndoStack(Command commandType, int index) {
 		Task task = tasks.get(index);
 		assert (task != null);
@@ -821,6 +833,11 @@ public class TaskManager implements Serializable {
 		addOnUndoStack(commandType, tasks.get(index));
 	}
 
+	/**
+	 * Adds the operand on one stack and the commands on another
+	 * @param commandType what command the task is ADD, EDIT etc.
+	 * @param task the task that has been delted/added/edited
+	 */
 	private void addOnUndoStack(Command commandType, Task task) {
 		undo.push(task);
 		operand.push(commandType);
@@ -830,6 +847,10 @@ public class TaskManager implements Serializable {
 		history.add(commandType + " on task " + task.getName() + " at " + time);
 	}
 
+	/**
+	 * Handles the undo for different commandstypes
+	 * @param window for the UI
+	 */
 	private void undo(ApplicationWindow window) {
 
 		if (operand.empty()) {
