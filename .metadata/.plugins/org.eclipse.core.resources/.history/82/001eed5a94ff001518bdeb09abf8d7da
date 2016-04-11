@@ -238,7 +238,7 @@ public class TaskManager implements Serializable {
 				filtered = false;
 				window.refreshWindow();
 			} else {
-				int deleteIndex;
+				int deleteIndex = 0;
 				try {
 					deleteIndex = parser.getDeletingParser().getTaskIndex(input);
 				} catch (Exception e) {
@@ -246,7 +246,7 @@ public class TaskManager implements Serializable {
 					e.printStackTrace();
 					break;
 				}
-				if (deleteIndex >= 0 && deleteIndex <= getNumberOfTasks()) {
+				if (deleteIndex >= 0 && deleteIndex < getNumberOfTasks()) {
 					addOnUndoStack(commandType, tasks.get(deleteIndex - 1));
 					removeTask(deleteIndex - 1);
 					logger.log(Level.FINE, "task with index {0} removed.",

@@ -129,7 +129,7 @@ public class ApplicationWindow {
 		frame.getContentPane().add(panel_3);
 		panel_3.setLayout(null);
 		
-		columns = new String[] {"Number", "Task Name", "Task Time", "Task Date", "Completed"};
+		columns = new String[] {"Number", "Task Name", "Task Date", "Task Time", "Completed"};
 		data = new ArrayList<Object[]>();
 		Object[][] dataArray = toArray(data);
 		

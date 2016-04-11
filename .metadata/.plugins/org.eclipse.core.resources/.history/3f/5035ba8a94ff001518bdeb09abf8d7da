@@ -238,7 +238,7 @@ public class TaskManager implements Serializable {
 				filtered = false;
 				window.refreshWindow();
 			} else {
-				int deleteIndex;
+				int deleteIndex = 0;
 				try {
 					deleteIndex = parser.getDeletingParser().getTaskIndex(input);
 				} catch (Exception e) {
