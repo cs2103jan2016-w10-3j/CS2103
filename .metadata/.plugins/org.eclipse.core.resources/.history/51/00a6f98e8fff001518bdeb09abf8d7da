@@ -91,7 +91,6 @@ public class ApplicationWindow {
 					ApplicationWindow window = new ApplicationWindow();
 					window.frame.setVisible(true);
 					window.frame.setResizable(false);
-					window.frame.setIconImage(new ImageIcon(this.getClass().getResource("/Slice 1.png")).getImage());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -372,7 +371,7 @@ public class ApplicationWindow {
 				refreshButtons();
 			}
 		});
-		homeButton.setIcon(new ImageIcon(this.getClass().getResource("/ListIcon.png")));
+		homeButton.setIcon(new ImageIcon("/Users/admin/Desktop/ListIcon.png"));
 		homeButton.setBorder(new EmptyBorder(0, 0, 0, 0));
 		homeButton.setBackground(new Color(0, 204, 153));
 		homeButton.setBounds(237, 0, 66, 64);
@@ -386,7 +385,7 @@ public class ApplicationWindow {
 				refreshButtons();
 			}
 		});
-		historyButton.setIcon(new ImageIcon(this.getClass().getResource("/HistoryIcon.png")));
+		historyButton.setIcon(new ImageIcon("/Users/admin/Desktop/HistoryIcon.png"));
 		historyButton.setBorder(new EmptyBorder(0, 0, 0, 0));
 		historyButton.setBackground(new Color(0, 204, 153));
 		historyButton.setBounds(312, 0, 66, 64);
@@ -400,7 +399,7 @@ public class ApplicationWindow {
 				refreshButtons();
 			}
 		});
-		helpButton.setIcon(new ImageIcon(this.getClass().getResource("/InfoImage.png")));
+		helpButton.setIcon(new ImageIcon("/Users/admin/Desktop/InfoImage.png"));
 		helpButton.setBorder(new EmptyBorder(0, 0, 0, 0));
 		helpButton.setBackground(new Color(0, 204, 153));
 		helpButton.setBounds(391, 0, 66, 64);

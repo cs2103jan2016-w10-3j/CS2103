@@ -91,7 +91,6 @@ public class ApplicationWindow {
 					ApplicationWindow window = new ApplicationWindow();
 					window.frame.setVisible(true);
 					window.frame.setResizable(false);
-					window.frame.setIconImage(new ImageIcon(this.getClass().getResource("/Slice 1.png")).getImage());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -372,6 +371,7 @@ public class ApplicationWindow {
 				refreshButtons();
 			}
 		});
+		//File testf = new File( this.getClass().getResource( "/test.txt" ).toURI() );
 		homeButton.setIcon(new ImageIcon(this.getClass().getResource("/ListIcon.png")));
 		homeButton.setBorder(new EmptyBorder(0, 0, 0, 0));
 		homeButton.setBackground(new Color(0, 204, 153));

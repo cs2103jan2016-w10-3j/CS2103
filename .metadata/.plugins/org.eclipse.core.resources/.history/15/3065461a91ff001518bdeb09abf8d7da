@@ -91,6 +91,8 @@ public class ApplicationWindow {
 					ApplicationWindow window = new ApplicationWindow();
 					window.frame.setVisible(true);
 					window.frame.setResizable(false);
+					//		homeButton.setIcon(new ImageIcon(this.getClass().getResource("/ListIcon.png")));
+
 					window.frame.setIconImage(new ImageIcon(this.getClass().getResource("/Slice 1.png")).getImage());
 				} catch (Exception e) {
 					e.printStackTrace();
