@@ -85,6 +85,41 @@ public class TaskManagerTest {
 //        assertEquals(taskManager.getNumberOfTasks(), 2);
 //    }
 //    
+    
+    /*
+     * String[] columns = new String[] {"Task Name", "Task Duration", "Task Date and Time", "Task Completion"};
+		List<Task> tasks = taskManager.getTasks();
+		Object[][] data = new Object[taskManager.getNumberOfTasks()][4];
+		for (int i = 0; i < taskManager.getNumberOfTasks(); i++) {
+			for (int j = 0; j < 4; j++) {
+				switch(j) {
+				case 0:
+					data[i][j] = tasks.get(i).getName();
+					break;
+				case 1:
+					if (tasks.get(i).getDuration() != 0) {
+						data[i][j] = tasks.get(i).getDuration();
+					} else {
+						data[i][j] = "N/A";
+					}
+					break;
+				case 2:
+					if (tasks.get(i).getTimeStart() != null) {
+						data[i][j] = tasks.get(i).getTimeStart();
+					} else {
+						data[i][j] = "N/A";
+					}
+					break;
+				default:
+					data[i][j] = tasks.get(i).getDoneStatus();
+					break;
+					
+				}
+			}
+		}
+		
+		table = new JTable(data, columns);
+     */
    
     
 }

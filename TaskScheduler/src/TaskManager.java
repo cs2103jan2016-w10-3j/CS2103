@@ -92,6 +92,14 @@ public class TaskManager implements Serializable {
 		}
 		return taskNames;
 	}
+	
+	public List<Task> getTasks() {
+		if (!filtered) {
+			return tasks;
+		} else {
+			return temporaryTasks;
+		}
+	}
 
 	public int getNumberOfTasks() {
 		if (filtered) {
@@ -228,8 +236,8 @@ public class TaskManager implements Serializable {
 					break;
 				}
 				if (deleteIndex >= 0 && deleteIndex < getNumberOfTasks()) {
-					addOnUndoStack(commandType, tasks.get(deleteIndex));
-					removeTask(deleteIndex);
+					addOnUndoStack(commandType, tasks.get(deleteIndex - 1));
+					removeTask(deleteIndex - 1);
 					logger.log(Level.FINE, "task with index {0} removed.",
 							deleteIndex);
 				}
@@ -243,7 +251,7 @@ public class TaskManager implements Serializable {
 				window.refreshWindow();
 			} else {
 				int index = parser.getEditingParser().findTokenIndex(input);
-				addOnUndoStack(commandType, index);
+				addOnUndoStack(commandType, index - 1);
 				editTask(input);
 				sortAndRefresh();
 			}
@@ -276,7 +284,7 @@ public class TaskManager implements Serializable {
 			}
 			break;
 		case UNDO :
-			undo();
+			undo(window);
 			logger.log(Level.FINE, "Undo the last operation.");
 			break;
 		case FILESTORAGE :
@@ -284,7 +292,7 @@ public class TaskManager implements Serializable {
 			break;
 		case DISPLAY :
 			displayTask(input, window);
-			window.refreshWindow();
+			window.setTaskDetailView();
 			break;
 		case HISTORY :
 			window.selectedButtonIndex = 1;
@@ -573,8 +581,10 @@ public class TaskManager implements Serializable {
 
 	private void displayTask(String input, ApplicationWindow window) {
 		int index = parser.getEditingParser().findTokenIndex(input);
-		if (index < window.taskList.getModel().getSize() && index >= 0) {
-			window.selectedListIndex = index;
+		System.out.println();
+		if (index <= window.table.getRowCount() && index > 0) {
+			window.selectedListIndex = index - 1;
+			window.table.addRowSelectionInterval(index - 1, index - 1);
 		} else {
 			window.warnInvalid("The index entered was invalid. ");
 		}
@@ -607,7 +617,7 @@ public class TaskManager implements Serializable {
 		history.add(commandType + " on task " + task.getName() + " at " + time);
 	}
 
-	private void undo() {
+	private void undo(ApplicationWindow window) {
 
 		if (operand.empty()) {
 			return;
@@ -654,12 +664,13 @@ public class TaskManager implements Serializable {
 			break;
 
 		}
+		window.refreshWindow();
 	}
 
 	private void completeTask(String input) {
 		assert (input != null);
 		int index = parser.getEditingParser().findTokenIndex(input);
-		getTask(index).setDoneStatus(true);
+		getTask(index - 1).setDoneStatus(true);
 		logger.log(Level.FINE, "Task {0} has been marked as done.", index);
 	}
 
@@ -668,7 +679,7 @@ public class TaskManager implements Serializable {
 	TaskDateAlreadyPassedException, InvalidTaskDateException,
 	ArgumentForEditingNotEnteredException, InvalidDateTimeFormatException {
 		assert (input != null);
-		int index = parser.getEditingParser().findTokenIndex(input);
+		int index = parser.getEditingParser().findTokenIndex(input) - 1;
 		EditType editType = parser.getEditingParser().findEditTaskType(input);
 		if (editType == EditType.DATETIME) {
 			Date date = parser.getEditingParser().extractDateTokens(input);

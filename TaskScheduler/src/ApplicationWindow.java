@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import java.awt.SystemColor;
 import javax.swing.JTextPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.JTextArea;
 import javax.swing.AbstractListModel;
 import java.awt.Cursor;
@@ -22,12 +23,23 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.ImageIcon;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JTable;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 //@@author Erika
 public class ApplicationWindow {
@@ -53,8 +65,11 @@ public class ApplicationWindow {
 	private JPanel warningBackground;
 	private JTextPane txtAreaHelp;
 	private JList historyList;
-	private JScrollPane scrollPane;
-	
+	private JScrollPane scrollPane2;
+	public JTable table;
+	private List<Object[]> data;
+	private String[] columns;
+
 	/**
 	 * Launch the application.
 	 */
@@ -88,6 +103,160 @@ public class ApplicationWindow {
 		frame.setBounds(100, 100, 828, 580);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+
+		JPanel panel_3 = new JPanel();
+		panel_3.setBorder(new LineBorder(SystemColor.textHighlight));
+		panel_3.setBackground(new Color(255, 255, 255));
+		panel_3.setBounds(20, 80, 516, 422);
+		frame.getContentPane().add(panel_3);
+		panel_3.setLayout(null);
+		
+		
+		columns = new String[] {"Number", "Task Name", "Task Duration", "Task Date and Time", "Task Completion"};
+		data = new ArrayList<Object[]>();
+		Object[][] dataArray = toArray(data);
+		
+		table = new JTable(dataArray, columns) {
+			private static final long serialVersionUID = 1L;
+			public boolean isCellEditable(int row, int column) {                
+                return false;               
+			}
+		};
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				selectedListIndex = table.getSelectedRow();
+				setTaskDetailView();
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				selectedListIndex = table.getSelectedRow();
+				setTaskDetailView();
+			}
+		});
+		
+		refreshTableValues();
+		table.setRowSelectionInterval(0, 0);
+		selectedListIndex = 0;
+		table.setRowHeight(25);
+		table.setSelectionBackground(new Color(102, 205, 170));
+		table.setForeground(Color.GRAY);
+		table.setFont(new Font("Open Sans", Font.PLAIN, 13));
+		table.setSize(496, 368);
+		table.setLocation(11, 44);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		//table.edit
+		scrollPane2 = new JScrollPane(table);
+		table.setFillsViewportHeight(true); 
+		scrollPane2.setBounds(11, 44, 496, 368);
+		scrollPane2.setViewportView(table);
+		panel_3.add(scrollPane2);
+
+		filterDropdown = new JComboBox();
+		filterDropdown.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String filterString;
+				switch (filterDropdown.getSelectedIndex()) {
+				case 0:
+					filterString = "filter all";
+					break;
+				case 1:
+					filterString = "filter incomplete";
+					break;
+				case 2:
+					filterString = "filter complete";
+					break;
+				case 3:
+					filterString = "filter short";
+					break;
+				case 4:
+					filterString = "filter medium";
+					break;
+				case 5:
+					filterString = "filter long";
+					break;
+				case 6:
+					filterString = "filter soon";
+					break;
+				default:
+					filterString = "";
+					break;
+				}
+				try {
+					taskManager.executeCommand(filterString, window);
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(frame, e1.getMessage());
+				}
+				refreshWindow();
+			}
+		});
+		filterDropdown.setBackground(new Color(255, 255, 255));
+		filterDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		filterDropdown.setForeground(new Color(60, 179, 113));
+		filterDropdown.setModel(new DefaultComboBoxModel(new String[] {"Filter by...", "Incomplete Tasks", "Complete Tasks", "Short Tasks (<1 hour)", "Medium Tasks (1 - 3 hours)", "Long Tasks (3+ hours)", "Tasks Ending Soon"}));
+		filterDropdown.setFont(new Font("Open Sans", Font.PLAIN, 15));
+		filterDropdown.setBounds(6, 6, 258, 36);
+		panel_3.add(filterDropdown);
+
+		sortDropdown = new JComboBox();
+		sortDropdown.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String sortString;
+				switch (sortDropdown.getSelectedIndex()) {
+				case 0:
+					sortString = "sort default";
+					break;
+				case 1:
+					sortString = "sort name";
+					break;
+				case 2:
+					sortString = "sort date";
+					break;
+				case 3:
+					sortString = "sort start";
+					break;
+				case 4:
+					sortString = "sort end";
+					break;
+				case 5:
+					sortString = "sort duration";
+					break;
+				default:
+					sortString = "";
+					break;
+				}
+				try {
+					taskManager.executeCommand(sortString, window);
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(frame, e1.getMessage());
+				}
+			}
+		});
+		sortDropdown.setOpaque(true);
+		sortDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		sortDropdown.setModel(new DefaultComboBoxModel(new String[] {"Sort By...", "Name", "Date", "Starting Time", "Ending Time", "Duration"}));
+		sortDropdown.setForeground(new Color(60, 179, 113));
+		sortDropdown.setFont(new Font("Open Sans", Font.PLAIN, 15));
+		sortDropdown.setBackground(Color.WHITE);
+		sortDropdown.setBounds(261, 6, 249, 36);
+		panel_3.add(sortDropdown);
+
+		historyList = new JList();
+		historyList.setEnabled(false);
+		historyList.setForeground(new Color(60, 179, 113));
+		historyList.setFont(new Font("Open Sans", Font.PLAIN, 13));
+		historyList.setBounds(6, 6, 501, 406);
+		historyList.setModel(new AbstractListModel() {
+			List<String> history = taskManager.getHistoryList();
+			public int getSize() {
+				return history.size();
+			}
+			public Object getElementAt(int index) {
+				return history.get(index);
+			}
+		});
+		panel_3.add(historyList);
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(51, 204, 153));
@@ -207,156 +376,14 @@ public class ApplicationWindow {
 		txtAreaTaskDetails.setEnabled(false);
 		panel.add(txtAreaTaskDetails);
 		
+		setTaskDetailView();
+
 		txtAreaHelp = new JTextPane();
 		txtAreaHelp.setForeground(new Color(102, 205, 170));
 		txtAreaHelp.setFont(new Font("Open Sans", Font.PLAIN, 13));
 		txtAreaHelp.setBounds(30, 100, 499, 372);
 		frame.getContentPane().add(txtAreaHelp);
 		txtAreaHelp.setText("add [NAME] || [DD/MM/YYYY] [HH:MM] [H:M]\nadd [NAME] || [DD/MM/YYYY] [HH:MM]\nadd [NAME] || [DD/MM/YYYY]\nadd [NAME]\ndelete [INDEX]\ndone [INDEX]\nedit [INDEX] name [STRING]\nedit [INDEX] duration [STRING]\nedit [INDEX] datetime [STRING]\nedit [INDEX] all [NAME] [DATE] [TIME] [DURATION]\nclear\ndisplay [INDEX]\nsearch name [STRING]\nsearch date [DD/MM/YYYY]\nundo\nhome\nhistory\nhelp\nsort [NAME/DATE/START/END/DURATION/DEFAULT]\nfilter [INCOMPLETE/COMPLETE/SHORT/MEDIUM/LONG/SOON/ALL]\n");
-
-		JPanel panel_3 = new JPanel();
-		panel_3.setBorder(new LineBorder(SystemColor.textHighlight));
-		panel_3.setBackground(new Color(255, 255, 255));
-		panel_3.setBounds(20, 80, 516, 422);
-		frame.getContentPane().add(panel_3);
-		panel_3.setLayout(null);
-
-		taskList = new JList<String>();
-		taskList.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				selectedListIndex = taskList.getSelectedIndex();
-				setTaskDetailView();
-			}
-		});
-		taskList.setBackground(UIManager.getColor("TabbedPane.selectedTabTitlePressedColor"));
-		taskList.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		taskList.setToolTipText("");
-		taskList.setSelectionForeground(new Color(255, 255, 255));
-		taskList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		taskList.setSelectionBackground(new Color(255, 165, 0));
-		taskList.setForeground(new Color(255, 165, 0));
-		taskList.setFont(new Font("Open Sans", Font.PLAIN, 17));
-		taskList.setModel(new AbstractListModel<String>() {
-			private static final long serialVersionUID = 1L;
-			String[] values = taskManager.getTaskNames();
-			public int getSize() {
-				return values.length;
-			}
-			public String getElementAt(int index) {
-				return values[index];
-			}
-		});
-		taskList.setFixedCellHeight(25);
-		taskList.setBounds(11, 44, 496, 368);
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(11, 44, 496, 368);
-		scrollPane.setViewportView(taskList);
-		panel_3.add(scrollPane);
-
-		filterDropdown = new JComboBox();
-		filterDropdown.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String filterString;
-				switch (filterDropdown.getSelectedIndex()) {
-				case 0:
-					filterString = "filter all";
-					break;
-				case 1:
-					filterString = "filter incomplete";
-					break;
-				case 2:
-					filterString = "filter complete";
-					break;
-				case 3:
-					filterString = "filter short";
-					break;
-				case 4:
-					filterString = "filter medium";
-					break;
-				case 5:
-					filterString = "filter long";
-					break;
-				case 6:
-					filterString = "filter soon";
-					break;
-				default:
-					filterString = "";
-					break;
-				}
-				try {
-					taskManager.executeCommand(filterString, window);
-				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(frame, e1.getMessage());
-				}
-				refreshWindow();
-			}
-		});
-		filterDropdown.setBackground(new Color(255, 255, 255));
-		filterDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		filterDropdown.setForeground(new Color(60, 179, 113));
-		filterDropdown.setModel(new DefaultComboBoxModel(new String[] {"Filter by...", "Incomplete Tasks", "Complete Tasks", "Short Tasks (<1 hour)", "Medium Tasks (1 - 3 hours)", "Long Tasks (3+ hours)", "Tasks Ending Soon"}));
-		filterDropdown.setFont(new Font("Open Sans", Font.PLAIN, 15));
-		filterDropdown.setBounds(6, 6, 258, 36);
-		panel_3.add(filterDropdown);
-
-		sortDropdown = new JComboBox();
-		sortDropdown.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String sortString;
-				switch (sortDropdown.getSelectedIndex()) {
-				case 0:
-					sortString = "sort default";
-					break;
-				case 1:
-					sortString = "sort name";
-					break;
-				case 2:
-					sortString = "sort date";
-					break;
-				case 3:
-					sortString = "sort start";
-					break;
-				case 4:
-					sortString = "sort end";
-					break;
-				case 5:
-					sortString = "sort duration";
-					break;
-				default:
-					sortString = "";
-					break;
-				}
-				try {
-					taskManager.executeCommand(sortString, window);
-				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(frame, e1.getMessage());
-				}
-			}
-		});
-		sortDropdown.setOpaque(true);
-		sortDropdown.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		sortDropdown.setModel(new DefaultComboBoxModel(new String[] {"Sort By...", "Name", "Date", "Starting Time", "Ending Time", "Duration"}));
-		sortDropdown.setForeground(new Color(60, 179, 113));
-		sortDropdown.setFont(new Font("Open Sans", Font.PLAIN, 15));
-		sortDropdown.setBackground(Color.WHITE);
-		sortDropdown.setBounds(261, 6, 249, 36);
-		panel_3.add(sortDropdown);
-		
-		historyList = new JList();
-		historyList.setEnabled(false);
-		historyList.setForeground(new Color(60, 179, 113));
-		historyList.setFont(new Font("Open Sans", Font.PLAIN, 13));
-		historyList.setBounds(6, 6, 501, 406);
-		historyList.setModel(new AbstractListModel() {
-			List<String> history = taskManager.getHistoryList();
-			public int getSize() {
-				return history.size();
-			}
-			public Object getElementAt(int index) {
-				return history.get(index);
-			}
-		});
-		panel_3.add(historyList);
 
 
 		JPanel taskManageLine = new JPanel();
@@ -399,14 +426,14 @@ public class ApplicationWindow {
 
 		refreshButtons();
 	}
-	
+
 	public void setTaskDetailView() {
 		if (selectedListIndex < taskManager.getNumberOfTasks() && selectedListIndex >= 0) {
 			txtAreaTaskDetails.setText(taskManager.getTask(selectedListIndex).displayString());
 			txtLabelStatus.setText(taskManager.getTask(selectedListIndex).getStatusString());
 		} 
 	}
-	
+
 	private void refreshButtons() {
 		homeButton.setBackground(new Color(0, 204, 153));
 		historyButton.setBackground(new Color(0, 204, 153));
@@ -419,10 +446,10 @@ public class ApplicationWindow {
 			filterDropdown.setVisible(true);
 			sortDropdown.setVisible(true);
 			warningBackground.setVisible(true);
-			taskList.setVisible(true);
+			table.setVisible(true);
 			txtAreaHelp.setVisible(false);
 			historyList.setVisible(false);
-			scrollPane.setVisible(true);
+			scrollPane2.setVisible(true);
 			break;
 		case 1:
 			historyButton.setBackground(new Color(68, 220, 168));
@@ -431,10 +458,10 @@ public class ApplicationWindow {
 			filterDropdown.setVisible(false);
 			sortDropdown.setVisible(false);
 			warningBackground.setVisible(false);
-			taskList.setVisible(false);
+			table.setVisible(false);
 			txtAreaHelp.setVisible(false);
 			historyList.setVisible(true);
-			scrollPane.setVisible(false);
+			scrollPane2.setVisible(false);
 			break;
 		case 2:
 			helpButton.setBackground(new Color(68, 220, 168));
@@ -443,32 +470,63 @@ public class ApplicationWindow {
 			filterDropdown.setVisible(false);
 			sortDropdown.setVisible(false);
 			warningBackground.setVisible(false);
-			taskList.setVisible(false);
+			table.setVisible(false);
 			txtAreaHelp.setVisible(true);
 			historyList.setVisible(false);
-			scrollPane.setVisible(false);
+			scrollPane2.setVisible(false);
 			break;
 		default:
 			break;
 		}
 	}
-	
+
 	public void warnInvalid(String warning) {
 		JOptionPane.showMessageDialog(frame, warning);
 	}
 	
+	private void refreshTableValues() {
+		List<Task> tasks = taskManager.getTasks();
+		data.clear();
+		for (int i = 0; i < taskManager.getNumberOfTasks(); i++) {
+			Object[] singleRow = new Object[5];
+			
+			for (int j = 0; j < 5; j++) {
+				switch(j) {
+				case 0:
+					singleRow[j] = i + 1;
+					break;
+				case 1:
+					singleRow[j] = tasks.get(i).getName();
+					break;
+				case 2:
+					if (tasks.get(i).getDuration() != 0) {
+						singleRow[j] = tasks.get(i).getDuration();
+					} else {
+						singleRow[j] = "N/A";
+					}
+					break;
+				case 3:
+					if (tasks.get(i).getTimeStart() != null) {
+						singleRow[j] = tasks.get(i).getTimeStart();
+					} else {
+						singleRow[j] = "N/A";
+					}
+					break;
+				default:
+					singleRow[j] = tasks.get(i).getDoneStatus();
+					break;
+				}
+			}
+			data.add(singleRow);
+		}
+		Object[][] dataArray = toArray(data);
+		table.setModel(new DefaultTableModel(dataArray, columns));
+	}
+
 	public void refreshWindow() {
 		setTaskDetailView();
 		refreshButtons();
-		taskList.setModel(new AbstractListModel() {
-			String[] values = taskManager.getTaskNames();
-			public int getSize() {
-				return values.length;
-			}
-			public Object getElementAt(int index) {
-				return values[index];
-			}
-		});
+		refreshTableValues();
 		historyList.setModel(new AbstractListModel() {
 			List<String> history = taskManager.getHistoryList();
 			public int getSize() {
@@ -478,5 +536,14 @@ public class ApplicationWindow {
 				return history.get(index);
 			}
 		});
+	}
+	
+	private Object[][] toArray(List<Object[]> list) {
+		Object[][] array = new Object[list.size()][];
+		for (int i = 0; i < list.size(); i++) {
+		    Object[] row = list.get(i);
+		    array[i] = row;
+		}
+		return array;
 	}
 }

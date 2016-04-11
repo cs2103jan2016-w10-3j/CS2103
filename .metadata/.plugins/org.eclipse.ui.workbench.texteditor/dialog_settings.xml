@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="Timer" key="selection"/>
+		<item value="Table" key="selection"/>
 		<list key="findhistory">
-			<item value="timer"/>
-			<item value="time"/>
-			<item value="histo"/>
-			<item value="historyl"/>
-			<item value="format"/>
-			<item value="addonun"/>
-			<item value="addon"/>
-			<item value="undo"/>
+			<item value="table"/>
+			<item value="columns"/>
+			<item value="scrollpan"/>
+			<item value="tasklist"/>
+			<item value="data"/>
+			<item value="scroll"/>
+			<item value="setmodel"/>
+			<item value="list."/>
 		</list>
 		<list key="replacehistory">
 		</list>
