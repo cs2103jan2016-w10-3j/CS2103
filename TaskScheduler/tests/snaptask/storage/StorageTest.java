@@ -77,13 +77,15 @@ public class StorageTest {
     	store.setPath(orginalPath);
     }
     
-	@Test
+	
+    @Test
 	public void readAndSave() throws FileNotFoundException, IOException {
 		store.saveTasks(tasks);
 		tasksCompare = store.readTasks();
+		
 		assertEquals(tasksCompare.toString(), tasks.toString());
 	}
-//	
+
 	@Test
 	public void changePathAndFileName() throws FileNotFoundException, IOException {
 		Path currentRelativePath = Paths.get("").toAbsolutePath().getParent();
@@ -127,6 +129,80 @@ public class StorageTest {
 
 		File file = new File(oldPath + oldFile + ".con");
 		assertEquals(file.exists(), false);
+	}
+	
+	@Test
+	public void taskFromEarlierRunReloaded() throws FileNotFoundException, IOException, InvalidTaskDateException {
+		
+		Path currentRelativePath = Paths.get("").toAbsolutePath().getParent();
+		String stringifiedPath = currentRelativePath.toString() + "/";
+		store.setPath(stringifiedPath);
+		store.setFileName("tasks1");
+		
+		store.saveTasks(tasks);
+		
+		Storage store2 = new Storage(); 
+
+		tasksCompare = store2.readTasks();
+
+		assertEquals(tasksCompare.toString(), tasks.toString());
+	}
+	
+	@Test
+	public void pathReloaded() throws FileNotFoundException, IOException, InvalidTaskDateException {
+		
+		Path currentRelativePath = Paths.get("").toAbsolutePath().getParent();
+		String stringifiedPath = currentRelativePath.toString() + "/";
+		store.setPath(stringifiedPath);
+		store.setFileName("tasks1");
+		
+		String oldPath = store.getPath();
+		
+		store.saveTasks(tasks);
+		
+		Storage store2 = new Storage(); 
+
+		String newPath = store2.getPath();
+
+		assertEquals(oldPath, newPath);
+	}
+	
+	@Test
+	public void filenameReloaded() throws FileNotFoundException, IOException, InvalidTaskDateException {
+		
+		Path currentRelativePath = Paths.get("").toAbsolutePath().getParent();
+		String stringifiedPath = currentRelativePath.toString() + "/";
+		store.setPath(stringifiedPath);
+		store.setFileName("tasks1");
+		
+		String oldFilename = store.getFileName();
+		
+		store.saveTasks(tasks);
+		
+		Storage store2 = new Storage(); 
+
+		String newFilename = store2.getFileName();
+
+		assertEquals(oldFilename, oldFilename);
+	}
+	
+	@Test
+	public void defaultValueGiven() throws FileNotFoundException, IOException, InvalidTaskDateException {
+		
+		Path currentRelativePath = Paths.get("").toAbsolutePath().getParent();
+		String stringifiedPath = currentRelativePath.toString() + "/";
+		store.setPath(stringifiedPath);
+		store.setFileName("tasks1");
+		
+		store.saveTasks(tasks);
+		
+		new File(stringifiedPath + "tasks1.con").delete();
+		
+		Storage store2 = new Storage(); 
+
+		String newFilename = store2.getFileName();
+
+		assertEquals(newFilename, "tasks");
 	}
 	
 	@Test

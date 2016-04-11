@@ -15,7 +15,10 @@ import java.awt.Font;
 
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+<<<<<<< HEAD
 import javax.swing.border.MatteBorder;
+=======
+>>>>>>> b18c4237be917bc84e12801fb642574687301872
 
 import java.awt.SystemColor;
 
@@ -58,6 +61,7 @@ import javax.swing.JTable;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 //@@author Erika

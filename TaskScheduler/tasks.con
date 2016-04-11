@@ -1,9 +1,0 @@
-today || true || 11/04/2016 12:00:43 || 122 || false
-name || true || 13/04/2016 10:00:00 || 122 || false
-1 || false || null || 0 || false
-3 || false || null || 0 || false
-hello || false || null || 0 || false
-name || false || null || 0 || false
-name || false || null || 0 || false
-today|| today 12:00 2.1 || false || null || 0 || false
-yum || false || null || 0 || false
