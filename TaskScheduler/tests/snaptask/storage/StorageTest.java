@@ -39,7 +39,7 @@ import snaptask.storage.Storage;
 import snaptask.storage.StorageReadSave;
 
 
-//@@author Sophie
+//@@author A0148798A
 public class StorageTest {
 	
 

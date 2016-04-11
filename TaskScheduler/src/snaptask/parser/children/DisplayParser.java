@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import Exceptions.ParserExceptions.IndexInvalidException;
 import Exceptions.ParserExceptions.IndexEmptyException;
 
-//@@author JunWei
+//@@author A0148926R
 public class DisplayParser {
 	
 	// Parser instance

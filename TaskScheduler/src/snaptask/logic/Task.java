@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-//@@author JunWei
+//@@author A0148926R
 public class Task implements Serializable {
 	private static final long serialVersionUID = 7775975714514675089L;
 	private String name;

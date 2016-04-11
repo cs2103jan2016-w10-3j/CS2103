@@ -1,5 +1,5 @@
 package snaptask.parser;
-//@@author JunWei
+//@@author A0148926R
 public enum Token {
 	COMMAND, TIME, NAME, DESCRIPTION
 }

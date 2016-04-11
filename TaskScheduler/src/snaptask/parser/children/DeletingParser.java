@@ -7,7 +7,7 @@ import Exceptions.ParserExceptions.InvalidTaskIndexException;
 import Exceptions.ParserExceptions.NoArgumentException;
 import snaptask.parser.Parser;
 
-//@@author JunWei
+//@@author A0148926R
 public class DeletingParser {
 	
 	// Parser instance

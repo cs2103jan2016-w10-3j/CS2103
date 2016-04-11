@@ -14,7 +14,7 @@ import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 import snaptask.parser.DateTime;
 import snaptask.parser.Parser;
 
-//@@author Jared
+//@@author A0111720B
 public class EditingParser {
 	private static EditingParser instance = null;
 	
