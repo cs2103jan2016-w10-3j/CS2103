@@ -167,7 +167,7 @@ public class TaskManager implements Serializable {
 
         ActionListener taskPerformer = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                window.warnInvalid("TIMES UP!!!!  for this task\n" + dueTask);
+                window.showMessage("TIMES UP!!!!  for this task\n" + dueTask);
                 // hasAlertTimer = false;
                 setAlertForComingTasks(window);
             }
@@ -254,7 +254,7 @@ public class TaskManager implements Serializable {
 		switch (commandType) {
 		case ADD :
 			if (filtered) {
-				window.warnInvalid("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
+				window.showMessage("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
 				filtered = false;
 				window.refreshWindow();
 			} else {
@@ -273,7 +273,7 @@ public class TaskManager implements Serializable {
 			break;
 		case DELETE :
 			if (filtered) {
-				window.warnInvalid("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
+				window.showMessage("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
 				filtered = false;
 				window.refreshWindow();
 			} else {
@@ -296,7 +296,7 @@ public class TaskManager implements Serializable {
 			break;
 		case EDIT :
 			if (filtered) {
-				window.warnInvalid("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
+				window.showMessage("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
 				filtered = false;
 				window.refreshWindow();
 			} else {
@@ -308,7 +308,7 @@ public class TaskManager implements Serializable {
 			break;
 		case CLEAR :
 			if (filtered) {
-				window.warnInvalid("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
+				window.showMessage("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
 				filtered = false;
 				window.refreshWindow();
 			} else {
@@ -317,7 +317,7 @@ public class TaskManager implements Serializable {
 			break;
 		case SEARCH :
 			if (filtered) {
-				window.warnInvalid("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
+				window.showMessage("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
 				filtered = false;
 				window.refreshWindow();
 			} else {
@@ -326,7 +326,7 @@ public class TaskManager implements Serializable {
 			break;
 		case DONE :
 			if (filtered) {
-				window.warnInvalid("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
+				window.showMessage("You cannot perform this operation when applying a filter or search. Resetting list to all. ");
 				filtered = false;
 				window.refreshWindow();
 			} else {
@@ -422,7 +422,7 @@ public class TaskManager implements Serializable {
 			window.filterDropdown.setSelectedIndex(0);
 			break;
 		default :
-			window.warnInvalid("Invalid filter option. ");
+			window.showMessage("Invalid filter option. ");
 		}
 	}
 
@@ -537,7 +537,7 @@ public class TaskManager implements Serializable {
 			filtered = false;
 			break;
 		default :
-			window.warnInvalid("Invalid sort option." );
+			window.showMessage("Invalid sort option." );
 		}
 	}
 
@@ -634,12 +634,10 @@ public class TaskManager implements Serializable {
 
 	private void displayTask(String input, ApplicationWindow window) {
 		int index = parser.getEditingParser().findTokenIndex(input);
-		System.out.println();
 		if (index <= window.table.getRowCount() && index > 0) {
 			window.selectedListIndex = index - 1;
-			window.table.addRowSelectionInterval(index - 1, index - 1);
 		} else {
-			window.warnInvalid("The index entered was invalid. ");
+			window.showMessage("The index entered was invalid. ");
 		}
 	}
 
@@ -770,10 +768,7 @@ public class TaskManager implements Serializable {
 			}
 		}
 		window.refreshWindow();
-		window.warnInvalid("A total of: " + occurance + " occurences were found.");
-//		logger.log(Level.FINE, "A search with keyword {0} has been made",
-//				nameToSearchFor);
-//		System.out.println("total occurance for haha string is " + occurance);
+		window.showMessage("A total of: " + occurance + " occurences were found.");
 	}
 
 	private void addTask(Task task) {

@@ -62,32 +62,40 @@ import java.io.UnsupportedEncodingException;
 
 //@@author Erika
 public class ApplicationWindow {
+	
+	private static TaskManager taskManager;
+	public static JList<String> taskList = new JList<String>();
 
 	private JFrame frame;
-	private JTextField searchField;
-	private JTextField textFieldTaskManage;
-	private static TaskManager taskManager;
-	public int selectedListIndex = 0;
-	public int selectedButtonIndex = 0;
-	public static JList<String> taskList = new JList<String>();
 	private ApplicationWindow window = this;
+	
+	private JTextField searchField;
+	private JTextField textFieldTaskManager;
 	private JTextArea txtAreaTaskDetails;
 	private JTextPane txtAreaDescription;
+	private JTextPane txtLabelStatus;
+	private JTextPane txtAreaHelp;
+	
+	public int selectedListIndex = 0;
+	public int selectedButtonIndex = 0;
+	
 	private JButton homeButton;
 	private JButton historyButton;
 	private JButton helpButton;
-	private JTextPane txtLabelStatus;
+	
 	private boolean firstFocusManageText = true;
 	private boolean firstFocusSearchText = true;
+	
 	public JComboBox<String> filterDropdown;
 	public JComboBox<String> sortDropdown;
-	private JPanel warningBackground;
-	private JTextPane txtAreaHelp;
 	private JList<String> historyList;
-	private JScrollPane scrollPane2;
-	public JTable table;
 	private List<Object[]> data;
 	private String[] columns;
+	public JTable table;
+	
+	private JPanel warningBackground;
+	private JScrollPane scrollPane2;
+
 
 	/**
 	 * Launch the application.
@@ -100,6 +108,7 @@ public class ApplicationWindow {
 					ApplicationWindow window = new ApplicationWindow();
 					window.frame.setVisible(true);
 					window.frame.setResizable(false);
+					//Setting the application icon image: this will only work on Windows, MAC is more complicated
 					window.frame.setIconImage(new ImageIcon(this.getClass().getResource("/Slice 1.png")).getImage());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -131,24 +140,20 @@ public class ApplicationWindow {
 		frame.getContentPane().add(txtAreaHelp);
 		txtAreaHelp.setText("add [NAME] || [DD/MM/YYYY] [HH:MM] [H:M]\nadd [NAME] || [DD/MM/YYYY] [HH:MM]\nadd [NAME] || [DD/MM/YYYY]\nadd [NAME]\ndelete [INDEX]\ndone [INDEX]\nedit [INDEX] name [STRING]\nedit [INDEX] duration [STRING]\nedit [INDEX] datetime [STRING]\nedit [INDEX] all [NAME] [DATE] [TIME] [DURATION]\nclear\ndisplay [INDEX]\nsearch name [STRING]\nsearch date [DD/MM/YYYY]\nundo\nhome\nhistory\nhelp\nsort [NAME/DATE/START/END/DURATION/DEFAULT]\nfilter [INCOMPLETE/COMPLETE/SHORT/MEDIUM/LONG/SOON/ALL]\n");
 
-		JPanel panel_3 = new JPanel();
-		panel_3.setBorder(new LineBorder(SystemColor.textHighlight));
-		panel_3.setBackground(new Color(255, 255, 255));
-		panel_3.setBounds(20, 80, 516, 422);
-		frame.getContentPane().add(panel_3);
-		panel_3.setLayout(null);
+		JPanel middlePanel = new JPanel();
+		middlePanel.setBorder(new LineBorder(SystemColor.textHighlight));
+		middlePanel.setBackground(new Color(255, 255, 255));
+		middlePanel.setBounds(20, 80, 516, 422);
+		frame.getContentPane().add(middlePanel);
+		middlePanel.setLayout(null);
 
 		columns = new String[] {"Number", "Task Name", "Task Time", "Task Date", "Completed"};
 		data = new ArrayList<Object[]>();
 		Object[][] dataArray = toArray(data);
 
-		/*
-		 * Initialising table with the data obtained from task manager and the columns title above.
-		 */
-
 		historyList = new JList<String>();
 		historyList.setBounds(11, 14, 501, 406);
-		panel_3.add(historyList);
+		middlePanel.add(historyList);
 		historyList.setEnabled(false);
 		historyList.setForeground(new Color(60, 179, 113));
 		historyList.setFont(new Font("Open Sans", Font.PLAIN, 13));
@@ -166,6 +171,7 @@ public class ApplicationWindow {
 
 		table = new JTable(dataArray, columns) {
 			private static final long serialVersionUID = 1L;
+			//Adding in this function will ensure that the user is unable to edit any of the cells
 			public boolean isCellEditable(int row, int column) {                
 				return false;               
 			}
@@ -206,7 +212,7 @@ public class ApplicationWindow {
 		table.setFillsViewportHeight(true); 
 		scrollPane2.setBounds(11, 44, 496, 368);
 		scrollPane2.setViewportView(table);
-		panel_3.add(scrollPane2);
+		middlePanel.add(scrollPane2);
 
 		filterDropdown = new JComboBox<String>();
 
@@ -258,7 +264,7 @@ public class ApplicationWindow {
 		filterDropdown.setModel(new DefaultComboBoxModel<String>(new String[] {"Filter by...", "Incomplete Tasks", "Complete Tasks", "Short Tasks (<1 hour)", "Medium Tasks (1 - 3 hours)", "Long Tasks (3+ hours)", "Tasks Ending Soon"}));
 		filterDropdown.setFont(new Font("Open Sans", Font.PLAIN, 15));
 		filterDropdown.setBounds(6, 6, 258, 36);
-		panel_3.add(filterDropdown);
+		middlePanel.add(filterDropdown);
 
 		sortDropdown = new JComboBox<String>();
 		/**
@@ -306,26 +312,26 @@ public class ApplicationWindow {
 		sortDropdown.setFont(new Font("Open Sans", Font.PLAIN, 15));
 		sortDropdown.setBackground(Color.WHITE);
 		sortDropdown.setBounds(261, 6, 249, 36);
-		panel_3.add(sortDropdown);
+		middlePanel.add(sortDropdown);
 
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(new Color(51, 204, 153));
-		panel_1.setBounds(0, 0, 828, 64);
-		frame.getContentPane().add(panel_1);
-		panel_1.setLayout(null);
+		JPanel topPanel = new JPanel();
+		topPanel.setBackground(new Color(51, 204, 153));
+		topPanel.setBounds(0, 0, 828, 64);
+		frame.getContentPane().add(topPanel);
+		topPanel.setLayout(null);
 
 		JLabel lblSnaptask = new JLabel("snaptask");
 		lblSnaptask.setFont(new Font("Open Sans", Font.PLAIN, 48));
 		lblSnaptask.setForeground(new Color(255, 255, 255));
 		lblSnaptask.setBounds(16, 0, 216, 58);
-		panel_1.add(lblSnaptask);
+		topPanel.add(lblSnaptask);
 
 		JPanel searchLine = new JPanel();
 		searchLine.setBackground(new Color(255, 165, 0));
 		searchLine.setBorder(null);
 		searchLine.setBounds(556, 44, 251, 6);
 		searchLine.setEnabled(false);
-		panel_1.add(searchLine);
+		topPanel.add(searchLine);
 
 		searchField = new JTextField();
 		/**
@@ -344,7 +350,7 @@ public class ApplicationWindow {
 						| InvalidTaskDateException | ArgumentForEditingNotEnteredException
 						| InvalidDateTimeFormatException | KeywordNotEnteredException | SearchTypeNotEnteredException
 						| SearchNotInPairException | FileTypeInvalidException | InvalidTaskDurationException e1) {
-					warnInvalid("Search unable to be performed");
+					showMessage("Search unable to be performed");
 					e1.printStackTrace();
 				}
 			}
@@ -370,11 +376,17 @@ public class ApplicationWindow {
 		searchField.setToolTipText("Search for tasks!");
 		searchField.setText("Search for tasks!");
 		searchField.setBounds(552, 15, 258, 36);
-		panel_1.add(searchField);
+		topPanel.add(searchField);
 		searchField.setColumns(10);
 
 		homeButton = new JButton("\n");
 		homeButton.setOpaque(true);
+		
+		/**
+		 * When the home button is pressed, the index of the button is changed so that the tabs at the top displayed.
+		 * 
+		 * @param e: The ActionListener as defined by Java AWT.
+		 */
 		homeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				selectedButtonIndex = 0;
@@ -386,10 +398,16 @@ public class ApplicationWindow {
 		homeButton.setBorder(new EmptyBorder(0, 0, 0, 0));
 		homeButton.setBackground(new Color(0, 204, 153));
 		homeButton.setBounds(237, 0, 66, 64);
-		panel_1.add(homeButton);
+		topPanel.add(homeButton);
 
 		historyButton = new JButton("\n");
 		historyButton.setOpaque(true);
+		
+		/**
+		 * When the history button is pressed, the index of the button is changed so that the tabs at the top displayed.
+		 * 
+		 * @param e: The ActionListener as defined by Java AWT.
+		 */
 		historyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				selectedButtonIndex = 1;
@@ -400,10 +418,16 @@ public class ApplicationWindow {
 		historyButton.setBorder(new EmptyBorder(0, 0, 0, 0));
 		historyButton.setBackground(new Color(0, 204, 153));
 		historyButton.setBounds(312, 0, 66, 64);
-		panel_1.add(historyButton);
+		topPanel.add(historyButton);
 
 		helpButton = new JButton("\n");
 		helpButton.setOpaque(true);
+		
+		/**
+		 * When the help button is pressed, the index of the button is changed so that the tabs at the top displayed.
+		 * 
+		 * @param e: The ActionListener as defined by Java AWT.
+		 */
 		helpButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				selectedButtonIndex = 2;
@@ -414,21 +438,21 @@ public class ApplicationWindow {
 		helpButton.setBorder(new EmptyBorder(0, 0, 0, 0));
 		helpButton.setBackground(new Color(0, 204, 153));
 		helpButton.setBounds(391, 0, 66, 64);
-		panel_1.add(helpButton);
+		topPanel.add(helpButton);
 
-		JPanel panel = new JPanel();
-		panel.setBorder(new LineBorder(SystemColor.textHighlight));
-		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(557, 80, 251, 422);
-		frame.getContentPane().add(panel);
-		panel.setLayout(null);
+		JPanel rightPanel = new JPanel();
+		rightPanel.setBorder(new LineBorder(SystemColor.textHighlight));
+		rightPanel.setBackground(new Color(255, 255, 255));
+		rightPanel.setBounds(557, 80, 251, 422);
+		frame.getContentPane().add(rightPanel);
+		rightPanel.setLayout(null);
 
 		warningBackground = new JPanel();
 		warningBackground.setEnabled(false);
 		warningBackground.setBorder(null);
 		warningBackground.setBackground(new Color(255, 165, 0));
 		warningBackground.setBounds(0, 20, 252, 29);
-		panel.add(warningBackground);
+		rightPanel.add(warningBackground);
 		warningBackground.setLayout(null);
 
 		txtLabelStatus = new JTextPane();
@@ -446,14 +470,14 @@ public class ApplicationWindow {
 		txtAreaDescription.setForeground(new Color(60, 179, 113));
 		txtAreaDescription.setBounds(10, 232, 208, 159);
 		txtAreaDescription.setEnabled(false);
-		panel.add(txtAreaDescription);
+		rightPanel.add(txtAreaDescription);
 
 		txtAreaTaskDetails = new JTextArea();
 		txtAreaTaskDetails.setFont(new Font("Open Sans", Font.PLAIN, 17));
 		txtAreaTaskDetails.setForeground(SystemColor.scrollbar);
 		txtAreaTaskDetails.setBounds(10, 61, 233, 231);
 		txtAreaTaskDetails.setEnabled(false);
-		panel.add(txtAreaTaskDetails);
+		rightPanel.add(txtAreaTaskDetails);
 
 		setTaskDetailView();
 
@@ -465,42 +489,61 @@ public class ApplicationWindow {
 		taskManageLine.setEnabled(false);
 		frame.getContentPane().add(taskManageLine);
 
-		textFieldTaskManage = new JTextField();
-		textFieldTaskManage.addFocusListener(new FocusAdapter() {
+		textFieldTaskManager = new JTextField();
+		
+		/**
+		 * This method acts as a sort of placeholder text. It will delete any text in the textField the first time
+		 * the user focuses on the text field.
+		 * 
+		 * @param e: The FocusEvent as defined by Java AWT.
+		 */
+		textFieldTaskManager.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
 				if (firstFocusManageText) {
-					textFieldTaskManage.setText("");
+					textFieldTaskManager.setText("");
 					firstFocusManageText = false;
 				}
 			}
 		});
-		textFieldTaskManage.addActionListener(new ActionListener() {
+		
+		/**
+		 * This method will take the input from the text field and then execute the command that the user supplied, if
+		 * applicable.
+		 * 
+		 * @param e: The ActionEvent as defined by Java AWT. This corresponds to the enter button.
+		 */
+		textFieldTaskManager.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					taskManager.executeCommand(textFieldTaskManage.getText(), window);
+					taskManager.executeCommand(textFieldTaskManager.getText(), window);
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(frame, e1.getMessage());
 				}
 				refreshWindow();
-				textFieldTaskManage.setText("");
+				textFieldTaskManager.setText("");
 			}
 		});
-		textFieldTaskManage.setDisabledTextColor(new Color(128, 128, 128));
-		textFieldTaskManage.setForeground(new Color(169, 169, 169));
-		textFieldTaskManage.setFont(new Font("Open Sans", Font.PLAIN, 15));
-		textFieldTaskManage.setToolTipText("Manage your tasks here!");
-		textFieldTaskManage.setColumns(10);
-		textFieldTaskManage.setBounds(18, 510, 792, 36);
-		textFieldTaskManage.setText("Manage your tasks here!");
-		frame.getContentPane().add(textFieldTaskManage);
+		textFieldTaskManager.setDisabledTextColor(new Color(128, 128, 128));
+		textFieldTaskManager.setForeground(new Color(169, 169, 169));
+		textFieldTaskManager.setFont(new Font("Open Sans", Font.PLAIN, 15));
+		textFieldTaskManager.setToolTipText("Manage your tasks here!");
+		textFieldTaskManager.setColumns(10);
+		textFieldTaskManager.setBounds(18, 510, 792, 36);
+		textFieldTaskManager.setText("Manage your tasks here!");
+		frame.getContentPane().add(textFieldTaskManager);
 
 		refreshButtons();
 	}
 
+	
+	/**
+	 * This method is responsible for setting the task detail view on the right hand side of the GUI. It is called
+	 * when a new entry in the table has been selected or when the user types in "display <Number>".
+	 */
 	public void setTaskDetailView() {
 		try {
-			selectedListIndex =  (int) table.getModel().getValueAt(selectedListIndex, 0) - 1;
+			//selectedListIndex =  (int) table.getModel().getValueAt(selectedListIndex, 0) - 1;
 			if (selectedListIndex < taskManager.getNumberOfTasks() && selectedListIndex >= 0) {
 				txtAreaTaskDetails.setText(taskManager.getTask(selectedListIndex).displayString());
 				txtLabelStatus.setText(taskManager.getTask(selectedListIndex).getStatusString());
@@ -511,6 +554,11 @@ public class ApplicationWindow {
 		}
 	}
 
+	/**
+	 * This method is responsible for refreshing the buttons and panels associated with the indexes of the buttons. 
+	 * It will switch the background colour of the icons and hide or unhide panels when the correct button index
+	 * is selected.
+	 */
 	private void refreshButtons() {
 		homeButton.setBackground(new Color(0, 204, 153));
 		historyButton.setBackground(new Color(0, 204, 153));
@@ -557,10 +605,19 @@ public class ApplicationWindow {
 		}
 	}
 
-	public void warnInvalid(String warning) {
+	/**
+	 * This method will open a new JOptionPane within the frame with the supplied warning.
+	 * 
+	 * @param warning: The message to be shown to the user.
+	 */
+	public void showMessage(String warning) {
 		JOptionPane.showMessageDialog(frame, warning);
 	}
 
+	/**
+	 * This method will refresh the data in the table for each of the five columns and numerous rows. It also ensures that 
+	 * the columns are the correct width each time, as they can be resized.
+	 */
 	private void refreshTableValues() {
 		List<Task> tasks = taskManager.getTasks();
 		data.clear();
@@ -604,10 +661,22 @@ public class ApplicationWindow {
 		table.getTableHeader().setBorder(new MatteBorder(0,0,1,0, Color.BLACK));
 	}
 
+	/**
+	 * This is the master method for refreshing everything in the entire window and is called especially when
+	 * all objects have been declared but not yet instantiated, i.e. when the application has first started up.
+	 */
 	public void refreshWindow() {
 		setTaskDetailView();
 		refreshButtons();
 		refreshTableValues();
+		refresHistoryModel();
+	}
+	
+	/**
+	 * This method is responsible for update the historyList, which holds all of the recent commands for the user
+	 * to see.
+	 */
+	private void refresHistoryModel() {
 		historyList.setModel(new AbstractListModel<String>() {
 			private static final long serialVersionUID = 1L;
 			List<String> history = taskManager.getHistoryList();
@@ -621,6 +690,12 @@ public class ApplicationWindow {
 		});
 	}
 
+	/**
+	 * This method is responsible for turning a list of Object arrays into a two dimensional array. It is useful for helping 
+	 * to supply the table with its model from the taskManager task lists.
+	 * @param list: The List to be turned into a 2D array.
+	 * @return: A 2D array to aid in constructing the table model.
+	 */
 	private Object[][] toArray(List<Object[]> list) {
 		Object[][] array = new Object[list.size()][];
 		for (int i = 0; i < list.size(); i++) {
@@ -630,3 +705,5 @@ public class ApplicationWindow {
 		return array;
 	}
 }
+	
+
