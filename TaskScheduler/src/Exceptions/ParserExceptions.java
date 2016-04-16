@@ -1,5 +1,5 @@
 package Exceptions;
-
+//@@author A0148926R
 public class ParserExceptions {
 	
 	private static final String MESSAGE_ERROR_NO_INPUT = "No input is entered.";

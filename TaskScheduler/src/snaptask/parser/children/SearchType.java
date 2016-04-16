@@ -1,5 +1,5 @@
 package snaptask.parser.children;
-//@@author JunWei
+//@@author A0148926R
 public enum SearchType {
 	DATE, TIME, DURATION, NAME
 }

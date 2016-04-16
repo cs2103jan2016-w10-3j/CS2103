@@ -11,7 +11,7 @@ import Exceptions.ParserExceptions.FileTypeInvalidException;
 import snaptask.parser.Parser;
 import Exceptions.ParserExceptions.FilePathInvalidException;
 
-//@@author Jared
+//@@author A0111720B
 public class StorageParser {
 	
 	private static StorageParser instance = null;

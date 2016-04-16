@@ -10,7 +10,7 @@ import Exceptions.ParserExceptions.InvalidTaskDurationException;
 import Exceptions.ParserExceptions.InvalidTaskTimeException;
 import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 
-//@@author JunWei
+//@@author A0148926R
 public class DateTime {
 	// Separator used to separate hour and minute in time representation
 	private final static String TIME_SEPARATOR = ":";

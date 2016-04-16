@@ -13,7 +13,7 @@ import Exceptions.ParserExceptions.SearchTypeNotEnteredException;
 import Exceptions.ParserExceptions.TaskTimeOutOfBoundException;
 import snaptask.parser.DateTime;
 
-//@@author JunWei
+//@@author A0148926R
 public class SearchingParser {
 	
 	// Keyword string defined to search for name

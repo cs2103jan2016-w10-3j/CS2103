@@ -20,7 +20,7 @@ import snaptask.logic.Task;
 import snaptask.parser.DateTime;
 import snaptask.parser.Parser;
 
-//@@author JunWei
+//@@author A0148926R
 public class AddingParser {
 	
 	// Separator used to separate task name and other properties

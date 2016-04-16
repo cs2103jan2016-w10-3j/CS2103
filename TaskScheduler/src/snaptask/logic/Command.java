@@ -1,5 +1,5 @@
 package snaptask.logic;
-//@@author Zhen Yuan
+//@@author A0108535H
 public enum Command {
 	ADD, EDIT, DELETE, SEARCH, UNDO, DONE, DISPLAY, INVALID, CLEAR, FILTER, SORT, HISTORY, HELP, HOME, FILESTORAGE
 }

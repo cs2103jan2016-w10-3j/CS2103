@@ -1,5 +1,5 @@
 package snaptask.parser.children;
-//@@author Jared
+//@@author A0111720B
 public enum StorageParserType {
 	CHANGEPATH, CHANGENAME, READPATH
 }
